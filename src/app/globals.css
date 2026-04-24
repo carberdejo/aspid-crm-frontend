@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* --- ACME Corporate Colors --- */
+  --color-primary: #1a2a53;
+  --color-primary-dark: #111c38;
+  --color-primary-light: #2a3a63;
+
+  --color-secondary: #ea6839;
+  --color-secondary-dark: #d45529;
+  --color-secondary-light: #f07849;
+
+  --color-accent: #f8aa19;
+  --color-accent-dark: #e89a09;
+  --color-accent-light: #faba29;
+
+  /* --- Base colors --- */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-border: #e5e5e5;
+  --color-input: #e5e5e5;
+
+  /* Color del resplandor de los inputs (Naranja ACME) */
+  --color-ring: #ea6839;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    /* Popover y Cards (Fondos de dropdowns y modales) */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary (Azul ACME) */
+    --primary: 222 52% 21%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary (Naranja ACME) */
+    --secondary: 16 82% 57%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    /* Variable de anillo para Shadcn */
+    --ring: 16 82% 57%;
+    --radius: 0.5rem;
+
+    /* Cuando el input tiene el atributo data-invalid (lo que pone shadcn en error) */
+    input[aria-invalid="true"],
+    button[aria-invalid="true"] {
+      /* Cambiamos el borde negro por el azul primary o un rojo corporativo */
+      border-color: #1a2a53 !important; /* Azul ACME */
+      box-shadow: 0 0 0 2px rgba(26, 42, 83, 0.1) !important; /* Glow azul sutil */
+    }
+
+    /* Si prefieres que el error sea rojo pero NO negro grueso: */
+    .text-destructive {
+      color: #ef4444; /* Un rojo más estándar */
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-color: #f9fafb; /* Fondo sutil de la página */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* Azul ACME para los títulos de todo el sistema */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply text-primary font-bold tracking-tight;
+  }
+
+  /* --- Efecto de Enfoque Refinado (Glow Naranja) --- */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  button[role="combobox"]:focus-visible {
+    outline: none !important;
+    border-color: #ea6839 !important;
+    /* Sombras sutiles en degrade */
+    box-shadow:
+      0 0 0 2px rgba(234, 104, 57, 0.1),
+      0 0 0 4px rgba(234, 104, 57, 0.05) !important;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Fix para componentes Command/Popover de Shadcn (Fondos Blancos) */
+@layer components {
+  [data-radix-popper-content-wrapper] {
+    @apply bg-white shadow-xl rounded-lg border border-border;
+  }
+
+  .bg-popover {
+    background-color: #ffffff !important;
+  }
+}

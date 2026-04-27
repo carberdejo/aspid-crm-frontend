@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/simple-separator';
 import { useSidebarStore } from '@/store/useSidebarStore';
@@ -16,6 +17,23 @@ export default function Sidebar() {
   const { isCollapsed, toggleCollapse } = useSidebarStore();
   const { user } = useAuthStore();
   const { departments, isLoading } = useDepartmentStore();
+
+  // Estado para secciones expandidas con persistencia de sesión
+  const [expandedSections, setExpandedSections] = useState(
+    new Set(JSON.parse(sessionStorage.getItem('expandedSections') || '[]'))
+  );
+
+  // Función para alternar secciones expandidas
+  const toggleSection = (title: string) => {
+    const updated = new Set(expandedSections);
+    if (updated.has(title)) {
+      updated.delete(title);
+    } else {
+      updated.add(title);
+    }
+    setExpandedSections(updated);
+    sessionStorage.setItem('expandedSections', JSON.stringify([...updated]));
+  };
 
   // Generar navSections dinámicamente
   const navSections = user && !isLoading
@@ -72,45 +90,80 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
-        {navSections.map((section, idx) => (
-          <div key={idx}>
-            {!isCollapsed && (
-              <h3 className="px-3 mb-3 text-xs font-semibold tracking-wider text-gray-400 uppercase">
-                {section.title}
-              </h3>
-            )}
-            <ul className="space-y-1">
-              {section.items.map((item, itemIdx) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href;
-                
-                return (
-                  <li key={itemIdx}>
-                    <Link
-                      href={item.href}
+        {navSections.map((section, idx) => {
+          const isSectionExpanded = expandedSections.has(section.title);
+
+          return (
+            <div key={idx}>
+              {/* Collapsible Section Header */}
+              <button
+                onClick={() => !isCollapsed && toggleSection(section.title)}
+                disabled={isCollapsed}
+                className={cn(
+                  'w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200',
+                  isCollapsed
+                    ? 'justify-center cursor-default'
+                    : 'hover:bg-white/5 group',
+                  !isCollapsed && 'text-gray-400 hover:text-gray-300'
+                )}
+                title={isCollapsed ? section.title : undefined}
+              >
+                {!isCollapsed && (
+                  <>
+                    <h3 className="text-xs font-semibold tracking-wider uppercase">
+                      {section.title}
+                    </h3>
+                    <ChevronDown
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative',
-                        isActive
-                          ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#f8aa19] before:rounded-r-md'
-                          : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                        isCollapsed && 'justify-center'
+                        'h-4 w-4 transition-transform duration-200',
+                        isSectionExpanded && 'rotate-180'
                       )}
-                      title={isCollapsed ? item.title : undefined}
-                    >
-                      <Icon className="text-lg h-5 w-5 shrink-0" />
-                      {!isCollapsed && (
-                        <span className="font-medium text-sm">{item.title}</span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-            {!isCollapsed && idx < navSections.length - 1 && (
-              <Separator className="my-4 bg-white/10" />
-            )}
-          </div>
-        ))}
+                    />
+                  </>
+                )}
+                {isCollapsed && (
+                  <div className="w-1 h-5 bg-white/20 rounded-full" />
+                )}
+              </button>
+
+              {/* Section Items - Mostrar solo si está expandida o sidebar colapsado */}
+              {(isSectionExpanded || isCollapsed) && (
+                <ul className="space-y-1 mt-2">
+                  {section.items.map((item, itemIdx) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
+
+                    return (
+                      <li key={itemIdx}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative',
+                            isActive
+                              ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#f8aa19] before:rounded-r-md'
+                              : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                            isCollapsed && 'justify-center'
+                          )}
+                          title={isCollapsed ? item.title : undefined}
+                        >
+                          <Icon className="text-lg h-5 w-5 shrink-0" />
+                          {!isCollapsed && (
+                            <span className="font-medium text-sm">{item.title}</span>
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {/* Separator */}
+              {!isCollapsed && idx < navSections.length - 1 && (
+                <Separator className="my-4 bg-white/10" />
+              )}
+            </div>
+          );
+        })}
       </nav>
     </aside>
   );

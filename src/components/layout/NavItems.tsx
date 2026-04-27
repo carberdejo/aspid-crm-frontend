@@ -214,9 +214,3 @@ export const generateNavSections = (
 
   return sections;
 };
-
-// Fallback para mantener compatibilidad
-export const navSections: NavSection[] = [
-  getAdminPrincipalSection(),
-  getSharedConfigSection(),
-];

@@ -95,7 +95,7 @@ const getDepartamentosSection = (userDeptIds: number[], departments: Department[
   }
 
   return {
-    title: 'DEPARTAMENTOS',
+    title: 'MIS ÁREAS',
     items: departmentItems,
   };
 };

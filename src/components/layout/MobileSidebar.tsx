@@ -76,7 +76,7 @@ export default function MobileSidebar() {
                     'hover:bg-white/5 group text-gray-400 hover:text-gray-300'
                   )}
                 >
-                  <h3 className="text-xs font-semibold tracking-wider uppercase">
+                  <h3 className="text-xs text-gray-400 font-semibold tracking-wider uppercase">
                     {section.title}
                   </h3>
                   <ChevronDown

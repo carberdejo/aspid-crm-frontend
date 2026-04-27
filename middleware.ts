@@ -56,14 +56,28 @@ export function middleware(request: NextRequest) {
         }
       }
 
-      // Proteger rutas que no son válidas para el usuario
+      // ✅ NUEVA VALIDACIÓN: Rutas dinámicas de departamentos
+      // Valida que el department ID sea válido y el user tenga acceso
+      const departmentMatch = pathname.match(/^\/department\/(\d+)$/);
+      if (departmentMatch) {
+        const departmentId = parseInt(departmentMatch[1], 10);
+
+        // ¿El usuario tiene acceso a este departamento?
+        if (!payload.depts || !payload.depts.includes(departmentId)) {
+          // User NO tiene acceso a este department
+          // Renderizar not-found.tsx sin pasar por el component
+          return NextResponse.rewrite(new URL('/not-found', request.url), {
+            status: 404,
+          });
+        }
+      }
+
+      // "/" es una ruta de transición, permitir acceso y dejar que React maneje redirección
       if (pathname === '/') {
-        // "/" es una ruta de transición, permitir acceso y dejar que React maneje redirección
         return NextResponse.next();
       }
 
-      // Todas las otras rutas protegidas están permitidas aquí,
-      // el cliente (AuthGuard) también validará
+      // Todas las otras rutas protegidas están permitidas aquí
       return NextResponse.next();
 
     } catch (decodeError) {

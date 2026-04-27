@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Avatar, AvatarFallback } from '@/components/ui/simple-avatar';
+import { useState } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/simple-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
-import { UserRole } from '@/interfaces';
-import { useRouter } from 'next/navigation';
-import { ConfirmDialog } from '../shared/ConfirmDialog';
+} from "@/components/ui/dropdown-menu";
+import { User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { UserRole } from "@/interfaces";
+import { useRouter } from "next/navigation";
+import { ConfirmDialog } from "../shared/ConfirmDialog";
 
 export default function UserProfile() {
-  const { user,logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -26,7 +26,7 @@ export default function UserProfile() {
 
   // Generar iniciales del email
   const getInitials = (email: string) => {
-    const parts = email.split('@')[0].split('.');
+    const parts = email.split("@")[0].split(".");
     if (parts.length >= 2) {
       return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
     }
@@ -35,34 +35,33 @@ export default function UserProfile() {
 
   // Formatear role para mostrar
   const getRoleDisplay = (role: UserRole) => {
-    return role === UserRole.ADMIN ? 'Administrador' : 'Usuario';
+    return role === UserRole.ADMIN ? "Administrador" : "Usuario";
   };
 
   // Formatear email para mostrar como nombre
   const getDisplayName = (email: string) => {
-    const localPart = email.split('@')[0];
+    const localPart = email.split("@")[0];
     return localPart
-      .split('.')
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
+      .split(".")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
   };
 
   const handleProfileClick = () => {
     // TODO: Implementar navegación a perfil
-    console.log('Ir a perfil de usuario');
-    router.push(`/profile/${user.codUser}`); 
-
+    console.log("Ir a perfil de usuario");
+    router.push(`/profile/${user.codUser}`);
   };
 
   const handleSettingsClick = () => {
     // TODO: Implementar navegación a configuración
-    console.log('Ir a configuración');
+    console.log("Ir a configuración");
   };
 
   const handleLogoutClick = () => {
     logout();
     setShowLogoutModal(true);
-    router.push('/login');
+    router.push("/auth/login");
   };
 
   return (
@@ -123,7 +122,7 @@ export default function UserProfile() {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={handleLogoutClick}
             className="text-red-600 focus:text-red-600 focus:bg-red-50"
           >
@@ -133,7 +132,7 @@ export default function UserProfile() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ConfirmDialog 
+      <ConfirmDialog
         isOpen={showLogoutModal}
         onOpenChange={setShowLogoutModal}
         title="¿Cerrar sesión?"

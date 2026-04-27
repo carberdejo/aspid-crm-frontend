@@ -13,6 +13,22 @@ export const concarApi = axios.create({
 // 1. Interceptor de Petición: Inyectar el Access Token
 concarApi.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
+  
+  // ✅ SEGURIDAD: Si no hay token, RECHAZAR la petición inmediatamente
+  if (!token) {
+    // Salvo para rutas públicas (ej: /auth/login, /auth/register)
+    // Todas las peticiones privadas deben ser rechazadas sin token
+    const publicEndpoints = ['/auth/login', '/auth/register', '/auth/refresh'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
+    
+    if (!isPublicEndpoint) {
+      // Rechazar la petición: no hay autenticación
+      return Promise.reject(
+        new Error('No hay token de autenticación. Por favor, inicie sesión.')
+      );
+    }
+  }
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -31,20 +47,27 @@ concarApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // ✅ SEGURIDAD: Si el error es "No hay token", rechazar sin reintentar
+    if (error.message === 'No hay token de autenticación. Por favor, inicie sesión.') {
+      // Limpiar estado y dejar que AuthGuard redirija a login
+      useAuthStore.getState().logout();
+      return Promise.reject(error);
+    }
+
     // Si el error es 401 y NO hemos intentado reintentar todavía
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         // Obtenemos el refreshToken desde el estado persistido de Zustand
-        const { refreshToken, updateToken, logout } = useAuthStore.getState();
+        const { refreshToken, updateToken } = useAuthStore.getState();
 
         if (!refreshToken) {
           throw new Error('No hay refresh token disponible');
         }
         console.log("llamando al refresh")
       // Llamada al endpoint de refresh pasando el token en el BODY
-        // Usamos axios directamente para evitar los interceptores de esta instancia
+         // Usamos axios directamente para evitar los interceptores de esta instancia
         const res = await axios.post<ApiResponse<RefreshTokenResponse>>(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
           refreshToken: refreshToken // <-- Enviado como body según tu backend
         });
@@ -58,7 +81,10 @@ concarApi.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axios(originalRequest)
         
-      } catch (refreshError) {
+      } catch (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _refreshError
+      ) {
         // Si el refresh falla (el refresh token expiró), cerramos sesión
         useAuthStore.getState().logout();
         return Promise.reject(new Error('Su sesión ha expirado, por favor inicie sesión nuevamente.'));

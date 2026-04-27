@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/simple-separator';
@@ -11,12 +11,24 @@ import { useSidebarStore } from '@/store/useSidebarStore';
 import { generateNavSections } from './NavItems';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useDepartmentStore } from '@/store/useDepartmentStore';
+import { useDepartments } from '@/hooks/useDepartment';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
   const { user } = useAuthStore();
   const { departments, isLoading } = useDepartmentStore();
+  const { setDepartments } = useDepartmentStore();
+  
+  // ✅ Cargar departamentos desde la API y poblar el store
+  const { departments: fetchedDepartments } = useDepartments();
+  
+  // ✅ Sincronizar departamentos fetched con el store
+  useEffect(() => {
+    if (fetchedDepartments && fetchedDepartments.length > 0) {
+      setDepartments(fetchedDepartments);
+    }
+  }, [fetchedDepartments, setDepartments]);
 
   // Estado para secciones expandidas con persistencia de sesión
   const [expandedSections, setExpandedSections] = useState(
@@ -110,7 +122,7 @@ export default function Sidebar() {
               >
                 {!isCollapsed && (
                   <>
-                    <h3 className="text-xs font-semibold tracking-wider uppercase">
+                    <h3 className="text-xs text-gray-400 font-semibold tracking-wider uppercase">
                       {section.title}
                     </h3>
                     <ChevronDown

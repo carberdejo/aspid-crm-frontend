@@ -7,6 +7,7 @@ interface DepartmentState {
   setDepartments: (departments: Department[]) => void;
   setLoading: (loading: boolean) => void;
   getDepartmentName: (deptId: number) => string | undefined;
+  getDepartmentById: (id: number) => Department | undefined;
 }
 
 export const useDepartmentStore = create<DepartmentState>((set, get) => ({
@@ -24,5 +25,10 @@ export const useDepartmentStore = create<DepartmentState>((set, get) => ({
   getDepartmentName: (deptId: number) => {
     const { departments } = get();
     return departments.find((d) => d.id === deptId)?.name;
+  },
+
+  getDepartmentById: (id: number) => {
+    const { departments } = get();
+    return departments.find((d) => d.id === id);
   },
 }));

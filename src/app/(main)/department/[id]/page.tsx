@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ClipboardList, FileText, ShoppingCart } from 'lucide-react';
 import { useHeaderStore } from '@/store/useHeaderStore';
@@ -13,7 +14,6 @@ import { QuoteSummaryCard } from '@/components/department/QuoteSummaryCard';
 
 export default function DepartmentPage() {
   const params = useParams();
-  const router = useRouter();
   const id = params?.id as string;
 
   const { departments } = useDepartmentStore();
@@ -25,31 +25,35 @@ export default function DepartmentPage() {
     return dept?.name || null;
   }, [departments, id]);
 
-  // Actualizar el header cuando cambia el departamento
-  useEffect(() => {
-    if (departmentName) {
-      setHeaderTitle(`Área: ${departmentName}`);
-    }
-    // Al desmontar, vuelve al título por defecto
-    return () => setHeaderTitle('Dashboard');
-  }, [departmentName, setHeaderTitle]);
-
-  // Validar que el departamento existe y es un ID válido
+  // Primer effect: Validar que el departamento existe y es un ID válido
   useEffect(() => {
     // Verificar si el ID es un número válido
     if (!id || isNaN(Number(id))) {
-      router.push('/404');
+      notFound();
       return;
     }
 
     // Verificar si el departamento existe en el store
     if (id && !departmentName) {
-      router.push('/404');
+      notFound();
       return;
     }
-  }, [id, departmentName, router]);
+  }, [id, departmentName]);
 
-  // Si no encontramos el departamento, no renderizar nada (router.push ya redirigió)
+  // Segundo effect: Actualizar el header cuando cambia el departamento
+  useEffect(() => {
+    // Si no encontramos el departamento, no actualizar nada
+    if (!departmentName) {
+      return;
+    }
+
+    setHeaderTitle(`Área: ${departmentName}`);
+    
+    // Al desmontar, vuelve al título por defecto
+    return () => setHeaderTitle('Dashboard');
+  }, [departmentName, setHeaderTitle]);
+
+  // Si no encontramos el departamento, no renderizar nada (notFound ya se ejecutó)
   if (!departmentName) {
     return null;
   }

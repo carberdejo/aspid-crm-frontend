@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ChevronRight, ClipboardList, Clock, FileText, ShoppingCart, TrendingUp } from 'lucide-react';
+import { ClipboardList, FileText, ShoppingCart } from 'lucide-react';
 import { useHeaderStore } from '@/store/useHeaderStore';
 import { useDepartmentStore } from '@/store/useDepartmentStore';
 import { VisitFlowContainer } from '@/components/visit/VisitFlowContainer';
@@ -13,6 +13,7 @@ import { QuoteSummaryCard } from '@/components/department/QuoteSummaryCard';
 
 export default function DepartmentPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id as string;
 
   const { departments } = useDepartmentStore();
@@ -21,17 +22,37 @@ export default function DepartmentPage() {
   // Obtener el nombre del departamento desde el store
   const departmentName = React.useMemo(() => {
     const dept = departments.find((d) => d.id.toString() === id);
-    return dept?.name || 'Área desconocida';
+    return dept?.name || null;
   }, [departments, id]);
 
   // Actualizar el header cuando cambia el departamento
   useEffect(() => {
-    if (departmentName && departmentName !== 'Área desconocida') {
+    if (departmentName) {
       setHeaderTitle(`Área: ${departmentName}`);
     }
     // Al desmontar, vuelve al título por defecto
     return () => setHeaderTitle('Dashboard');
   }, [departmentName, setHeaderTitle]);
+
+  // Validar que el departamento existe y es un ID válido
+  useEffect(() => {
+    // Verificar si el ID es un número válido
+    if (!id || isNaN(Number(id))) {
+      router.push('/404');
+      return;
+    }
+
+    // Verificar si el departamento existe en el store
+    if (id && !departmentName) {
+      router.push('/404');
+      return;
+    }
+  }, [id, departmentName, router]);
+
+  // Si no encontramos el departamento, no renderizar nada (router.push ya redirigió)
+  if (!departmentName) {
+    return null;
+  }
 
 // --- MOCK DATA (Para simular el backend de NestJS) ---
 const DASHBOARD_DATA = {

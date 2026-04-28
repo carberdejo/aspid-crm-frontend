@@ -20,9 +20,15 @@ export default function MobileSidebar() {
   const { departments, isLoading } = useDepartmentStore();
 
   // Estado para secciones expandidas con persistencia de sesión
-  const [expandedSections, setExpandedSections] = useState(
-    new Set(JSON.parse(sessionStorage.getItem('expandedSections') || '[]'))
-  );
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') {
+      return new Set();
+    }
+
+    const savedSections = sessionStorage.getItem('expandedSections');
+
+    return savedSections ? new Set(JSON.parse(savedSections)) : new Set();
+  });
 
   // Función para alternar secciones expandidas
   const toggleSection = (title: string) => {
@@ -33,7 +39,10 @@ export default function MobileSidebar() {
       updated.add(title);
     }
     setExpandedSections(updated);
-    sessionStorage.setItem('expandedSections', JSON.stringify([...updated]));
+
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('expandedSections', JSON.stringify([...updated]));
+    }
   };
 
   // Generar navSections dinámicamente
@@ -45,7 +54,7 @@ export default function MobileSidebar() {
     <Sheet open={isMobileOpen} onOpenChange={setMobileOpen}>
       <SheetContent 
         side="left" 
-        className="w-64 p-0 bg-[#1a2a53] text-white border-[#2a3a63]"
+        className="w-64 p-0 bg-primary text-white border-primary-light"
       >
         <SheetHeader className="px-4 pt-6 pb-4 border-b border-white/10">
           <SheetTitle className="flex items-center justify-center">
@@ -102,7 +111,7 @@ export default function MobileSidebar() {
                             className={cn(
                               'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative',
                               isActive
-                                ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#f8aa19] before:rounded-r-md'
+                                ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-accent before:rounded-r-md'
                                 : 'text-gray-300 hover:bg-white/5 hover:text-white'
                             )}
                           >

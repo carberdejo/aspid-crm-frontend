@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/useAuthStore';
-import { Loader2 } from 'lucide-react';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Loader2 } from "lucide-react";
 
 export default function RootPage() {
   const router = useRouter();
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     // Esperar a que Zustand se hidrate con el token
-    if (!token || !user) {
+    if (!user) {
       // Si no hay token/usuario después de hidratación, el middleware/AuthGuard ya debería
       // haber redirigido a login. Esto es un fallback por seguridad.
-      return;
+      return router.push("/auth/login");
     }
 
     // Token y usuario presentes, redirigir según el rol
-    if (user.role === 'admin') {
-      router.push('/dashboard');
+    if (user.role === "admin") {
+      router.push("/dashboard");
     } else if (user.depts && user.depts.length > 0) {
       router.push(`/department/${user.depts[0]}`);
     } else {
       // Usuario sin departamentos asignados (caso de error)
-      router.push('/auth/login');
+      router.push("/auth/login");
     }
-  }, [user, token, router]);
+  }, [user, router]);
 
   // Mostrar loading mientras se valida la autenticación
   return (

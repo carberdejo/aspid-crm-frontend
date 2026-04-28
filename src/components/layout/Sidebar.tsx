@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Separator } from '@/components/ui/simple-separator';
-import { useSidebarStore } from '@/store/useSidebarStore';
-import { generateNavSections } from './NavItems';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useDepartmentStore } from '@/store/useDepartmentStore';
-import { useDepartments } from '@/hooks/useDepartment';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/simple-separator";
+import { useSidebarStore } from "@/store/useSidebarStore";
+import { generateNavSections } from "./NavItems";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useDepartmentStore } from "@/store/useDepartmentStore";
+import { useDepartments } from "@/hooks/useDepartment";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -19,10 +19,10 @@ export default function Sidebar() {
   const { user } = useAuthStore();
   const { departments, isLoading } = useDepartmentStore();
   const { setDepartments } = useDepartmentStore();
-  
+
   // ✅ Cargar departamentos desde la API y poblar el store
   const { departments: fetchedDepartments } = useDepartments();
-  
+
   // ✅ Sincronizar departamentos fetched con el store
   useEffect(() => {
     if (fetchedDepartments && fetchedDepartments.length > 0) {
@@ -31,9 +31,15 @@ export default function Sidebar() {
   }, [fetchedDepartments, setDepartments]);
 
   // Estado para secciones expandidas con persistencia de sesión
-  const [expandedSections, setExpandedSections] = useState(
-    new Set(JSON.parse(sessionStorage.getItem('expandedSections') || '[]'))
-  );
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") {
+      return new Set();
+    }
+
+    const savedSections = sessionStorage.getItem("expandedSections");
+
+    return savedSections ? new Set(JSON.parse(savedSections)) : new Set();
+  });
 
   // Función para alternar secciones expandidas
   const toggleSection = (title: string) => {
@@ -44,20 +50,24 @@ export default function Sidebar() {
       updated.add(title);
     }
     setExpandedSections(updated);
-    sessionStorage.setItem('expandedSections', JSON.stringify([...updated]));
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("expandedSections", JSON.stringify([...updated]));
+    }
   };
 
   // Generar navSections dinámicamente
-  const navSections = user && !isLoading
-    ? generateNavSections(user.role, user.depts, departments)
-    : [];
+  const navSections =
+    user && !isLoading
+      ? generateNavSections(user.role, user.depts, departments)
+      : [];
 
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col h-screen transition-all duration-300 border-r',
-        isCollapsed ? 'w-20' : 'w-64',
-        'bg-[#1a2a53] text-white border-[#2a3a63]'
+        "hidden lg:flex flex-col h-screen transition-all duration-300 border-r",
+        isCollapsed ? "w-20" : "w-64",
+        "bg-primary text-white border-primary-light",
       )}
     >
       {/* Logo Area */}
@@ -77,16 +87,18 @@ export default function Sidebar() {
         ) : (
           // Letra "A" estilizada en modo colapsado
           <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
-            <span className="text-[#1a2a53] font-bold text-2xl">A</span>
+            <span className="text-primary font-bold text-2xl">A</span>
           </div>
         )}
       </div>
 
       {/* Toggle Button - Ahora más visible */}
-      <div className={cn(
-        "flex px-3 py-3 border-b border-white/10",
-        isCollapsed ? "justify-center" : "justify-end"
-      )}>
+      <div
+        className={cn(
+          "flex px-3 py-3 border-b border-white/10",
+          isCollapsed ? "justify-center" : "justify-end",
+        )}
+      >
         <button
           onClick={toggleCollapse}
           className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
@@ -112,11 +124,11 @@ export default function Sidebar() {
                 onClick={() => !isCollapsed && toggleSection(section.title)}
                 disabled={isCollapsed}
                 className={cn(
-                  'w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200',
+                  "w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200",
                   isCollapsed
-                    ? 'justify-center cursor-default'
-                    : 'hover:bg-white/5 group',
-                  !isCollapsed && 'text-gray-400 hover:text-gray-300'
+                    ? "justify-center cursor-default"
+                    : "hover:bg-white/5 group",
+                  !isCollapsed && "text-gray-400 hover:text-gray-300",
                 )}
                 title={isCollapsed ? section.title : undefined}
               >
@@ -127,8 +139,8 @@ export default function Sidebar() {
                     </h3>
                     <ChevronDown
                       className={cn(
-                        'h-4 w-4 transition-transform duration-200',
-                        isSectionExpanded && 'rotate-180'
+                        "h-4 w-4 transition-transform duration-200",
+                        isSectionExpanded && "rotate-180",
                       )}
                     />
                   </>
@@ -150,17 +162,19 @@ export default function Sidebar() {
                         <Link
                           href={item.href}
                           className={cn(
-                            'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative',
+                            "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                             isActive
-                              ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#f8aa19] before:rounded-r-md'
-                              : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                            isCollapsed && 'justify-center'
+                              ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-accent before:rounded-r-md'
+                              : "text-gray-300 hover:bg-white/5 hover:text-white",
+                            isCollapsed && "justify-center",
                           )}
                           title={isCollapsed ? item.title : undefined}
                         >
                           <Icon className="text-lg h-5 w-5 shrink-0" />
                           {!isCollapsed && (
-                            <span className="font-medium text-sm">{item.title}</span>
+                            <span className="font-medium text-sm">
+                              {item.title}
+                            </span>
                           )}
                         </Link>
                       </li>

@@ -4,95 +4,102 @@ import axios from "axios";
 
 export const concarApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  // withCredentials: true, // Para enviar cookies en cada petición
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
 });
+
+const redirectToLogin = () => {
+  useAuthStore.getState().logout();
+  if (typeof window !== "undefined") {
+    window.location.replace("/auth/login");
+  }
+};
 
 // 1. Interceptor de Petición: Inyectar el Access Token
 concarApi.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
-  
-  // ✅ SEGURIDAD: Si no hay token, RECHAZAR la petición inmediatamente
+
+  // ✅ CASO 1: Soporta que no envíen token (Lo bloquea si es privada)
   if (!token) {
-    // Salvo para rutas públicas (ej: /auth/login, /auth/register)
-    // Todas las peticiones privadas deben ser rechazadas sin token
-    const publicEndpoints = ['/auth/login', '/auth/register', '/auth/refresh'];
-    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
-    
+    const publicEndpoints = ["/auth/login", "/auth/register", "/auth/refresh"];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url?.includes(endpoint),
+    );
+
     if (!isPublicEndpoint) {
-      // Rechazar la petición: no hay autenticación
+      redirectToLogin();
+      // Rechazamos la promesa explícitamente para que la UI deje de cargar
       return Promise.reject(
-        new Error('No hay token de autenticación. Por favor, inicie sesión.')
+        new axios.Cancel("No hay token. Petición cancelada."),
       );
     }
   }
-  
+
+  // Si hay token, lo inyecta
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
 // 2. Interceptor de Respuesta: Manejar Refresh Token y Contrato de Negocio
 concarApi.interceptors.response.use(
   (response) => {
-    // Si el backend responde pero el código de negocio es error (ej. 0)
-    // Mantener tu validación de contrato de negocio
     if (response.data.code !== 1) {
-      return Promise.reject(new Error(response.data.message || 'Error del servidor'));
+      return Promise.reject(
+        new Error(response.data.message || "Error del servidor"),
+      );
     }
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
 
-    // ✅ SEGURIDAD: Si el error es "No hay token", rechazar sin reintentar
-    if (error.message === 'No hay token de autenticación. Por favor, inicie sesión.') {
-      // Limpiar estado y dejar que AuthGuard redirija a login
-      useAuthStore.getState().logout();
+    // Si cancelamos la petición nosotros mismos en el request interceptor, no hacemos nada más
+    if (axios.isCancel(error)) {
       return Promise.reject(error);
     }
 
-    // Si el error es 401 y NO hemos intentado reintentar todavía
+    // ✅ CASO 2: Si lanza 401 Unauthorized, hace el refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // Obtenemos el refreshToken desde el estado persistido de Zustand
         const { refreshToken, updateToken } = useAuthStore.getState();
 
         if (!refreshToken) {
-          throw new Error('No hay refresh token disponible');
+          throw new Error("No hay refresh token disponible");
         }
-        console.log("llamando al refresh")
-      // Llamada al endpoint de refresh pasando el token en el BODY
-         // Usamos axios directamente para evitar los interceptores de esta instancia
-        const res = await axios.post<ApiResponse<RefreshTokenResponse>>(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
-          refreshToken: refreshToken // <-- Enviado como body según tu backend
-        });
 
-        const {accessToken } = res.data.data; // Ajusta según tu estructura {code: 1, data: {...}}
-        console.log('nuevo accestoken: ',accessToken)
-        // Actualizamos Zustand y Cookies
+        console.log("Llamando al refresh...");
+
+        const res = await axios.post<ApiResponse<RefreshTokenResponse>>(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+          { refreshToken },
+        );
+
+        const { accessToken } = res.data.data;
+        console.log("Nuevo accessToken: ", accessToken);
+
         updateToken(accessToken);
 
-        // Reintentar la petición original con el nuevo token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axios(originalRequest)
-        
-      } catch (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        _refreshError
-      ) {
-        // Si el refresh falla (el refresh token expiró), cerramos sesión
-        useAuthStore.getState().logout();
-        return Promise.reject(new Error('Su sesión ha expirado, por favor inicie sesión nuevamente.'));
+
+        // Usamos concarApi en lugar de axios para que la nueva respuesta
+        // también pase por la validación de negocio (code !== 1)
+        return concarApi(originalRequest);
+      } catch (_refreshError) {
+        // ✅ CASO 3: Si el refresh da error, lo bota al login
+        redirectToLogin(); // <-- Ahora sí lo expulsamos de la vista
+        return Promise.reject(
+          new Error(
+            "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+          ),
+        );
       }
     }
 
     // Errores normales que no son 401
-    const msg = error.response?.data?.message || 'Error de conexión con el servidor';
+    const msg =
+      error.response?.data?.message || "Error de conexión con el servidor";
     return Promise.reject(new Error(msg));
-  }
+  },
 );

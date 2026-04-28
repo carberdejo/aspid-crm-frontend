@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { AlertCircle, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation"; // ✅ 1. Importar el router de Next.js
 
 export default function NotFound() {
+  const router = useRouter(); // ✅ 2. Inicializar el router
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
       <div className="max-w-md w-full text-center space-y-6">
@@ -33,20 +38,14 @@ export default function NotFound() {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3 pt-4">
-          {/* Back button using form (server-safe) */}
-          <form action="" method="get" className="w-full">
-            <button
-              type="button"
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  window.history.back();
-                }
-              }}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-primary text-primary rounded-lg hover:bg-gray-50 transition-colors font-semibold"
-            >
-              Volver atrás
-            </button>
-          </form>
+          {/* ✅ 3. Botón limpio, sin <form> y usando router.back() */}
+          {/* <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-primary text-primary rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+          >
+            Volver atrás
+          </button> */}
 
           {/* Dashboard link */}
           <Link href="/dashboard" className="w-full">

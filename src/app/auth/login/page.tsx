@@ -52,7 +52,7 @@ export default function LoginPage() {
                 width={220}
                 height={70}
                 className="object-contain"
-                priority
+                unoptimized
               />
               <div className="h-1 w-20 bg-secondary rounded-full" />
               <p className="text-slate-300 text-sm font-medium tracking-widest uppercase opacity-70">

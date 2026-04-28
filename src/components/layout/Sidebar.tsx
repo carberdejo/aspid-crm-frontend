@@ -73,21 +73,26 @@ export default function Sidebar() {
       {/* Logo Area */}
       <div className="flex items-center justify-center h-20 border-b border-white/10 px-4 overflow-hidden">
         {!isCollapsed ? (
-          // Logo completo horizontal en modo expandido
-          <div className="relative w-full h-10 flex items-center justify-center">
+          <div className="relative flex h-10 w-full items-center justify-center">
             <Image
               src="/logo-acme.png"
               alt="ACME & CIA Logo"
               width={180}
               height={40}
-              className="object-contain"
-              priority
+              className="h-full w-auto object-contain"
+              unoptimized
             />
           </div>
         ) : (
-          // Letra "A" estilizada en modo colapsado
-          <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
-            <span className="text-primary font-bold text-2xl">A</span>
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-white/10 p-1">
+            <Image
+              src="/logo_icono_orange.png"
+              alt="ACME & CIA Icon"
+              width={40}
+              height={40}
+              className="h-full w-full object-contain"
+              unoptimized
+            />
           </div>
         )}
       </div>
@@ -113,42 +118,31 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {navSections.map((section, idx) => {
           const isSectionExpanded = expandedSections.has(section.title);
 
           return (
             <div key={idx}>
-              {/* Collapsible Section Header */}
-              <button
-                onClick={() => !isCollapsed && toggleSection(section.title)}
-                disabled={isCollapsed}
-                className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200",
-                  isCollapsed
-                    ? "justify-center cursor-default"
-                    : "hover:bg-white/5 group",
-                  !isCollapsed && "text-gray-400 hover:text-gray-300",
-                )}
-                title={isCollapsed ? section.title : undefined}
-              >
-                {!isCollapsed && (
-                  <>
-                    <h3 className="text-xs text-gray-400 font-semibold tracking-wider uppercase">
-                      {section.title}
-                    </h3>
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 transition-transform duration-200",
-                        isSectionExpanded && "rotate-180",
-                      )}
-                    />
-                  </>
-                )}
-                {isCollapsed && (
-                  <div className="w-1 h-5 bg-white/20 rounded-full" />
-                )}
-              </button>
+              {!isCollapsed && (
+                <button
+                  onClick={() => toggleSection(section.title)}
+                  className={cn(
+                    "w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200",
+                    "hover:bg-white/5 group text-gray-400 hover:text-gray-300",
+                  )}
+                >
+                  <h3 className="text-xs text-gray-400 font-semibold tracking-wider uppercase">
+                    {section.title}
+                  </h3>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform duration-200",
+                      isSectionExpanded && "rotate-180",
+                    )}
+                  />
+                </button>
+              )}
 
               {/* Section Items - Mostrar solo si está expandida o sidebar colapsado */}
               {(isSectionExpanded || isCollapsed) && (
@@ -165,7 +159,7 @@ export default function Sidebar() {
                             "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                             isActive
                               ? 'bg-white/10 text-white before:content-[""] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-accent before:rounded-r-md'
-                              : "text-gray-300 hover:bg-white/5 hover:text-white",
+                              : "text-gray-300 hover:bg-white/5 hover:text-accent",
                             isCollapsed && "justify-center",
                           )}
                           title={isCollapsed ? item.title : undefined}

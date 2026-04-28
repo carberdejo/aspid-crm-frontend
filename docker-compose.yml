@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  concar-frontend:
+    image: concar-frontend:v1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    container_name: concar-frontend-app
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-3001}:3000"
+    env_file:
+      - .env
+    networks:
+      - concar_network
+
+networks:
+  concar_network:
+    external: true
+    name: red_global_concar

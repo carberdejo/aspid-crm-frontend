@@ -1,16 +1,22 @@
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
-const TOKEN_COOKIE_NAME = 'auth-token';
-const RETURN_TO_COOKIE_NAME = 'return-to';
+const TOKEN_COOKIE_NAME = "auth-token";
+const RETURN_TO_COOKIE_NAME = "return-to";
 
 export const cookieUtils = {
   // Token management
   setToken: (token: string) => {
-    Cookies.set(TOKEN_COOKIE_NAME, token, {
-      expires: 7, // 7 días
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
-    });
+    try {
+      Cookies.set(TOKEN_COOKIE_NAME, token, {
+        expires: 7, // 7 días
+        path: "/", // 🔴 CRÍTICO: Asegurar que la cookie se envíe a todas las rutas
+        secure: false, // 🔴 Cambiar a false en producción HTTP
+        sameSite: "Lax", // 🔴 'Lax' en lugar de 'lax'
+      });
+      console.log("✅ Cookie auth-token guardada correctamente");
+    } catch (error) {
+      console.error("❌ Error guardando cookie:", error);
+    }
   },
 
   getToken: (): string | undefined => {
@@ -18,16 +24,22 @@ export const cookieUtils = {
   },
 
   removeToken: () => {
-    Cookies.remove(TOKEN_COOKIE_NAME);
+    Cookies.remove(TOKEN_COOKIE_NAME, { path: "/" });
   },
 
   // Return URL management
   setReturnTo: (url: string) => {
-    Cookies.set(RETURN_TO_COOKIE_NAME, url, {
-      expires: 1, // 1 día
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
-    });
+    try {
+      Cookies.set(RETURN_TO_COOKIE_NAME, url, {
+        expires: 1, // 1 día
+        path: "/", // 🔴 CRÍTICO: Asegurar que la cookie se envíe a todas las rutas
+        secure: false, // 🔴 Cambiar a false en producción HTTP
+        sameSite: "Lax", // 🔴 'Lax' en lugar de 'lax'
+      });
+      console.log("✅ Cookie return-to guardada correctamente");
+    } catch (error) {
+      console.error("❌ Error guardando cookie return-to:", error);
+    }
   },
 
   getReturnTo: (): string | undefined => {
@@ -40,7 +52,7 @@ export const cookieUtils = {
 
   // Clear all auth cookies
   clearAuth: () => {
-    Cookies.remove(TOKEN_COOKIE_NAME);
-    Cookies.remove(RETURN_TO_COOKIE_NAME);
-  }
+    Cookies.remove(TOKEN_COOKIE_NAME, { path: "/" });
+    Cookies.remove(RETURN_TO_COOKIE_NAME, { path: "/" });
+  },
 };

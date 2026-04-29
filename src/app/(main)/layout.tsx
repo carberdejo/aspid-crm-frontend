@@ -1,37 +1,80 @@
-import Sidebar from "@/components/layout/Sidebar";
-import MobileSidebar from "@/components/layout/MobileSidebar";
-import Header from "@/components/layout/Header";
+"use client";
+
+import { useEffect } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { useDepartments } from "@/hooks/useDepartment";
+import { useDepartmentStore } from "@/store/useDepartmentStore";
+
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import Footer from "@/components/layout/Footer";
-// import AuthGuard from "@/components/auth/AuthGuard";
+import MainLayoutDashboard from "../dashboard2/MainLayoutDashboard";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { departments: fetchedDepartments, isLoading } = useDepartments();
+  const setDepartments = useDepartmentStore((state) => state.setDepartments);
+  const setLoading = useDepartmentStore((state) => state.setLoading);
+
+  // useEffect(() => {
+  //   setLoading(isLoading);
+  // }, [isLoading, setLoading]);
+
+  useEffect(() => {
+    if (fetchedDepartments.length > 0) {
+      setDepartments(fetchedDepartments);
+    }
+  }, [fetchedDepartments, setDepartments]);
+
+  // return (
+  //   <SidebarProvider>
+  //     <DashboardSidebar />
+  //     <SidebarInset>
+  //       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+  //         <div className="flex items-center gap-2 px-4">
+  //           <SidebarTrigger className="-ml-1" />
+  //           <Separator
+  //             orientation="vertical"
+  //             className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+  //           />
+  //           <Breadcrumb>
+  //             <BreadcrumbList>
+  //               <BreadcrumbItem className="hidden md:block">
+  //                 <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+  //               </BreadcrumbItem>
+  //               <BreadcrumbSeparator className="hidden md:block" />
+  //               <BreadcrumbItem>
+  //                 <BreadcrumbPage>Datos reales</BreadcrumbPage>
+  //               </BreadcrumbItem>
+  //             </BreadcrumbList>
+  //           </Breadcrumb>
+  //         </div>
+  //       </header>
+
+  //       <main className="flex-1 overflow-y-auto p-10">{children}</main>
+  //       <Footer />
+  //     </SidebarInset>
+  //   </SidebarProvider>
+  // );
+
   return (
-    // <AuthGuard>
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      {/* Desktop Sidebar */}
-      <Sidebar />
-
-      {/* Mobile Sidebar */}
-      <MobileSidebar />
-
-      {/* Main Content Area */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        {/* Header */}
-        <Header currentSection="Dashboard" />
-
-        {/* Main Content with ScrollArea */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="container mx-auto p-4 lg:p-8">{children}</div>
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
-    </div>
-    // </AuthGuard>
+    <MainLayoutDashboard>
+      <main className="flex-1 overflow-y-auto p-10">{children}</main>
+    </MainLayoutDashboard>
   );
 }

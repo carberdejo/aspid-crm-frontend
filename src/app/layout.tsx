@@ -5,8 +5,9 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "ACME & CIA - Dashboard",
@@ -19,11 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={cn("h-full antialiased", "font-sans", geist.variable)}>
-      <body className={`${montserratAlternates.className} min-h-full flex flex-col`}>
+    <html
+      lang="es"
+      className={cn("h-full antialiased", "font-sans", geist.variable)}
+    >
+      <body
+        className={`${montserratAlternates.className} min-h-full flex flex-col`}
+      >
         <QueryProvider>
-          {children}
-          <Toaster richColors position="top-right" closeButton />
+          <TooltipProvider delayDuration={0}>
+            {children}
+            <Toaster richColors position="top-right" closeButton />
+          </TooltipProvider>
         </QueryProvider>
       </body>
     </html>

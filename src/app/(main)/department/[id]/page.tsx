@@ -10,6 +10,7 @@ import { VisitFlowContainer } from "@/components/visit/VisitFlowContainer";
 import { OperationCards } from "@/components/department/OperationCards";
 import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
+import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -67,10 +68,15 @@ export default function DepartmentPage() {
           />
 
           {/* BOTÓN COTIZACIONES */}
-          <Button className="bg-secondary hover:bg-orange-600 text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-orange-500/20 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-            <FileText size={18} className="text-orange-200" />
-            Cotizaciones
-          </Button>
+          <QuoteFlowContainer
+            departmentId={+id}
+            trigger={
+              <Button className="bg-secondary hover:bg-orange-600 text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-orange-500/20 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+                <FileText size={18} className="text-orange-200" />
+                Cotizaciones
+              </Button>
+            }
+          />
 
           {/* BOTÓN ORDEN DE COMPRA */}
           <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">

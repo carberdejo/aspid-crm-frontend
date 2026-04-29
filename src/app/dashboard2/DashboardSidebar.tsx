@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import {
@@ -18,7 +19,6 @@ import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDepartmentStore } from "@/store/useDepartmentStore";
-import { UserRole } from "@/interfaces";
 import {
   Sidebar,
   SidebarContent,
@@ -78,29 +78,31 @@ export function DashboardSidebar() {
     );
   }, [departments, pathname, user]);
 
-  const roleLabel = user?.role === UserRole.ADMIN ? "Administrador" : "Usuario";
-  const teams =
-    departments.length > 0
-      ? departments.map((department) => ({
-          name: department.name,
-          logo: <FolderKanban className="size-4" />,
-          plan: roleLabel,
-        }))
-      : [
-          {
-            name: "ACME & CIA",
-            logo: <FolderKanban className="size-4" />,
-            plan: roleLabel,
-          },
-        ];
+  const formatLabel = (value: string) =>
+    value
+      .toLowerCase()
+      .split(" ")
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
-  const navMainItems = sections.map((section) => ({
+  const displaySections = sections.map((section) => ({
+    originalTitle: section.title,
+    ...section,
+    title: formatLabel(section.title),
+    items: section.items.map((item) => ({
+      ...item,
+      title: formatLabel(item.title),
+    })),
+  }));
+
+  const navMainItems = displaySections.map((section) => ({
     title: section.title,
     url: section.items[0]?.href ?? "#",
     icon: (() => {
-      const Icon = getSectionIcon(section.title);
+      const Icon = getSectionIcon(section.originalTitle);
 
-      return <Icon className="size-4" />;
+      return <Icon className="size-4 text-white/72" />;
     })(),
     isActive: section.items.some((item) => item.active),
     items: section.items.map((item) => ({
@@ -112,21 +114,38 @@ export function DashboardSidebar() {
   return (
     <Sidebar
       collapsible="icon"
+      className="border-r border-primary-dark bg-primary text-primary-foreground"
       style={
         {
-          "--sidebar": "hsl(var(--primary))",
-          "--sidebar-foreground": "hsl(var(--primary-foreground))",
-          "--sidebar-primary": "hsl(var(--secondary))",
-          "--sidebar-primary-foreground": "hsl(var(--secondary-foreground))",
-          "--sidebar-accent": "rgba(255, 255, 255, 0.08)",
-          "--sidebar-accent-foreground": "hsl(var(--primary-foreground))",
-          "--sidebar-border": "rgba(255, 255, 255, 0.12)",
-          "--sidebar-ring": "hsl(var(--accent))",
+          "--sidebar": "222 52% 21%",
+          "--sidebar-foreground": "210 40% 98%",
+          "--sidebar-primary": "40 95% 53%",
+          "--sidebar-primary-foreground": "222 52% 21%",
+          "--sidebar-accent": "222 52% 27%",
+          "--sidebar-accent-foreground": "210 40% 98%",
+          "--sidebar-border": "222 52% 26%",
+          "--sidebar-ring": "16 82% 57%",
         } as React.CSSProperties
       }
     >
-      <SidebarHeader className="border-b border-sidebar-border/70">
-        <TeamSwitcher teams={teams} />
+      <SidebarHeader className="border-b border-white/8 px-4 py-4">
+        <TeamSwitcher
+          teams={[
+            {
+              name: "ACME & CIA",
+              logo: (
+                <Image
+                  src="/logo_icono_orange.png"
+                  alt="ACME & CIA"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 object-contain"
+                />
+              ),
+              plan: "Dashboard",
+            },
+          ]}
+        />
       </SidebarHeader>
 
       <SidebarContent>
@@ -134,21 +153,21 @@ export function DashboardSidebar() {
           <NavMain items={navMainItems} />
         ) : (
           <SidebarMenu>
-            <div className="px-4 py-3 text-sm text-sidebar-foreground/70">
+            <div className="px-4 py-3 text-sm text-white/66">
               Inicia sesión para cargar roles y departamentos reales.
             </div>
           </SidebarMenu>
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border/70">
+      <SidebarFooter className="border-t border-white/8 px-2 py-3">
         {user ? (
           <NavUser
             user={{
-              name: user.email.split("@")[0].replaceAll(".", " "),
+              name: formatLabel(user.email.split("@")[0].replaceAll(".", " ")),
               email: user.email,
               avatar: buildAvatarDataUri(
-                user.email.split("@")[0].replaceAll(".", " "),
+                formatLabel(user.email.split("@")[0].replaceAll(".", " ")),
               ),
             }}
           />

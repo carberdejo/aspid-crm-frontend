@@ -16,6 +16,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 
 export function NavMain({
   items,
@@ -61,9 +62,9 @@ export function NavMain({
                         asChild
                         className="text-white/68 hover:text-white data-active:text-white"
                       >
-                        <a href={subItem.url}>
+                        <Link href={subItem.url}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

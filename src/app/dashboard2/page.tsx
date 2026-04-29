@@ -1,4 +1,6 @@
-import { AppSidebar } from "@/components/app-sidebar";
+"use client";
+
+import { useEffect } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,11 +15,29 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useDepartments } from "@/hooks/useDepartment";
+import { useDepartmentStore } from "@/store/useDepartmentStore";
 
-export default function Page() {
+import { DashboardSidebar } from "./DashboardSidebar";
+
+export default function Page({ children }: { children?: React.ReactNode }) {
+  const { departments: fetchedDepartments, isLoading } = useDepartments();
+  const setDepartments = useDepartmentStore((state) => state.setDepartments);
+  const setLoading = useDepartmentStore((state) => state.setLoading);
+
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading, setLoading]);
+
+  useEffect(() => {
+    if (fetchedDepartments.length > 0) {
+      setDepartments(fetchedDepartments);
+    }
+  }, [fetchedDepartments, setDepartments]);
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <DashboardSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -29,26 +49,18 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Build Your Application
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">Dashboard2</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbPage>Datos reales</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
+
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -18,7 +18,7 @@ import {
 // import { useDepartments } from "@/hooks/useDepartment";
 // import { useDepartmentStore } from "@/store/useDepartmentStore";
 
-import { DashboardSidebar } from "../../components/layout/DashboardSidebar";
+import { DashboardSidebar } from "./DashboardSidebar";
 import Footer from "@/components/layout/Footer";
 import { useHeaderStore } from "@/store";
 

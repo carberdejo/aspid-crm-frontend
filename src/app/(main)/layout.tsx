@@ -20,7 +20,7 @@ import { useDepartmentStore } from "@/store/useDepartmentStore";
 
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import Footer from "@/components/layout/Footer";
-import MainLayoutDashboard from "../dashboard2/MainLayoutDashboard";
+import MainLayoutDashboard from "../../components/layout/MainLayoutDashboard";
 
 export default function MainLayout({
   children,

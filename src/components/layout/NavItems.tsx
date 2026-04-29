@@ -118,7 +118,7 @@ const getDepartamentosSection = (
 
 // Sección compartida CONFIGURACIÓN - Clientes y Ajustes (Compartida con ADMIN y USERS)
 const getSharedConfigSection = (): NavSection => ({
-  title: "CONFIGURACIÓN",
+  title: "OTROS",
   items: [
     {
       title: "Clientes",

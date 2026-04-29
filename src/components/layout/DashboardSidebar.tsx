@@ -27,6 +27,7 @@ import {
   SidebarMenu,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import logoAcme from "@/assets/logo_icono_orange.png";
 
 function getSectionIcon(title: string): LucideIcon {
   switch (title) {
@@ -135,7 +136,7 @@ export function DashboardSidebar() {
               name: "ACME & CIA",
               logo: (
                 <Image
-                  src="/logo_icono_orange.png"
+                  src={logoAcme}
                   alt="ACME & CIA"
                   width={24}
                   height={24}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,25 +15,33 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useDepartments } from "@/hooks/useDepartment";
-import { useDepartmentStore } from "@/store/useDepartmentStore";
+// import { useDepartments } from "@/hooks/useDepartment";
+// import { useDepartmentStore } from "@/store/useDepartmentStore";
 
-import { DashboardSidebar } from "./DashboardSidebar";
+import { DashboardSidebar } from "../../components/layout/DashboardSidebar";
+import Footer from "@/components/layout/Footer";
+import { useHeaderStore } from "@/store";
 
-export default function Page({ children }: { children?: React.ReactNode }) {
-  const { departments: fetchedDepartments, isLoading } = useDepartments();
-  const setDepartments = useDepartmentStore((state) => state.setDepartments);
-  const setLoading = useDepartmentStore((state) => state.setLoading);
+export default function MainLayoutDashboard({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
+  // const { departments: fetchedDepartments, isLoading } = useDepartments();
+  // const setDepartments = useDepartmentStore((state) => state.setDepartments);
+  // const setLoading = useDepartmentStore((state) => state.setLoading);
 
-  useEffect(() => {
-    setLoading(isLoading);
-  }, [isLoading, setLoading]);
+  // useEffect(() => {
+  //   setLoading(isLoading);
+  // }, [isLoading, setLoading]);
 
-  useEffect(() => {
-    if (fetchedDepartments.length > 0) {
-      setDepartments(fetchedDepartments);
-    }
-  }, [fetchedDepartments, setDepartments]);
+  // useEffect(() => {
+  //   if (fetchedDepartments.length > 0) {
+  //     setDepartments(fetchedDepartments);
+  //   }
+  // }, [fetchedDepartments, setDepartments]);
+
+  const { headerTitle } = useHeaderStore();
 
   return (
     <SidebarProvider>
@@ -49,7 +57,7 @@ export default function Page({ children }: { children?: React.ReactNode }) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Dashboard2</BreadcrumbLink>
+                  <BreadcrumbLink href="#">{headerTitle}</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -61,6 +69,7 @@ export default function Page({ children }: { children?: React.ReactNode }) {
         </header>
 
         <main className="flex-1 overflow-y-auto">{children}</main>
+        <Footer />
       </SidebarInset>
     </SidebarProvider>
   );

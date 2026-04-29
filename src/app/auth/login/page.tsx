@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import logoAcmeWhite from "@/assets/logo-acme.png";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,12 +48,12 @@ export default function LoginPage() {
           <div className="lg:col-span-5 flex flex-col space-y-8 animate-in slide-in-from-left-8 duration-700">
             <div className="space-y-4">
               <Image
-                src="/logo-acme.png"
+                src={logoAcmeWhite}
                 alt="ACME & CIA Logo"
                 width={220}
                 height={70}
                 className="object-contain"
-                unoptimized
+                priority
               />
               <div className="h-1 w-20 bg-secondary rounded-full" />
               <p className="text-slate-300 text-sm font-medium tracking-widest uppercase opacity-70">

@@ -25,14 +25,8 @@ export function RegisterQuoteModal({
   isOpen,
   onOpenChange,
   departmentId,
-  userId,
   onSubmit,
   isLoading,
-  onNewClient,
-  onNewContact,
-  newClientId,
-  newContactId,
-  onClientChange,
 }: RegisterQuoteModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -45,14 +39,8 @@ export function RegisterQuoteModal({
 
         <QuoteForm
           departmentId={departmentId}
-          userId={userId}
           onSubmit={onSubmit}
           isLoading={isLoading}
-          onNewClient={onNewClient}
-          onNewContact={onNewContact}
-          newClientId={newClientId}
-          newContactId={newContactId}
-          onClientChange={onClientChange}
         />
       </DialogContent>
     </Dialog>

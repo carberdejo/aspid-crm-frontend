@@ -57,9 +57,9 @@ export interface Quote {
   collaboratorId: number;
 
   // Relaciones
-  user?: UserLite;
-  client?: ClientLite;
-  contact?: ContactLite;
+  user: UserLite;
+  client: ClientLite;
+  contact: ContactLite;
   collaborator?: UserLite;
 }
 
@@ -84,4 +84,5 @@ export interface QuoteCreateDto {
   orderType: string;
   description: string;
   collaboratorId?: number | null;
+  createdAt: Date;
 }

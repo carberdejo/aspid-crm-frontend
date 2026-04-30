@@ -35,6 +35,7 @@ export function QuoteFlowContainer({
     setSelectedClientId,
     selectedClientId,
     newClientId,
+    flowType,
   } = useVisitFlowStore();
 
   const { user } = useAuthStore();
@@ -108,8 +109,9 @@ export function QuoteFlowContainer({
         clientId: +formData.clientId,
         contactId: +formData.contactId,
         userId: user.sub,
+        createdAt: new Date(formData.createdAt), // Convertir a Date (asegura el tipo correcto)
       };
-
+      console.log("data de quote: ", { quoteData });
       try {
         await createQuote(quoteData);
         closeAll();
@@ -121,14 +123,17 @@ export function QuoteFlowContainer({
     [user, createQuote, closeAll, departmentId],
   );
 
+  // Abrimos especificando el flujo de Cotización
+  const handleOpen = () => openMain("QUOTE");
+
   return (
     <>
-      <div onClick={openMain} className="w-fit">
+      <div onClick={handleOpen} className="w-fit">
         {trigger}
       </div>
 
       <RegisterQuoteModal
-        isOpen={activeModal !== null}
+        isOpen={activeModal !== null && flowType === "QUOTE"}
         onOpenChange={(open) => !open && closeAll()}
         departmentId={departmentId}
         userId={user?.sub || 0}

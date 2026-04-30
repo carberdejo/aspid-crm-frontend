@@ -16,7 +16,13 @@ export interface QuoteFilters extends Record<string, unknown> {
   offset?: number;
   quoteNumber?: string;
   clientId?: number;
+  userId?: number;
+  contactId?: number;
+  departmentId?: number;
+  orderType?: string;
+  type?: string;
   status?: QuoteStatus;
+  collaboratorId?: number;
   startDate?: string;
   endDate?: string;
 }

@@ -3,6 +3,7 @@ import { quoteService, type QuoteFilters } from "@/services/quote.service";
 import type {
   ApiErrorResponse,
   QuoteCreateDto,
+  QuoteDelete,
   QuoteDetail,
 } from "@/interfaces";
 import { toast } from "sonner";
@@ -10,8 +11,13 @@ import { toast } from "sonner";
 /**
  * Función auxiliar para manejar los errores del backend formateados por nuestro ExceptionFilter
  */
-const handleBackendError = (error: any, title: string) => {
-  const apiError = error.response?.data as ApiErrorResponse;
+const handleBackendError = (error: unknown, title: string) => {
+  const apiError =
+    typeof error === "object" && error !== null && "response" in error
+      ? ((error as { response?: { data?: ApiErrorResponse } }).response
+          ?.data as ApiErrorResponse)
+      : undefined;
+
   const description = Array.isArray(apiError?.errors)
     ? apiError.errors.join(", ")
     : apiError?.message || "Error inesperado en el servidor";
@@ -38,7 +44,20 @@ export const useQuotes = (filters: QuoteFilters = {}) => {
         description: newQuote || "Cotización creada correctamente",
       });
     },
-    onError: (error) => handleBackendError(error, "Error al crear cotización"),
+    onError: (error: ApiErrorResponse) => {
+      const backendMessage = error.errors;
+
+      // 2. Si el mensaje es un array (validación múltiple), lo unimos, si no, lo mostramos tal cual
+      const errorMessage = Array.isArray(backendMessage)
+        ? backendMessage.join(", ")
+        : error.message || "Error inesperado en el servidor";
+
+      // 3. Mostramos el error específico en el toast
+      toast.error("Error de validación", {
+        description: errorMessage, // Aquí saldrá: "El código de usuario P-001 ya está registrado"
+        duration: 5000,
+      });
+    },
   });
 
   // 3. Actualizar cotización
@@ -54,18 +73,44 @@ export const useQuotes = (filters: QuoteFilters = {}) => {
         description: "La cotización se actualizó correctamente",
       });
     },
-    onError: (error) => handleBackendError(error, "Error al actualizar"),
+    onError: (error: ApiErrorResponse) => {
+      const backendMessage = error.errors;
+
+      // 2. Si el mensaje es un array (validación múltiple), lo unimos, si no, lo mostramos tal cual
+      const errorMessage = Array.isArray(backendMessage)
+        ? backendMessage.join(", ")
+        : error.message || "Error inesperado en el servidor";
+
+      // 3. Mostramos el error específico en el toast
+      toast.error("Error de validación", {
+        description: errorMessage, // Aquí saldrá: "El código de usuario P-001 ya está registrado"
+        duration: 5000,
+      });
+    },
   });
 
   // 4. Rechazar/Eliminar (Soft Delete)
-  const rejectMutation = useMutation({
-    mutationFn: ({ id, reason }: { id: number; reason: string }) =>
+  const deleteMutation = useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason: QuoteDelete }) =>
       quoteService.remove(id, reason),
     onSuccess: (message: string) => {
       queryClient.invalidateQueries({ queryKey: ["quotes"] });
       toast.success("Cotización rechazada", { description: message });
     },
-    onError: (error) => handleBackendError(error, "Error al procesar rechazo"),
+    onError: (error: ApiErrorResponse) => {
+      const backendMessage = error.errors;
+
+      // 2. Si el mensaje es un array (validación múltiple), lo unimos, si no, lo mostramos tal cual
+      const errorMessage = Array.isArray(backendMessage)
+        ? backendMessage.join(", ")
+        : error.message || "Error inesperado en el servidor";
+
+      // 3. Mostramos el error específico en el toast
+      toast.error("Error de validación", {
+        description: errorMessage, // Aquí saldrá: "El código de usuario P-001 ya está registrado"
+        duration: 5000,
+      });
+    },
   });
 
   return {
@@ -78,12 +123,12 @@ export const useQuotes = (filters: QuoteFilters = {}) => {
     // Acciones
     createQuote: createMutation.mutateAsync, // Usamos mutateAsync por si quieres manejar el loading en el botón
     updateQuote: updateMutation.mutate,
-    rejectQuote: rejectMutation.mutate,
+    rejectQuote: deleteMutation.mutate,
 
     // Estados de carga
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
-    isRejecting: rejectMutation.isPending,
+    isRejecting: deleteMutation.isPending,
   };
 };
 
@@ -95,6 +140,6 @@ export const useQuoteDetail = (id?: number) => {
     queryKey: ["quote", id],
     queryFn: () => quoteService.getById(id!),
     enabled: !!id, // Solo se ejecuta si el ID existe
-    staleTime: 5 * 60 * 1000, // El detalle puede vivir 5 min en caché
+    staleTime: 60 * 1000, // El detalle puede vivir 1 min en caché
   });
 };

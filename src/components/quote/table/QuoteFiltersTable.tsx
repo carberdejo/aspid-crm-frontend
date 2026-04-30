@@ -42,7 +42,7 @@ export function QuoteFiltersTable({
             placeholder="BUSCAR POR Nº COTIZACIÓN..."
             value={filters.quoteNumber || ""}
             onChange={(e) => onFilterChange({ quoteNumber: e.target.value })}
-            className="h-12 pl-12 rounded-xl border-slate-200 bg-white font-bold text-[10px] uppercase tracking-widest"
+            className="h-12 pl-12 rounded-xl border-slate-200 bg-white  text-[10px] uppercase tracking-widest"
           />
         </div>
 
@@ -51,7 +51,7 @@ export function QuoteFiltersTable({
           {/* SELECT DE ESTADO */}
           <Select
             value={filters.status}
-            onValueChange={(v) => onFilterChange({ status: v })}
+            onValueChange={(v) => onFilterChange({ status: v as QuoteStatus })}
           >
             <SelectTrigger className="w-[150px] h-11 rounded-xl border-slate-200 font-bold text-[10px] uppercase">
               <SelectValue placeholder="ESTADO" />
@@ -82,6 +82,14 @@ export function QuoteFiltersTable({
               <SelectItem value="SERVICIO">SERVICIO</SelectItem>
             </SelectContent>
           </Select>
+
+          <Button
+            variant="ghost"
+            onClick={onClear}
+            className="h-11 px-4 rounded-xl text-slate-400 hover:text-red-500 font-black text-[10px] uppercase tracking-widest"
+          >
+            Limpiar
+          </Button>
         </div>
 
         {/* BOTÓN DE FILTROS AVANZADOS (Aquí metes el resto) */}

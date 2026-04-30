@@ -54,7 +54,8 @@ export interface Quote {
   userId: number;
   clientId: number;
   contactId: number;
-  collaboratorId: number;
+  collaboratorId?: number;
+  departmentId: number;
 
   // Relaciones
   user: UserLite;
@@ -65,10 +66,10 @@ export interface Quote {
 
 export interface QuoteDetail extends Omit<Quote, "client" | "contact"> {
   // Detalles adicionales para la vista de detalle
+  orderType?: string;
   description: string;
   statusReason?: string;
   updatedAt: string;
-
   client: ClientFull;
   contact: ContactFull;
 }
@@ -85,4 +86,21 @@ export interface QuoteCreateDto {
   description: string;
   collaboratorId?: number | null;
   createdAt: Date;
+}
+
+export interface QuoteDelete {
+  statusReason: string;
+}
+
+export interface QuoteUpdateDto {
+  quoteNumber?: string;
+  userId?: number;
+  clientId?: number;
+  contactId?: number;
+  departmentId?: number;
+  amount?: number;
+  type?: string;
+  orderType?: string;
+  description?: string;
+  collaboratorId?: number | null;
 }

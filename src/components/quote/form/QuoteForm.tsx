@@ -42,15 +42,17 @@ const ORDER_TYPES = ["IMPORTACION", "STOCK", "ENTREGA_PARCIAL"];
 
 interface QuoteFormProps {
   departmentId: number;
-  userId: number;
+  // userId: number;
   onSubmit: (values: QuoteFormValues) => void;
   isLoading: boolean;
+  defaultValues?: Partial<QuoteFormValues>;
 }
 
 export function QuoteForm({
   departmentId,
   onSubmit,
   isLoading,
+  defaultValues,
 }: QuoteFormProps) {
   const openClient = useVisitFlowStore((state) => state.openClient);
   const openContact = useVisitFlowStore((state) => state.openContact);
@@ -62,7 +64,7 @@ export function QuoteForm({
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       quoteNumber: "",
       clientId: "",
       contactId: "",
@@ -93,6 +95,13 @@ export function QuoteForm({
     }
   }, [newContactId, form]);
 
+  const { errors } = form.formState;
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Campos con errores:", errors);
+    }
+  }, [errors]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

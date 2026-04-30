@@ -104,7 +104,7 @@ export function QuoteFlowContainer({
         type: formData.type,
         orderType: formData.orderType,
         description: formData.description,
-        collaboratorId: formData.collaboratorId,
+        // collaboratorId: formData.collaboratorId,
         departmentId: departmentId, // Ahora el hook "escuchará" cuando este valor cambie
         clientId: +formData.clientId,
         contactId: +formData.contactId,

@@ -1,179 +1,283 @@
-'use client';
+"use client";
 
-import React, { use } from 'react';
-import { useRouter } from 'next/navigation';
-import { 
-  ArrowLeft, Building2, User, Phone, Mail, 
-  MapPin, Calendar, Briefcase, FileText, ClipboardList 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useVisits } from '@/hooks';
+import { use } from "react";
+import { useQuoteDetail } from "@/hooks/useQuotes";
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  FileText,
+  IdCard,
+  Info,
+  Phone,
+  User,
+  Wallet,
+  Tag,
+  Briefcase,
+  Clock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
-const dateFormatter = new Intl.DateTimeFormat('es-PE', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
-
-interface Props {
-  params: Promise<{ id: string; visitId: string }>;
+interface PageProps {
+  params: Promise<{ id: string; quoteId: string }>;
 }
 
-export default function VisitDetailPage({ params }: Props) {
+export default function QuoteDetailPage({ params }: PageProps) {
   const router = useRouter();
   const resolvedParams = use(params);
-  const { visitDetail: visit, isLoading, isError } = useVisits({},Number(resolvedParams.visitId));
+  const quoteId = Number(resolvedParams.quoteId);
+  const departmentId = Number(resolvedParams.id);
 
-  if (isLoading) return <LoadingSkeleton />;
-  if (isError || !visit) return <ErrorState />;
+  const { data: quote, isLoading, isError } = useQuoteDetail(quoteId);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-12 w-12 animate-spin text-secondary" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+          Cargando expediente técnico...
+        </p>
+      </div>
+    );
+  }
+
+  if (isError || !quote) {
+    return (
+      <div className="p-10 text-center uppercase font-black text-rose-500">
+        Error al cargar la cotización
+      </div>
+    );
+  }
+
+  const statusStyles: Record<string, string> = {
+    PENDING: "bg-amber-50 text-amber-600 border-amber-200",
+    APPROVED: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    REJECTED: "bg-rose-50 text-rose-600 border-rose-200",
+  };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
-      
-      {/* HEADER DE ACCIÓN */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <Button 
-          variant="ghost" 
-          onClick={() => router.back()}
-          className="w-fit gap-2 text-slate-400 hover:text-primary font-bold uppercase text-[10px] tracking-widest p-0 hover:bg-transparent"
-        >
-          <ArrowLeft size={16} /> Volver al listado
-        </Button>
+    <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* CABECERA DE NAVEGACIÓN */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-2">
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="group p-0 hover:bg-transparent text-slate-400 hover:text-primary transition-all flex gap-2 items-center text-[10px] font-black uppercase tracking-widest"
+          >
+            <ArrowLeft
+              size={16}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Volver al listado
+          </Button>
+          <div className="flex items-center gap-4">
+            <h1 className="text-4xl font-black text-primary uppercase tracking-tighter">
+              Cotización{" "}
+              <span className="text-secondary">{quote.quoteNumber}</span>
+            </h1>
+            <Badge
+              variant="outline"
+              className={`h-8 px-4 text-[11px] font-black uppercase border ${statusStyles[quote.status]}`}
+            >
+              {quote.status}
+            </Badge>
+          </div>
+        </div>
+
         <div className="flex gap-3">
-          <Badge className="bg-primary/10 text-primary border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
-            ID Visita: #{visit.id}
-          </Badge>
-          <Badge className="bg-secondary text-white border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
-            Completada
-          </Badge>
+          <Button className="h-12 px-8 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-900/10">
+            Descargar PDF
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* COLUMNA IZQUIERDA: INFORMACIÓN DE ENTIDADES (4 cols) */}
-        <div className="lg:col-span-4 space-y-6">
-          
-          {/* CARD CLIENTE */}
-          <InfoCard title="Información de Empresa" icon={<Building2 size={16}/>}>
-            <p className="text-lg font-black text-primary leading-tight uppercase mb-1">
-              {visit.client.commercialName}
-            </p>
-            <p className="text-[11px] font-bold text-slate-400 mb-4">{visit.client.businessName}</p>
-            <div className="space-y-3 pt-4 border-t border-slate-50">
-               <InfoItem label="RUC" value={visit.client.ruc} />
-               <InfoItem label="Dirección" value={visit.client.address} icon={<MapPin size={12}/>} />
+      {/* GRID DE INFORMACIÓN PRINCIPAL */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* COLUMNA 1: CLIENTE Y CONTACTO */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* TARJETA CLIENTE */}
+          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center gap-4 border-b border-slate-50 pb-4">
+              <div className="p-3 bg-blue-50 text-primary rounded-2xl">
+                <Building2 size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-primary uppercase leading-tight">
+                  Información del Cliente
+                </h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  Datos comerciales registrados
+                </p>
+              </div>
             </div>
-          </InfoCard>
 
-          {/* CARD CONTACTO */}
-          <InfoCard title="Contacto Directo" icon={<User size={16}/>} variant="secondary">
-            <p className="text-md font-extrabold text-slate-800 uppercase">
-              {visit.contact.firstName} {visit.contact.lastName}
-            </p>
-            <p className="text-[10px] font-black text-secondary uppercase tracking-widest mb-4">
-              {visit.contact.position}
-            </p>
-            <div className="space-y-3 pt-4 border-t border-slate-50">
-               <InfoItem label="Teléfono" value={visit.contact.phone} icon={<Phone size={12}/>} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <DataField
+                label="Nombre Comercial"
+                value={quote.client.commercialName}
+              />
+              <DataField
+                label="Razón Social"
+                value={quote.client.businessName}
+              />
+              <DataField
+                label="RUC"
+                value={quote.client.ruc}
+                icon={<IdCard size={14} />}
+              />
+              <DataField
+                label="Dirección Fiscal"
+                value={quote.client.address}
+              />
             </div>
-          </InfoCard>
+          </section>
 
-          {/* CARD REGISTRO */}
-          <div className="p-6 bg-[#1a2a53] rounded-[2rem] text-white shadow-xl shadow-blue-900/20">
-             <h4 className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-4 flex items-center gap-2">
-               <Briefcase size={12} /> Responsable
-             </h4>
-             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-400 flex items-center justify-center font-black text-primary">
-                  {visit.user.firstName[0]}{visit.user.lastName[0]}
-                </div>
-                <div>
-                  <p className="text-sm font-bold uppercase">{visit.user.firstName} {visit.user.lastName}</p>
-                  <p className="text-[10px] opacity-60">{visit.user.email}</p>
-                </div>
-             </div>
-          </div>
+          {/* TARJETA CONTACTO */}
+          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center gap-4 border-b border-slate-50 pb-4">
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                <User size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-primary uppercase leading-tight">
+                  Contacto Directo
+                </h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  Responsable de la operación
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <DataField
+                label="Nombre Completo"
+                value={`${quote.contact.firstName} ${quote.contact.lastName}`}
+              />
+              <DataField
+                label="Cargo / Posición"
+                value={quote.contact.position}
+              />
+              <DataField
+                label="Teléfono / Celular"
+                value={quote.contact.phone}
+                icon={<Phone size={14} />}
+              />
+            </div>
+          </section>
+
+          {/* ALCANCE / DESCRIPCIÓN */}
+          <section className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-2xl space-y-4">
+            <div className="flex items-center gap-2 text-secondary">
+              <FileText size={18} />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                Descripción del Alcance
+              </span>
+            </div>
+            <p className="text-slate-300 leading-relaxed font-medium">
+              {quote.description}
+            </p>
+          </section>
         </div>
 
-        {/* COLUMNA DERECHA: DETALLES DE LA VISITA (8 cols) */}
-        <div className="lg:col-span-8 space-y-6">
-          
-          {/* CARD FECHA */}
-          <div className="bg-white rounded-[2rem] p-8 border border-slate-50 shadow-sm flex items-center gap-6">
-            <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-primary">
-              <Calendar size={32} />
+        {/* COLUMNA 2: DATOS TÉCNICOS Y MONTOS */}
+        <div className="space-y-8">
+          {/* TARJETA ECONOMICA */}
+          <section className="bg-secondary p-8 rounded-[2.5rem] text-white shadow-xl shadow-orange-500/20">
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 opacity-80">
+                <Wallet size={18} />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  Monto de Operación
+                </span>
+              </div>
+              <div className="space-y-1">
+                <p className="text-5xl font-black tracking-tighter">
+                  S/{" "}
+                  {quote.amount.toLocaleString("es-PE", {
+                    minimumFractionDigits: 2,
+                  })}
+                </p>
+                <p className="text-[10px] font-bold uppercase opacity-70 tracking-widest">
+                  Sujeto a IGV según ley
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha del Evento</p>
-              <p className="text-2xl font-black text-primary capitalize">
-                {dateFormatter.format(new Date(visit.date))}
+          </section>
+
+          {/* TARJETA DETALLES INTERNOS */}
+          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <DataField
+              label="Tipo de Cotización"
+              value={quote.type}
+              icon={<Tag size={12} />}
+            />
+            <DataField
+              label="Tipo de Orden"
+              value={quote?.orderType || "No especificado"}
+              icon={<Briefcase size={12} />}
+            />
+            <DataField
+              label="Creado por"
+              value={`${quote.user.firstName} ${quote.user.lastName}`}
+              icon={<User size={12} />}
+            />
+
+            <div className="pt-4 border-t border-slate-50 space-y-4">
+              <DataField
+                label="Fecha Emisión"
+                value={new Date(quote.createdAt).toLocaleDateString("es-PE")}
+                icon={<Calendar size={12} />}
+              />
+              <DataField
+                label="Última Actualización"
+                value={new Date(quote.updatedAt).toLocaleDateString("es-PE")}
+                icon={<Clock size={12} />}
+              />
+            </div>
+          </section>
+
+          {/* MOTIVO DE RECHAZO (SI EXISTE) */}
+          {quote.status === "RECHAZADO" && (
+            <section className="bg-rose-50 p-8 rounded-[2.5rem] border border-rose-100 space-y-3">
+              <div className="flex items-center gap-2 text-rose-600">
+                <Info size={18} />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  Motivo de Rechazo
+                </span>
+              </div>
+              <p className="text-rose-700 text-sm font-bold italic">
+                {quote.statusReason}
               </p>
-            </div>
-          </div>
-
-          {/* CONTENIDO PRINCIPAL */}
-          <div className="bg-white rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
-            <div className="p-8 space-y-10">
-              
-              <div className="space-y-4">
-                <h4 className="text-xs font-black text-secondary uppercase tracking-[0.3em] flex items-center gap-3">
-                  <ClipboardList size={18} /> Temas Tratados
-                </h4>
-                <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 italic text-slate-600 leading-relaxed">
-                  {visit.visitTopics}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="text-xs font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
-                  <FileText size={18} /> Resumen de Resultados
-                </h4>
-                <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 text-slate-700 leading-relaxed font-medium">
-                  {visit.outcomeSummary}
-                </div>
-              </div>
-
-            </div>
-          </div>
+            </section>
+          )}
         </div>
-
       </div>
     </div>
   );
 }
 
-// --- COMPONENTES AUXILIARES ---
-
-function InfoCard({ title, icon, children, variant = "primary" }: any) {
+// COMPONENTE AUXILIAR PARA CAMPOS DE DATOS
+function DataField({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+}) {
   return (
-    <div className="bg-white rounded-[2rem] p-6 border border-slate-50 shadow-sm">
-      <h4 className={`text-[9px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 ${variant === 'primary' ? 'text-primary' : 'text-secondary'}`}>
-        {icon} {title}
-      </h4>
-      {children}
+    <div className="space-y-1.5">
+      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+        {icon} {label}
+      </label>
+      <p className="text-sm font-bold text-slate-700 uppercase tracking-tight">
+        {value || "---"}
+      </p>
     </div>
-  )
-}
-
-function InfoItem({ label, value, icon }: any) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{label}</span>
-      <div className="flex items-center gap-2 text-slate-600 font-bold text-xs uppercase">
-        {icon && <span className="text-slate-300">{icon}</span>}
-        {value}
-      </div>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return <div className="p-12 text-center font-black text-slate-200 uppercase tracking-[1em] animate-pulse">Cargando Expediente...</div>;
-}
-
-function ErrorState() {
-  return <div className="p-12 text-center font-black text-red-400 uppercase">Error al cargar la visita</div>;
+  );
 }

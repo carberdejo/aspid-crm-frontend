@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ClipboardList, FileText, ShoppingCart } from "lucide-react";
@@ -11,6 +11,7 @@ import { OperationCards } from "@/components/department/OperationCards";
 import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
 import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
+import { useAuthStore } from "@/store";
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function DepartmentPage() {
 
   const { getDepartmentById } = useDepartmentStore();
   const { setHeaderTitle } = useHeaderStore();
+  const { user } = useAuthStore(); // Para obtener el userId y pasarlo a QuoteSummaryCard (pendiente)
 
   // ✅ SIMPLIFICADO: Solo obtener datos del store (ya validados por middleware)
   const department = getDepartmentById(Number(id));
@@ -92,7 +94,7 @@ export default function DepartmentPage() {
       {/* --- SECCIÓN 2: STATS SUPERIORES (EL ESQUELETO) --- */}
       {/* 2. Rejilla de Información Superior */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <QuoteSummaryCard />
+        <QuoteSummaryCard userId={user?.sub} />
         <DailyActivityCard />
         <OperationCards />
       </div>

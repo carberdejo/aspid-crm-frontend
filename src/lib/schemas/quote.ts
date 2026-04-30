@@ -10,7 +10,7 @@ export const quoteSchema = z.object({
   type: z.string().min(1, "El tipo es obligatorio"),
   orderType: z.string().min(1, "El tipo de orden es obligatorio"),
   description: z.string().min(1, "La descripción es obligatoria"),
-  collaboratorId: z.number().optional(),
+  // collaboratorId: z.number().optional(),
   createdAt: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Ingresa una fecha válida",
   }),

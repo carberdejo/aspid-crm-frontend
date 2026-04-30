@@ -4,6 +4,7 @@ import {
   PaginatedResponse,
   Quote,
   QuoteCreateDto,
+  QuoteDelete,
   QuoteDetail,
   QuoteStatus,
   ResponseCreate,
@@ -63,7 +64,7 @@ export const quoteService = {
       "/quotes",
       quoteData,
     );
-    return data.message;
+    return data.data.message;
   },
 
   /**
@@ -83,13 +84,16 @@ export const quoteService = {
   /**
    * Rechazar/Eliminar (Soft Delete con motivo)
    */
-  remove: async (id: number, statusReason: string): Promise<string> => {
-    const { data } = await concarApi.patch<{ message: string }>(
-      `/quotes/${id}/reject`,
+  remove: async (
+    id: number,
+    { statusReason }: QuoteDelete,
+  ): Promise<string> => {
+    const { data } = await concarApi.patch<ApiResponse<ResponseCreate>>(
+      `/quotes/delete/${id}`,
       {
         statusReason,
       },
     );
-    return data.message;
+    return data.data.message;
   },
 };

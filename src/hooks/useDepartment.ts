@@ -1,31 +1,34 @@
 import { DepartmentService } from "@/services";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query";
 import { Department } from "@/interfaces";
+import { off } from "process";
 
 export const useDepartment = () => {
-
-    const useQueryDeparments = useQuery({
-        queryKey: ['departments'],
-        queryFn: DepartmentService.getDepartments,
-        staleTime: Infinity, // Los departamentos no cambian frecuentemente, así que los mantenemos frescos indefinidamente
-    });
+  const useQueryDeparments = useQuery({
+    queryKey: ["departments"],
+    queryFn: DepartmentService.getDepartments,
+    staleTime: Infinity, // Los departamentos no cambian frecuentemente, así que los mantenemos frescos indefinidamente
+  });
 
   return {
-    useQueryDeparments
-  }
-}
+    useQueryDeparments,
+  };
+};
 
 export const useDepartments = () => {
-    const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['departments'],
-        queryFn: DepartmentService.getDepartments,
-        staleTime: Infinity,
-    });
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["departments"],
+    queryFn: DepartmentService.getDepartments,
+    staleTime: Infinity,
+  });
 
-    return {
-        departments: (data as Department[]) || [],
-        isLoading,
-        isError,
-        error,
-    };
+  return {
+    departments: data?.items || [],
+    total: data?.total || 0,
+    offset: data?.offset || 0,
+    limit: data?.limit || 0,
+    isLoading,
+    isError,
+    error,
+  };
 };

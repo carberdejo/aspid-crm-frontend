@@ -13,7 +13,7 @@ import {
   ClientAndContactResponseCreate,
   ClientListItem,
 } from "@/interfaces/client.interface";
-import { PaginatedResponse, QuoteCreateDto } from "@/interfaces";
+import { PaginatedResponse, QuoteCreateDto, QuoteCurrency } from "@/interfaces";
 import { RegisterClientModal } from "@/components/client/form/RegisterClientModal";
 import { RegisterContactModal } from "@/components/client/form/RegisterContactModal";
 
@@ -104,6 +104,7 @@ export function QuoteFlowContainer({
         type: formData.type,
         orderType: formData.orderType,
         description: formData.description,
+        currency: (formData.currency as QuoteCurrency) || QuoteCurrency.USD, // Valor por defecto si no se selecciona ninguno
         // collaboratorId: formData.collaboratorId,
         departmentId: departmentId, // Ahora el hook "escuchará" cuando este valor cambie
         clientId: +formData.clientId,

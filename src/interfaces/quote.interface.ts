@@ -15,6 +15,11 @@ export enum QuoteOrderType {
   STOCK = "STOCK",
   ENTREGA_PARCIAL = "ENTREGA_PARCIAL",
 }
+
+export enum QuoteCurrency {
+  USD = "USD",
+  PEN = "PEN",
+}
 export interface UserLite {
   id: number;
   codUSer: string;
@@ -48,6 +53,7 @@ export interface Quote {
   id: number;
   quoteNumber: string;
   amount: number;
+  currency: QuoteCurrency;
   status: QuoteStatus;
   type: string;
   createdAt: string;
@@ -86,6 +92,7 @@ export interface QuoteCreateDto {
   description: string;
   collaboratorId?: number | null;
   createdAt: Date;
+  currency?: QuoteCurrency;
 }
 
 export interface QuoteDelete {

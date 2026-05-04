@@ -7,9 +7,6 @@ import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { analyticsService } from "@/services/analytics.service";
 
-// Mock temporal - Luego esto vendrá por props o un fetch
-const DATA = { revision: 3, waiting: 4, total: 7 };
-
 export function QuoteSummaryCard({ userId }: { userId: number }) {
   const [filter, setFilter] = useState<DateFilterType>("this-week");
 
@@ -40,9 +37,16 @@ export function QuoteSummaryCard({ userId }: { userId: number }) {
         Resumen de Cotizaciones
       </h3>
 
-      <div className="relative">
+      <div className="relative flex flex-col items-center">
         <span className="text-8xl font-black text-primary tracking-tighter leading-none">
           {data?.total || 0}
+        </span>
+        {/* Monto total cotizado */}
+        <span className="mt-2 text-lg font-bold text-slate-500">
+          {new Intl.NumberFormat("es-PE", {
+            style: "currency",
+            currency: "PEN",
+          }).format(data?.totalAmount || 0)}
         </span>
         <div className="absolute -top-1 -right-2 h-4 w-4 bg-secondary rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.4)]" />
       </div>

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateContact } from "@/hooks";
 import { ContactFormValues, contactSchema } from "@/lib/schemas/contact";
 import { ClientAndContactResponseCreate, Contact } from "@/interfaces";
+import { useEffect } from "react";
 
 interface ContactFormProps {
   clientId: number;
@@ -44,6 +45,14 @@ export function ContactForm({ clientId, onSuccess }: ContactFormProps) {
       onSuccess: (res) => onSuccess(res),
     });
   };
+
+  const { errors } = form.formState;
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Campos con errores:", errors);
+    }
+  }, [errors]);
 
   return (
     <Form {...form}>

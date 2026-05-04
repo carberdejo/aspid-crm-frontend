@@ -2,7 +2,7 @@
 
 import { Users } from "lucide-react";
 import { DataTable } from "@/components/shared/data-table/DataTable";
-import { columns } from "@/components/user/columns";
+import { columns } from "@/components/user/table/columns";
 import { useUsers } from "@/hooks/useUsers";
 import { useUserFilters } from "@/hooks/useUserFilters";
 import { DataTableToolbar, RegisterModal } from "@/components";

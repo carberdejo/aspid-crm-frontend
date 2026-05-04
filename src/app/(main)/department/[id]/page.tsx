@@ -94,7 +94,7 @@ export default function DepartmentPage() {
       {/* --- SECCIÓN 2: STATS SUPERIORES (EL ESQUELETO) --- */}
       {/* 2. Rejilla de Información Superior */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <QuoteSummaryCard userId={user?.sub} />
+        <QuoteSummaryCard userId={user?.sub ?? 0} />
         <DailyActivityCard />
         <OperationCards />
       </div>

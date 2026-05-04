@@ -14,6 +14,7 @@ export const quoteSchema = z.object({
   createdAt: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Ingresa una fecha válida",
   }),
+  currency: z.enum(["USD", "PEN"]).optional(),
 });
 
 export type QuoteFormValues = z.infer<typeof quoteSchema>;

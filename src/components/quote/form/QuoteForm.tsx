@@ -11,8 +11,10 @@ import {
   Tag,
   Briefcase,
   Calendar,
+  Settings2,
+  ChevronDown,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Form,
@@ -36,6 +38,7 @@ import { QuoteFormValues, quoteSchema } from "@/lib/schemas/quote";
 import { ClientSearchSelector } from "@/components/shared/ClientSearchSelector";
 import { ContactSearchSelector } from "@/components/shared/ContactSearchSelector";
 import { useVisitFlowStore } from "@/store";
+import { QuoteCurrency } from "@/interfaces";
 
 const QUOTE_TYPES = ["PRODUCTO", "SERVICIO", "PROYECTO"];
 const ORDER_TYPES = ["IMPORTACION", "STOCK", "ENTREGA_PARCIAL"];
@@ -62,6 +65,8 @@ export function QuoteForm({
   const newClientId = useVisitFlowStore((state) => state.newClientId);
   const newContactId = useVisitFlowStore((state) => state.newContactId);
 
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: defaultValues || {
@@ -69,12 +74,19 @@ export function QuoteForm({
       clientId: "",
       contactId: "",
       departmentId,
+      currency: QuoteCurrency.USD,
       amount: 0,
       type: "",
       orderType: "",
       description: "",
       createdAt: new Date().toISOString().split("T")[0], // Fecha por defecto hoy
     },
+  });
+
+  // Observamos la moneda para cambiar el símbolo del input
+  const currentCurrency = useWatch({
+    control: form.control,
+    name: "currency",
   });
 
   const selectedClientId = useWatch({
@@ -196,6 +208,7 @@ export function QuoteForm({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="amount"
@@ -206,14 +219,15 @@ export function QuoteForm({
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-lg italic">
-                        S/
+                      {/* SÍMBOLO DINÁMICO */}
+                      <span className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-300 text-lg italic">
+                        {currentCurrency === QuoteCurrency.USD ? "$" : "S/"}
                       </span>
                       <Input
                         type="number"
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="h-14 pl-12 rounded-2xl border-slate-200 bg-white text-xl font-black text-primary focus:ring-secondary"
+                        className="h-14 pl-14 rounded-2xl border-slate-200 bg-white text-xl font-black text-primary focus:ring-secondary shadow-sm"
                       />
                     </div>
                   </FormControl>
@@ -222,6 +236,61 @@ export function QuoteForm({
               )}
             />
           </div>
+
+          {/* SECCIÓN AVANZADA: SOLO SE MUESTRA SI SE HACE CLICK EN EL BOTÓN */}
+          {showAdvanced && (
+            <div className="pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-300">
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem className="max-w-[250px]">
+                    <FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                      Cambiar Moneda del Documento
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-white font-bold text-xs text-primary">
+                          <SelectValue placeholder="Seleccione Moneda" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem
+                          value={QuoteCurrency.PEN}
+                          className="text-xs font-bold uppercase"
+                        >
+                          Soles (PEN)
+                        </SelectItem>
+                        <SelectItem
+                          value={QuoteCurrency.USD}
+                          className="text-xs font-bold uppercase"
+                        >
+                          Dólares (USD)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          {/* BOTÓN FLOTANTE DE AJUSTES (Para la moneda) */}
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="gap-2 text-[9px] font-black uppercase text-slate-400 hover:text-primary transition-all"
+          >
+            <Settings2 size={14} />
+            Configurar Moneda
+            <ChevronDown
+              size={12}
+              className={`transition-transform ${showAdvanced ? "rotate-180" : ""}`}
+            />
+          </Button>
         </div>
 
         {/* SECCIÓN 2: CATEGORIZACIÓN Y FECHA (3 COLUMNAS) */}

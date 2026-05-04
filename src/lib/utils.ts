@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// src/lib/utils.ts (O donde guardes tus utilitarios)
+// Función para limpiar parámetros de consulta (eliminar undefined, null o string vacío)
 export const cleanParams = (
   params: Record<string, unknown>,
 ): Record<string, unknown> => {

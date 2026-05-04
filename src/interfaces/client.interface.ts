@@ -58,6 +58,7 @@ export interface Contact {
   position: string;
   phone: string;
   clientId: string;
+  email: string;
 }
 
 export interface ContactCreateDto {
@@ -66,6 +67,7 @@ export interface ContactCreateDto {
   position: string;
   phone: string;
   clientId: number;
+  email: string;
 }
 
 export interface ClientDetail {

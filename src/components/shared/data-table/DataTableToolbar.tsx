@@ -1,79 +1,88 @@
-'use client';
+"use client";
 
-import { Search, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Search, FilterX } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useDepartmentStore } from "@/store"; // Inyectamos tu store
 
 interface DataTableToolbarProps {
-  onSearch?: (value: string) => void;
-  onRoleFilter?: (role: string) => void;
-  onResetFilters?: () => void;
-  searchValue?: string;
-  roleValue?: string;
-  hasFilters?: boolean;
+  searchValue: string;
+  onSearch: (val: string) => void;
+  deptValue?: number;
+  onDeptChange: (val: number | undefined) => void;
+  activeValue?: boolean;
+  onActiveChange: (val: boolean | undefined) => void;
+  onReset: () => void;
+  hasFilters: boolean;
 }
 
-const roleOptions = [
-  { value: '', label: 'Todos los roles' },
-  { value: 'ADMIN', label: 'Administrador' },
-  { value: 'VENDEDOR', label: 'Vendedor' },
-  { value: 'PROYECTOS', label: 'Proyectos' },
-  { value: 'SOPORTE', label: 'Soporte' },
-];
-
 export function DataTableToolbar({
+  searchValue,
   onSearch,
-  onRoleFilter,
-  onResetFilters,
-  searchValue = '',
-  roleValue = '',
-  hasFilters = false,
+  deptValue,
+  onDeptChange,
+  activeValue,
+  onActiveChange,
+  onReset,
+  hasFilters,
 }: DataTableToolbarProps) {
+  const { departments } = useDepartmentStore();
+
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white rounded-lg border border-gray-200">
-      {/* Filtros */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
-        {/* Búsqueda */}
-        <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+    <div className="flex flex-col lg:flex-row items-center justify-between gap-4 py-4 bg-white">
+      <div className="flex flex-1 flex-wrap items-center gap-3 w-full">
+        {/* Buscador Global (Nombre/CodUser) */}
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nombre..."
+            placeholder="Buscar por nombre o código..."
             value={searchValue}
-            onChange={(e) => onSearch?.(e.target.value)}
-            className="pl-9 h-10 w-full"
+            onChange={(e) => onSearch(e.target.value)}
+            className="pl-9 h-10 border-gray-200 rounded-xl"
           />
         </div>
 
-        {/* Select de Role */}
+        {/* Filtro Departamento (Desde Store) */}
         <select
-          value={roleValue}
-          onChange={(e) => onRoleFilter?.(e.target.value)}
-          className="h-10 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1a2a53] focus:border-transparent w-full sm:w-48"
+          value={deptValue || ""}
+          onChange={(e) =>
+            onDeptChange(e.target.value ? Number(e.target.value) : undefined)
+          }
+          className="h-10 px-3 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-primary outline-none min-w-[180px]"
         >
-          {roleOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+          <option value="">Todos los departamentos</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
             </option>
           ))}
         </select>
 
-        {/* Botón Reset */}
+        {/* Filtro Estado (Active) */}
+        <select
+          value={activeValue === undefined ? "" : String(activeValue)}
+          onChange={(e) => {
+            const val = e.target.value;
+            onActiveChange(val === "" ? undefined : val === "true");
+          }}
+          className="h-10 px-3 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-primary outline-none w-40"
+        >
+          <option value="">Cualquier estado</option>
+          <option value="true">Activos</option>
+          <option value="false">Inactivos</option>
+        </select>
+
         {hasFilters && (
-          <button
-            onClick={onResetFilters}
-            className="h-10 px-4 py-2 text-sm flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors border border-gray-300"
+          <Button
+            variant="ghost"
+            onClick={onReset}
+            className="h-10 text-muted-foreground hover:text-primary font-bold uppercase text-[10px] tracking-widest"
           >
-            Resetear
-            <X className="h-4 w-4" />
-          </button>
+            <FilterX className="mr-2 h-4 w-4" />
+            Limpiar Filtros
+          </Button>
         )}
       </div>
-
-      {/* Info de resultados (opcional) */}
-      {hasFilters && (
-        <div className="text-sm text-gray-600">
-          Filtros activos
-        </div>
-      )}
     </div>
   );
 }

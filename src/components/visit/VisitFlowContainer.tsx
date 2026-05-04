@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RegisterContactModal } from "..";
-import { RegisterClientModal } from "../client/RegisterClientModal";
+import { RegisterClientModal } from "../client/form/RegisterClientModal";
 import { RegisterVisitModal } from "./RegisterVisitModal";
 import { useVisits } from "@/hooks/useVisits";
 import { useAuthStore } from "@/store/useAuthStore";

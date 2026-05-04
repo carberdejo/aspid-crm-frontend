@@ -1,11 +1,11 @@
-import { Department, UserRole } from ".";
+import { Department, GenericFilters, UserRole } from ".";
 
 // export interface User {
 //   codUser: string;
 //   email: string;
 //   firstName: string;
 //   lastName: string;
-//   role: UserRole;   
+//   role: UserRole;
 //   departments: string[]; // Array si puede estar en varios
 //   isActive: boolean;
 // }
@@ -17,12 +17,12 @@ export interface UserCreateDto {
   lastName: string;
   role: UserRole;
   departmentIds: number[]; // Array si puede estar en varios
-  password: string; 
-  country: string;  
+  password: string;
+  country: string;
   phone: string;
 }
 
-export interface UserDetail{
+export interface UserDetail {
   codUser: string;
   email: string;
   firstName: string;
@@ -35,7 +35,7 @@ export interface UserDetail{
 }
 
 export interface UserProfile extends UserDetail {
-  sessions:UserSession[];
+  sessions: UserSession[];
 }
 
 export interface UserSession {
@@ -44,10 +44,18 @@ export interface UserSession {
   deviceInfo: string;
   ipAddress: string;
   lastActive: Date;
-  expiresAt: Date;}
+  expiresAt: Date;
+}
 
 export interface UserDepartment {
   id: number;
   assignedAt: Date;
   department: Department;
+}
+
+export interface UserFilters extends GenericFilters {
+  term?: string;
+  isActive?: boolean;
+  departmentId?: number;
+  role?: string;
 }

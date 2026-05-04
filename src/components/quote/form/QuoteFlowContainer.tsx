@@ -14,8 +14,8 @@ import {
   ClientListItem,
 } from "@/interfaces/client.interface";
 import { PaginatedResponse, QuoteCreateDto } from "@/interfaces";
-import { RegisterClientModal } from "@/components/client/RegisterClientModal";
-import { RegisterContactModal } from "@/components/client/RegisterContactModal";
+import { RegisterClientModal } from "@/components/client/form/RegisterClientModal";
+import { RegisterContactModal } from "@/components/client/form/RegisterContactModal";
 
 export function QuoteFlowContainer({
   trigger,

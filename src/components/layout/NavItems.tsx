@@ -126,12 +126,12 @@ const getSharedConfigSection = (): NavSection => ({
       icon: Users,
       active: false,
     },
-    {
-      title: "Ajustes",
-      href: "/settings",
-      icon: Settings,
-      active: false,
-    },
+    // {
+    //   title: "Ajustes",
+    //   href: "/settings",
+    //   icon: Settings,
+    //   active: false,
+    // },
   ],
 });
 
@@ -219,7 +219,7 @@ export const generateNavSections = (
     sections.push(getSharedConfigSection());
   } else {
     // USER/PERSONAL NAVIGATION
-    sections.push(getUserPrincipalSection());
+    // sections.push(getUserPrincipalSection());
 
     // Agregar MIS ÁREAS (sus departamentos asignados)
     const userDeptosSection = getUserDepartamentosSection(

@@ -38,16 +38,16 @@ export function QuoteSummaryCard({ userId }: { userId: number }) {
       </h3>
 
       <div className="relative flex flex-col items-center">
-        <span className="text-8xl font-black text-primary tracking-tighter leading-none">
-          {data?.total || 0}
+        <span className="text-7xl font-bold text-primary tracking-tighter leading-none">
+          {data?.totalAmount || 0}
         </span>
         {/* Monto total cotizado */}
-        <span className="mt-2 text-lg font-bold text-slate-500">
+        {/* <span className="mt-2 text-lg font-bold text-slate-500">
           {new Intl.NumberFormat("es-PE", {
             style: "currency",
             currency: "PEN",
           }).format(data?.totalAmount || 0)}
-        </span>
+        </span> */}
         <div className="absolute -top-1 -right-2 h-4 w-4 bg-secondary rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.4)]" />
       </div>
 

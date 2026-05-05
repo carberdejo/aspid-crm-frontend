@@ -25,7 +25,10 @@ const handleBackendError = (error: unknown, title: string) => {
   toast.error(title, { description, duration: 5000 });
 };
 
-export const useQuotes = (filters: QuoteFilters = {}) => {
+export const useQuotes = (
+  filters: QuoteFilters = {},
+  options?: { enabled?: boolean },
+) => {
   const queryClient = useQueryClient();
 
   // 1. Listado de cotizaciones
@@ -33,6 +36,7 @@ export const useQuotes = (filters: QuoteFilters = {}) => {
     queryKey: ["quotes", filters],
     queryFn: () => quoteService.getQuotes(filters),
     staleTime: 60 * 1000, // 1 minuto
+    enabled: options?.enabled ?? true, // Por defecto está habilitado, pero se puede controlar desde el componente
   });
 
   // 2. Crear cotización

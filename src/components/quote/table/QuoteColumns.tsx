@@ -3,14 +3,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Quote, QuoteStatus } from "@/interfaces";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Calendar as CalendarIcon } from "lucide-react";
+import { FileText, Calendar as CalendarIcon, User } from "lucide-react"; // Importamos User
 import { ActionsCell } from "./ActionsCell";
 
-// Función auxiliar para formatear moneda dinámicamente
 const formatCurrency = (amount: number, currency: string) => {
   return new Intl.NumberFormat("es-PE", {
     style: "currency",
-    currency: currency || "USD", // Default a USD según tu preferencia
+    currency: currency || "USD",
   }).format(amount);
 };
 
@@ -43,15 +42,37 @@ export const quoteColumns: ColumnDef<Quote>[] = [
       </div>
     ),
   },
+  // --- NUEVA COLUMNA DE CONTACTO ---
+  {
+    accessorKey: "contact",
+    header: "Contacto",
+    cell: ({ row }) => {
+      const contact = row.original.contact;
+      if (!contact)
+        return <span className="text-slate-300 text-[10px] italic">-</span>;
+
+      return (
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1.5">
+            <User size={10} className="text-slate-400" />
+            <span className="font-bold text-slate-600 uppercase text-[10px]">
+              {contact.firstName} {contact.lastName}
+            </span>
+          </div>
+          <span className="text-[9px] text-secondary font-black tracking-tighter uppercase opacity-80 pl-4">
+            {contact.position || "S/N CARGO"}
+          </span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "amount",
-    header: () => <div className="text-center">Monto Total</div>, // Centramos también el encabezado
+    header: () => <div className="text-center">Monto Total</div>,
     cell: ({ row }) => {
       const { amount, currency } = row.original;
       return (
         <div className="flex justify-center">
-          {" "}
-          {/* Contenedor para centrar la cápsula en la celda */}
           <span className="inline-flex justify-center items-center font-black text-primary text-[12px] bg-slate-50 px-4 py-1.5 rounded-full border border-slate-100 min-w-[110px] shadow-sm tracking-tight">
             {formatCurrency(amount, currency)}
           </span>
@@ -64,7 +85,6 @@ export const quoteColumns: ColumnDef<Quote>[] = [
     header: "Estado",
     cell: ({ row }) => {
       const status = row.original.status;
-
       const statusStyles: Record<QuoteStatus, string> = {
         [QuoteStatus.PENDIENTE]: "bg-amber-50 text-amber-600 border-amber-200",
         [QuoteStatus.APROBADO]:
@@ -86,6 +106,7 @@ export const quoteColumns: ColumnDef<Quote>[] = [
     accessorKey: "createdAt",
     header: "Fecha Emisión",
     cell: ({ row }) => {
+      // Usamos el mismo truco para evitar el desfase de fecha si createdAt viene como string de fecha pura
       const date = new Date(row.original.createdAt);
       return (
         <div className="flex items-center gap-2 text-slate-500">
@@ -93,7 +114,7 @@ export const quoteColumns: ColumnDef<Quote>[] = [
           <span className="text-[11px] font-bold uppercase tracking-tight">
             {date.toLocaleDateString("es-PE", {
               day: "2-digit",
-              month: "2-digit",
+              month: "short",
               year: "numeric",
             })}
           </span>

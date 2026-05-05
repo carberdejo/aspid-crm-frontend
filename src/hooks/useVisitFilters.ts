@@ -1,50 +1,53 @@
 // src/hooks/useVisitFilters.ts
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { VisitFilter } from "@/interfaces/visit.interface";
 
 // src/hooks/useVisitFilters.ts
-export function useVisitFilters(initialDeptId: number) {
+export function useVisitFilters(
+  initialDeptId?: number,
+  initialUserId?: number,
+) {
+  // avoid synchronous state updates in effects
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [filters, setFilters] = useState<VisitFilter>({
-    departmentId: initialDeptId,
-    term: "",
+  const [queryFilters, setQueryFilters] = useState({
     startDate: undefined,
     endDate: undefined,
-    offset: 0,
     limit: 10,
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, term: searchTerm, offset: 0 }));
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  const filters = useMemo<VisitFilter>(
+    () => ({
+      ...queryFilters,
+      departmentId: initialDeptId,
+      userId: initialUserId, // Viene directo del store de Zustand
+      term: searchTerm,
+      offset: (page - 1) * queryFilters.limit,
+    }),
+    [queryFilters, initialDeptId, initialUserId, searchTerm, page],
+  );
 
   const handleDateChange = (
     type: "startDate" | "endDate",
     value: string | undefined,
   ) => {
-    setFilters((prev) => ({ ...prev, [type]: value, offset: 0 }));
+    setQueryFilters((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
     setPage(1);
   };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    setFilters((prev) => ({ ...prev, offset: (newPage - 1) * prev.limit! }));
   };
 
   const handleReset = () => {
     setSearchTerm("");
-    setFilters({
-      departmentId: initialDeptId,
-      term: "",
+    setQueryFilters({
       startDate: undefined,
       endDate: undefined,
-      offset: 0,
       limit: 10,
     });
     setPage(1);
@@ -54,13 +57,17 @@ export function useVisitFilters(initialDeptId: number) {
     searchTerm.length > 0 || !!filters.startDate || !!filters.endDate;
 
   return {
+    // Estados para el UI
     page,
     searchTerm,
     setSearchTerm,
+    // Objeto final para la API (React Query lo usará como dependencia)
     filters,
+    // Métodos
     handleDateChange,
     handlePageChange,
     handleReset,
+    // Helpers de UI
     hasFilters,
   };
 }

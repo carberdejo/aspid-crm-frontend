@@ -1,4 +1,4 @@
-import { UserRole } from './role-user.interface';
+import { UserRole } from "./role-user.interface";
 
 export interface ApiResponse<T> {
   code: number;
@@ -11,7 +11,7 @@ export interface ApiErrorResponse {
   errors: string[] | null;
 }
 
-export interface ResponseCreate{
+export interface ResponseCreate {
   message: string;
 }
 
@@ -48,12 +48,11 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
-
 export interface RefreshTokenResponse {
   accessToken: string;
 }
 
-export interface RefeshPayload{
+export interface RefeshPayload {
   sub: string;
   sessionId: string;
 }
@@ -71,12 +70,12 @@ export interface LoginDto {
 export interface GenericFilters {
   limit?: number;
   offset?: number;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
   // Permite otros filtros dinámicos
 }
 
-export interface Logout{
+export interface Logout {
   sessionId: string;
   allDevices?: boolean; // Si true, cierra todas las sesiones excepto la actual
 }

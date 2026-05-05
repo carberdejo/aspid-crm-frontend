@@ -13,6 +13,7 @@ import {
   FileText,
   ClipboardList,
 } from "lucide-react";
+import PageHeader from "@/components/common/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useVisitDetail } from "@/hooks";
@@ -44,17 +45,23 @@ export default function VisitDetailPage({ params }: Props) {
     <div className="space-y-8 animate-in fade-in duration-500 pb-12">
       {/* HEADER DE ACCIÓN */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <Button
-          variant="ghost"
-          onClick={() => router.back()}
-          className="w-fit gap-2 text-slate-400 hover:text-primary font-bold uppercase text-[10px] tracking-widest p-0 hover:bg-transparent"
-        >
-          <ArrowLeft size={16} /> Volver al listado
-        </Button>
+        <div className="space-y-2">
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="w-fit gap-2 text-slate-400 hover:text-primary font-bold uppercase text-[10px] tracking-widest p-0 hover:bg-transparent"
+          >
+            <ArrowLeft size={16} /> Volver al listado
+          </Button>
+          <PageHeader
+            title="Visita Técnica"
+            subtitle={`ID: ${visit.id}`}
+            icon={MapPin}
+            iconColor="secondary"
+            variant="compact"
+          />
+        </div>
         <div className="flex gap-3">
-          <Badge className="bg-primary/10 text-primary border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
-            ID Visita: #{visit.id}
-          </Badge>
           <Badge className="bg-secondary text-white border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
             Completada
           </Badge>

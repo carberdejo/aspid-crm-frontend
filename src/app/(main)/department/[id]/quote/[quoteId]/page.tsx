@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import { useQuoteDetail } from "@/hooks/useQuotes";
+import PageHeader from "@/components/common/PageHeader";
 import {
   ArrowLeft,
   Building2,
@@ -74,21 +75,22 @@ export default function QuoteDetailPage({ params }: PageProps) {
             />
             Volver al listado
           </Button>
-          <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-black text-primary uppercase tracking-tighter">
-              Cotización{" "}
-              <span className="text-secondary">{quote.quoteNumber}</span>
-            </h1>
-            <Badge
-              variant="outline"
-              className={`h-8 px-4 text-[11px] font-black uppercase border ${statusStyles[quote.status]}`}
-            >
-              {quote.status}
-            </Badge>
-          </div>
+          <PageHeader
+            title="Cotización"
+            subtitle={`Ref. ${quote.quoteNumber}`}
+            icon={FileText}
+            iconColor="accent"
+            variant="compact"
+          />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          <Badge
+            variant="outline"
+            className={`h-8 px-4 text-[11px] font-black uppercase border ${statusStyles[quote.status]}`}
+          >
+            {quote.status}
+          </Badge>
           <Button className="h-12 px-8 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-900/10">
             Descargar PDF
           </Button>

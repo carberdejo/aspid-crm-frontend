@@ -4,6 +4,7 @@ import {
   User, Mail, Phone, Globe, Shield, Monitor, 
   Clock, MapPin, Loader2, LogOut, Building2 
 } from "lucide-react";
+import PageHeader from "@/components/common/PageHeader";
 import {  useTerminateSession, useTerminateAllSessions } from "@/hooks";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -69,34 +70,19 @@ export default function ProfilePage() {
 
   
 console.log("¿Modal abierto?:", confirmConfig.isOpen, "Tipo:", confirmConfig.type);
-  return (
+   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
       
       {/* --- HEADER DE PERFIL --- */}
-      <div className="flex flex-col md:flex-row items-center gap-6 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-        <div className="absolute right-0 top-0 p-10 opacity-5 pointer-events-none">
-          <User size={120} />
-        </div>
-        
-        <div className="h-24 w-24 rounded-2xl bg-primary flex items-center justify-center text-white text-4xl font-black shadow-lg shadow-primary/20 shrink-0">
-          {profile?.firstName[0]}{profile?.lastName[0]}
-        </div>
-        
-        <div className="text-center md:text-left space-y-1">
-          <h1 className="text-4xl font-black text-primary uppercase tracking-tighter leading-none">
-            {profile?.firstName} {profile?.lastName}
-          </h1>
-          <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mt-3">
-            <Badge className="bg-secondary text-white border-none uppercase text-[10px] font-black px-3 tracking-widest">
-              {profile?.role}
-            </Badge>
-            <div className="h-1 w-1 bg-slate-300 rounded-full" />
-            <span className="text-xs text-slate-400 font-bold tracking-widest uppercase">
-              COD: {profile?.codUser}
-            </span>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title={`${profile?.firstName} ${profile?.lastName}`}
+        subtitle={profile?.role}
+        icon={User}
+        iconColor="primary"
+        count={profile?.codUser ? 1 : 0}
+        countLabel={`COD: ${profile?.codUser}`}
+        variant="compact"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         

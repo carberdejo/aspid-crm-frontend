@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft, Mail, Phone, Building2, Briefcase, Loader2, MapPin, Hash } from 'lucide-react';
+import PageHeader from '@/components/common/PageHeader';
 import { useClientDetail } from '@/hooks/useClientDetail';
 import { RegisterContactModal } from '@/components';
 
@@ -27,40 +28,23 @@ export default function ClientContactsPage() {
     <div className="p-8 space-y-8 bg-slate-50/30 min-h-screen">
       
       {/* HEADER DINÁMICO CON DATOS DEL CLIENTE */}
-      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-4">
-            <button 
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-[10px] font-black text-slate-400 hover:text-secondary transition-colors uppercase tracking-[0.2em]"
-            >
-              <ChevronLeft size={14} /> Volver a Cartera
-            </button>
-            
-            <div className="flex items-start gap-5">
-              <div className="p-4 bg-primary text-white rounded-2xl shadow-xl shadow-primary/20">
-                <Building2 size={32} />
-              </div>
-              <div>
-                <h1 className="text-4xl font-black text-primary tracking-tighter uppercase leading-none">
-                  {client?.commercialName}
-                </h1>
-                <div className="flex flex-wrap items-center gap-4 mt-3">
-                  <div className="flex items-center gap-1.5 text-slate-500">
-                    <Hash size={14} className="text-secondary" />
-                    <span className="text-xs font-bold">RUC: {client?.ruc}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-slate-500">
-                    <MapPin size={14} className="text-secondary" />
-                    <span className="text-xs font-medium uppercase tracking-tight">{client?.address}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <RegisterContactModal clientId={+clientId} />
-        </div>
+      <div className="space-y-6">
+        <button 
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-[10px] font-black text-slate-400 hover:text-secondary transition-colors uppercase tracking-[0.2em]"
+        >
+          <ChevronLeft size={14} /> Volver a Cartera
+        </button>
+        
+        <PageHeader
+          title={client?.commercialName || "Cliente"}
+          subtitle={`${client?.businessName || ""} • ${client?.address || ""}`}
+          icon={Building2}
+          iconColor="secondary"
+          count={contacts.length}
+          countLabel="contactos"
+          action={<RegisterContactModal clientId={+clientId} />}
+        />
       </div>
 
       {/* GRID DE CONTACTOS (Usando la data del mismo objeto) */}

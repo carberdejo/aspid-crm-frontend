@@ -1,6 +1,8 @@
 'use client';
 
 import { use, useState } from 'react';
+import { MapPin } from 'lucide-react';
+import PageHeader from '@/components/common/PageHeader';
 import { useVisits } from '@/hooks/useVisits';
 import { VisitFilter } from '@/interfaces/visit.interface';
 import { DataTable } from '@/components';
@@ -31,16 +33,14 @@ export default function VisitasPage({ params }: VisitasPageProps) {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-black text-primary uppercase tracking-tighter">
-            Listado de <span className="text-secondary">Visitas</span>
-          </h2>
-          <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">
-            Gestión técnica y comercial del departamento
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Visitas"
+        subtitle="Gestión técnica y comercial del departamento"
+        icon={MapPin}
+        iconColor="secondary"
+        count={total}
+        countLabel="visitas"
+      />
 
       <DataTable
         columns={visitColumns}

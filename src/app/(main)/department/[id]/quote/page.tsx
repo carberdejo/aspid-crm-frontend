@@ -2,6 +2,8 @@
 "use client";
 
 import { use } from "react";
+import { FileText } from "lucide-react";
+import PageHeader from "@/components/common/PageHeader";
 import { DataTable } from "@/components";
 import { quoteColumns } from "@/components/quote/table/QuoteColumns";
 import { useQuotes } from "@/hooks/useQuotes";
@@ -37,14 +39,14 @@ export default function QuotesPage({
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">
-      <header>
-        <h2 className="text-3xl font-black text-primary uppercase tracking-tighter">
-          Listado de <span className="text-secondary">Cotizaciones</span>
-        </h2>
-        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-          Control de presupuestos y ofertas comerciales
-        </p>
-      </header>
+      <PageHeader
+        title="Cotizaciones"
+        subtitle="Control de presupuestos y ofertas comerciales"
+        icon={FileText}
+        iconColor="accent"
+        count={total}
+        countLabel="cotizaciones"
+      />
 
       <DataTable
         columns={quoteColumns}

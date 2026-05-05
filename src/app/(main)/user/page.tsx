@@ -1,6 +1,7 @@
 "use client";
 
 import { Users } from "lucide-react";
+import PageHeader from "@/components/common/PageHeader";
 import { DataTable } from "@/components/shared/data-table/DataTable";
 import { columns } from "@/components/user/table/columns";
 import { useUsers } from "@/hooks/useUsers";
@@ -34,23 +35,16 @@ export default function UserPage() {
 
   return (
     <div className="p-4 lg:p-8 space-y-6 animate-in fade-in duration-500">
-      {/* Header Minimalista */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-primary rounded-xl text-white shadow-lg shadow-primary/20">
-            <Users size={24} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-black text-primary tracking-tighter uppercase leading-none">
-              Usuarios
-            </h1>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">
-              Gestión de Personal ({total})
-            </p>
-          </div>
-        </div>
-        <RegisterModal />
-      </div>
+      {/* Header */}
+      <PageHeader
+        title="Usuarios"
+        subtitle="Gestión de Personal"
+        icon={Users}
+        iconColor="primary"
+        count={total}
+        countLabel="usuarios"
+        action={<RegisterModal />}
+      />
 
       <DataTable
         columns={columns}

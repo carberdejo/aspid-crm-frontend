@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
+import { Briefcase } from "lucide-react";
+import PageHeader from "@/components/common/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ClipboardList, FileText, ShoppingCart } from "lucide-react";
 import { useHeaderStore } from "@/store/useHeaderStore";
@@ -48,13 +50,13 @@ export default function DepartmentPage() {
     <div className="space-y-6 bg-transparent">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
         {/* LADO IZQUIERDO: Identidad del Departamento */}
-        <div className="flex flex-col">
-          <h1 className="text-5xl font-black text-primary leading-none tracking-tighter lowercase">
-            {department.name}
-          </h1>
-          {/* Línea decorativa con gradiente sutil */}
-          <div className="h-2 w-20 bg-linear-to-r from-secondary to-orange-400 mt-2 rounded-full" />
-        </div>
+        <PageHeader
+          title={department.name}
+          subtitle="Gestión de Operaciones"
+          icon={Briefcase}
+          iconColor="primary"
+          variant="compact"
+        />
 
         {/* LADO DERECHO: Acciones con Estilo Premium */}
         <div className="flex items-center gap-3">

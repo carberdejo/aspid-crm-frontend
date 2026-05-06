@@ -72,10 +72,15 @@ export interface GenericFilters {
   offset?: number;
   startDate?: string;
   endDate?: string;
-  // Permite otros filtros dinámicos
+  order?: SortOrder;
 }
 
 export interface Logout {
   sessionId: string;
   allDevices?: boolean; // Si true, cierra todas las sesiones excepto la actual
+}
+
+export enum SortOrder {
+  ASC = "ASC",
+  DESC = "DESC",
 }

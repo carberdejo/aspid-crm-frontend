@@ -42,7 +42,7 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
   const handleUpdate = async (values: Partial<QuoteFormValues>) => {
     console.log("Datos enviados al actualizar:", values); // Paso 1: Ver si la función se dispara
     try {
-      await updateQuote({
+      updateQuote({
         id: quote.id,
         data: {
           ...values,
@@ -50,7 +50,7 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
           contactId: Number(values.contactId),
           userId: Number(quote.userId),
           createdAt: values.createdAt ? new Date(values.createdAt) : undefined,
-        },
+        } as QuoteCreateDto,
       });
       setIsEditOpen(false);
     } catch (error) {

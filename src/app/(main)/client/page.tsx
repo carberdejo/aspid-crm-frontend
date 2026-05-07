@@ -4,11 +4,18 @@ import { Building2 } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { useClients } from "@/hooks";
 import { useClientFilters } from "@/hooks/useClientFilters"; // El nuevo hook
-import { ClientToolbar, ContactList, DataTable } from "@/components";
+import { ClientToolbar, DataTable } from "@/components";
 import { columns } from "../../../components/client/table/columnsClient";
 import { RegisterClientModal } from "@/components/client/form/RegisterClientModal";
+import { ContactSheet } from "@/components/client/table/ContactSheet";
+import { useState } from "react";
 
 export default function ClientsPage() {
+  const [selectedClient, setSelectedClient] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const pageSize = 10;
 
   // 1. Extraemos toda la lógica del Hook personalizado
@@ -31,6 +38,10 @@ export default function ClientsPage() {
 
   if (isError) return <ErrorDisplay message={error?.message} />;
 
+  const openContactSheet = (client: any) => {
+    setSelectedClient({ id: client.id, name: client.commercialName });
+    setIsSheetOpen(true);
+  };
   return (
     <div className="p-4 lg:p-8 space-y-6 animate-in fade-in duration-500">
       <PageHeader
@@ -50,9 +61,10 @@ export default function ClientsPage() {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         isLoading={isLoading}
-        renderSubComponent={({ row }) => (
-          <ContactList clientId={row.original.id} />
-        )}
+        meta={{ openContactSheet }} // Pasamos la función al meta de la tabla
+        // renderSubComponent={({ row }) => (
+        //   <ContactList clientId={row.original.id} />
+        // )}
         filters={
           <ClientToolbar
             searchValue={searchTerm}
@@ -61,6 +73,13 @@ export default function ClientsPage() {
             hasFilters={hasFilters}
           />
         }
+      />
+
+      <ContactSheet
+        clientId={selectedClient?.id || null}
+        clientName={selectedClient?.name || ""}
+        isOpen={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
       />
     </div>
   );

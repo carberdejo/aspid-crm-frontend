@@ -1,49 +1,34 @@
-'use client';
+"use client";
 
-import { ColumnDef } from '@tanstack/react-table';
-import { ChevronRight, ChevronDown, Building2, UserCircle, MoreHorizontal, Edit, Eye } from 'lucide-react';
-import { ClientListItem } from '@/interfaces/client.interface';
-import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
+import { ColumnDef } from "@tanstack/react-table";
+import { ChevronRight, Building2, UserCircle } from "lucide-react";
+import { ClientListItem } from "@/interfaces/client.interface";
+
+import { cn } from "@/lib";
+import Link from "next/link";
+import { ActionCellClient } from "./ActionCellClient";
+
+// type ClientTableMeta = {
+//   openContactSheet?: (client: ClientListItem) => void;
+// };
 
 export const columns: ColumnDef<ClientListItem>[] = [
   {
-    id: 'expander',
-    header: () => null,
-    cell: ({ row }) => {
-      // Solo permitimos expandir si el conteo de contactos es > 0
-      // const canExpand = row.original.contacts > 0;
-      const hasContacts = row.original.contacts > 0;
-      return (
-      <button
-        onClick={row.getToggleExpandedHandler()}
-        className={`p-1 rounded-md transition-colors ${
-        hasContacts ? 'text-secondary' : 'text-gray-300' // Naranja si hay, gris si no
-      }`}
-      >
-        {row.getIsExpanded() ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-      </button>
-    );
-    },
-  },
-  {
-    accessorKey: 'commercialName',
-    header: 'Cliente',
+    accessorKey: "commercialName",
+    header: "Cliente",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary/5 rounded-lg text-primary">
+        <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-slate-400 group-hover:text-primary group-hover:bg-primary/5 transition-colors">
           <Building2 size={16} />
         </div>
-        <div className="flex flex-col">
-          <span className="font-bold text-gray-900 leading-none">
+        <div className="flex flex-col min-w-0">
+          <Link
+            href={`/client/${row.original.id}/contacts`}
+            className="font-black text-primary leading-none hover:text-secondary transition-colors  italic uppercase tracking-tight"
+          >
             {row.original.commercialName}
-          </span>
-          <span className="text-[10px] text-muted-foreground uppercase tracking-tighter mt-1">
+          </Link>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-widest mt-1.5 opacity-70">
             {row.original.businessName}
           </span>
         </div>
@@ -51,62 +36,73 @@ export const columns: ColumnDef<ClientListItem>[] = [
     ),
   },
   {
-    accessorKey: 'ruc',
-    header: 'RUC',
+    accessorKey: "ruc",
+    header: "RUC",
     cell: ({ row }) => (
       <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
-        {row.getValue('ruc')}
+        {row.getValue("ruc")}
       </span>
     ),
   },
   {
-    accessorKey: 'address',
-    header: 'Dirección',
+    accessorKey: "address",
+    header: "Dirección",
     cell: ({ row }) => (
       <span className="text-xs text-gray-500 truncate max-w-[250px] block">
-        {row.getValue('address')}
+        {row.getValue("address")}
       </span>
     ),
   },
   {
-    accessorKey: 'contacts',
-    header: 'Contactos',
-    cell: ({ row }) => (
-      <div className="flex items-center gap-1.5">
-        <div className="flex -space-x-2">
-          {/* Un indicador visual de que hay personas registradas */}
-          <div className="h-6 w-6 rounded-full border-2 border-white bg-secondary/10 flex items-center justify-center text-secondary">
-            <UserCircle size={14} />
-          </div>
-        </div>
-        <span className="text-xs font-bold text-gray-700">
-          {row.original.contacts}
-        </span>
-      </div>
-    ),
-  },
-  {
-    id: 'actions',
-    header: 'Acciones',
-    cell: ({ row }) => {
-      const client = row.original;
+    accessorKey: "contacts",
+    header: "Contactos",
+    cell: ({ row, table }) => {
+      const meta = table.options.meta as any;
+      const count = row.original.contacts;
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem className="gap-2 cursor-pointer">
-              <Eye size={14} /> Ver Detalle
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 cursor-pointer text-secondary">
-              <Edit size={14} /> Editar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div
+          onClick={() => meta?.openContactSheet(row.original)}
+          className={cn(
+            "inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all cursor-pointer group/badge",
+            count > 0
+              ? "bg-slate-50 border-slate-100 hover:border-secondary/30 hover:bg-secondary/5"
+              : "bg-slate-50/50 border-transparent opacity-40 grayscale",
+          )}
+        >
+          <div
+            className={cn(
+              "h-5 w-5 rounded-full flex items-center justify-center transition-colors",
+              count > 0
+                ? "bg-secondary text-white"
+                : "bg-slate-200 text-slate-400",
+            )}
+          >
+            <UserCircle size={12} />
+          </div>
+          <span
+            className={cn(
+              "text-[11px] font-black tracking-tighter",
+              count > 0
+                ? "text-slate-700 group-hover/badge:text-secondary"
+                : "text-slate-400",
+            )}
+          >
+            {count}
+          </span>
+          {count > 0 && (
+            <ChevronRight
+              size={10}
+              className="text-slate-300 group-hover/badge:text-secondary group-hover/badge:translate-x-0.5 transition-all"
+            />
+          )}
+        </div>
       );
     },
+  },
+  {
+    id: "actions",
+    header: "Acciones",
+    cell: ({ row }) => <ActionCellClient client={row.original} />,
   },
 ];

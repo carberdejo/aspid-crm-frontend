@@ -57,6 +57,7 @@ export interface Contact {
   lastName: string;
   position: string;
   phone: string;
+  countryCode: string;
   clientId: string;
   email: string;
 }

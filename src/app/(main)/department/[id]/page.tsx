@@ -117,11 +117,12 @@ export default function DepartmentPage() {
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-left">
             Agendar Fechas
           </h3>
-          <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100 flex items-center justify-center">
+          {/* <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100 flex items-center justify-center">
             <p className="text-slate-300 font-bold uppercase text-[10px] tracking-widest italic">
               Calendario (Pendiente Backend)
             </p>
-          </div>
+          </div> */}
+          <DailyActivityCard />
         </div>
       </div>
     </div>

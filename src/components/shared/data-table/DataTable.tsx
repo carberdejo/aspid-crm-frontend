@@ -69,76 +69,78 @@ export function DataTable<TData, TValue>({
       {filters && <div className="w-full">{filters}</div>}
 
       <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-primary text-white">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-4 py-3.5 text-left font-bold uppercase tracking-widest text-[10px]"
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="divide-y divide-border">
-            {isLoading ? (
-              <tr>
-                <td colSpan={columns.length} className="h-48 text-center">
-                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                    <Loader2 className="h-8 w-8 animate-spin text-secondary" />
-                    <span className="text-xs font-medium uppercase tracking-tighter">
-                      Sincronizando datos...
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            ) : data.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                // 6. Usar Fragment para permitir la fila extra del subcomponente
-                <React.Fragment key={row.id}>
-                  <tr className="hover:bg-muted/30 transition-colors group">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3 text-gray-600">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* 7. Renderizado condicional de la fila de contactos */}
-                  {row.getIsExpanded() && renderSubComponent && (
-                    <tr className="bg-muted/10">
-                      <td
-                        colSpan={row.getVisibleCells().length}
-                        className="p-0"
-                      >
-                        {renderSubComponent({ row })}
-                      </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[700px]">
+            <thead className="bg-primary text-white">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-4 py-3.5 text-left font-bold uppercase tracking-widest text-[10px]"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="divide-y divide-border">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={columns.length} className="h-48 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+                      <span className="text-xs font-medium uppercase tracking-tighter">
+                        Sincronizando datos...
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ) : data.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  // 6. Usar Fragment para permitir la fila extra del subcomponente
+                  <React.Fragment key={row.id}>
+                    <tr className="hover:bg-muted/30 transition-colors group">
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id} className="px-4 py-3 text-gray-600">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      ))}
                     </tr>
-                  )}
-                </React.Fragment>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="h-32 text-center text-muted-foreground italic text-xs uppercase"
-                >
-                  No se encontraron registros en el sistema.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+
+                    {/* 7. Renderizado condicional de la fila de contactos */}
+                    {row.getIsExpanded() && renderSubComponent && (
+                      <tr className="bg-muted/10">
+                        <td
+                          colSpan={row.getVisibleCells().length}
+                          className="p-0"
+                        >
+                          {renderSubComponent({ row })}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="h-32 text-center text-muted-foreground italic text-xs uppercase"
+                  >
+                    No se encontraron registros en el sistema.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {showPagination && total > 0 && (

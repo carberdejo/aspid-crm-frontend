@@ -46,9 +46,11 @@ export const columns: ColumnDef<ClientListItem>[] = [
   },
   {
     accessorKey: "address",
-    header: "Dirección",
+    header: () => (
+      <span className="hidden md:inline">DIRECCIÓN</span> // Oculto en móvil
+    ),
     cell: ({ row }) => (
-      <span className="text-xs text-gray-500 truncate max-w-[250px] block">
+      <span className="text-xs text-gray-500 truncate max-w-[250px] hidden md:block">
         {row.getValue("address")}
       </span>
     ),

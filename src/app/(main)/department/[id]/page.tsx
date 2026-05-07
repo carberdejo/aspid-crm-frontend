@@ -14,6 +14,8 @@ import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
 import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
 import { useAuthStore } from "@/store";
+import { VisitStatsGrid } from "@/components/department/VisitStatsGrid";
+import { VisitPerformancePanel } from "@/components/department/VisitPerformancePanel";
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -45,6 +47,8 @@ export default function DepartmentPage() {
       </div>
     );
   }
+
+  // if (isLoading) return <SkeletonGrid />; // Un loader bonito
 
   return (
     <div className="space-y-6 bg-transparent">
@@ -97,7 +101,12 @@ export default function DepartmentPage() {
       {/* 2. Rejilla de Información Superior */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <QuoteSummaryCard userId={user?.sub ?? 0} />
-        <DailyActivityCard />
+        {/* <DailyActivityCard /> */}
+        {/* <VisitStatsGrid userId={user?.sub ?? 0} /> */}
+        {/* Rendimiento de Campo (Centro - Dale más espacio) */}
+        <div className="lg:col-span-5">
+          <VisitPerformancePanel userId={user?.sub ?? 0} />
+        </div>
         <OperationCards />
       </div>
 

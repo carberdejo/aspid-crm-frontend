@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,6 +50,7 @@ import { Badge } from "@/components/ui/badge";
 import { useUsers } from "@/hooks";
 import { UserRole } from "@/interfaces";
 import { useDepartmentStore } from "@/store";
+import { countryList } from "@/lib";
 
 export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
   const { createUser, isCreating } = useUsers();
@@ -58,7 +60,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
   // const departments = useQueryDeparments.data || [];
   const { departments } = useDepartmentStore();
 
-  const form = useForm<PersonalFormValues>({
+  const form = useForm({
     resolver: zodResolver(personalSchema),
     defaultValues: {
       codUser: "",
@@ -70,7 +72,9 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
       departmentIds: [],
       password: "",
       country: "Peru",
-    },
+      countryCode: "51",
+      countryIso: "PE",
+    } as PersonalFormValues,
   });
 
   const generatePassword = () => {
@@ -78,13 +82,24 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
     form.setValue("password", pass, { shouldValidate: true });
   };
 
+  const onSubmit = (data: PersonalFormValues) => {
+    // Desestructuramos para quitar countryIso antes de enviar
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { countryIso, ...dataToSubmit } = data;
+
+    // Enviamos al hook de creación
+    createUser(dataToSubmit, {
+      onSuccess: () => {
+        onSuccess();
+        form.reset();
+      },
+    });
+  };
+
   return (
     <Form {...form}>
       {/* Añadimos un padding inferior para que el último campo no pegue con los botones */}
-      <form
-        onSubmit={form.handleSubmit((v) => createUser(v, { onSuccess }))}
-        className="space-y-6 pb-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-4">
         <div className="grid grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -253,50 +268,133 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-semibold text-gray-700">
-                  TELÉFONO
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="987..."
-                    {...field}
-                    className="h-11 border-gray-200"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* SECCIÓN DE TELÉFONO INTELIGENTE */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* CAMPO: CÓDIGO DE PAÍS + TELÉFONO */}
+          <div className="space-y-2">
+            <FormLabel className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+              Teléfono de Contacto (WhatsApp)
+            </FormLabel>
+            <div className="flex gap-2">
+              {/* Selector de Código de País */}
+              <FormField
+                control={form.control}
+                name="countryIso"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-[100px] h-11 justify-between border-gray-200 bg-gray-50/50 font-bold",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value
+                              ? `+${countryList.find((c) => c.iso === field.value)?.code}`
+                              : "+??"}
+                            <ChevronsUpDown className="ml-1 h-3 w-3 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[300px] p-0" align="start">
+                        <Command>
+                          {/* Buscador de Shadcn */}
+                          <CommandInput
+                            placeholder="Escribe el nombre del país..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>País no encontrado.</CommandEmpty>
+                            <CommandGroup>
+                              {countryList.map((country) => (
+                                <CommandItem
+                                  key={country.iso}
+                                  // Combinamos nombre y código para que busque por ambos, y quitamos tildes
+                                  value={`${country.name} ${country.code} ${country.iso}`
+                                    .normalize("NFD")
+                                    .replace(/[\u0300-\u036f]/g, "")
+                                    .toLowerCase()}
+                                  onSelect={() => {
+                                    form.setValue("countryIso", country.iso);
+                                    form.setValue("countryCode", country.code);
+                                    form.setValue(
+                                      "country",
+                                      country.name || "",
+                                    );
+                                    form.trigger("phone"); // Valida al instante
+                                  }}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {/* Puedes añadir un span con el nombre real aquí para la vista */}
+                                    <span className="text-[11px] font-bold uppercase">
+                                      {country.name}
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] font-black text-secondary">
+                                    +{country.code}
+                                  </span>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )}
+              />
+
+              {/* Input de Número Local */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    {/* El FormLabel ya lo tienes arriba, aquí solo el control */}
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="987 654 321"
+                        className={cn(
+                          "h-11 border-gray-200 font-bold",
+                          form.formState.errors.phone &&
+                            "border-destructive focus-visible:ring-destructive",
+                        )}
+                      />
+                    </FormControl>
+                    {/* CRÍTICO: Este componente es el que muestra el texto rojo de Zod */}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormMessage />
+          </div>
+
+          {/* CAMPO: PAÍS DE RESIDENCIA (Sugerido pero editable) */}
           <FormField
             control={form.control}
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-gray-700">
-                  PAÍS
+                <FormLabel className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                  País de Residencia / Origen
                 </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="h-11 border-gray-200">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Peru">Perú 🇵🇪</SelectItem>
-                    <SelectItem value="Chile">Chile 🇨🇱</SelectItem>
-                    <SelectItem value="Mexico">México 🇲🇽</SelectItem>
-                    <SelectItem value="Venezuela">Venezuela 🇻🇪</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Ej: Perú"
+                    className="h-11 border-gray-200 bg-white"
+                  />
+                </FormControl>
+                <FormDescription className="text-[9px] uppercase font-bold text-slate-400">
+                  Se autocompleta con el teléfono, pero puedes editarlo
+                  manualmente.
+                </FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -366,7 +464,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
                     <SelectItem value={UserRole.ADMIN}>
                       Administrador
                     </SelectItem>
-                    <SelectItem value={UserRole.USER}>Técnico</SelectItem>
+                    <SelectItem value={UserRole.USER}>Usuario</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>

@@ -1,4 +1,5 @@
 import { UserRole } from "./role-user.interface";
+import { Phone } from "lucide-react";
 
 export interface ApiResponse<T> {
   code: number;
@@ -32,6 +33,8 @@ export interface User {
   role: UserRole;
   departments: string[];
   isActive: boolean;
+  phone: string;
+  countryCode: string;
 }
 
 export interface Payload {

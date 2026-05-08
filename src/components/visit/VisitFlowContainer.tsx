@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { RegisterContactModal } from "..";
 import { RegisterClientModal } from "../client/form/RegisterClientModal";
 import { RegisterVisitModal } from "./RegisterVisitModal";
-import { useVisits } from "@/hooks/useVisits";
+import { useVisits } from "@/hooks/visit/useVisits";
 import { useAuthStore } from "@/store/useAuthStore";
 import { VisitCreateDto } from "@/interfaces/visit.interface";
 import {

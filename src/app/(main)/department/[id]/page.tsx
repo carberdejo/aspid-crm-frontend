@@ -14,8 +14,8 @@ import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
 import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
 import { useAuthStore } from "@/store";
-import { VisitStatsGrid } from "@/components/department/VisitStatsGrid";
 import { VisitPerformancePanel } from "@/components/department/VisitPerformancePanel";
+import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPurchaseOrderModal";
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -91,6 +91,7 @@ export default function DepartmentPage() {
             <ShoppingCart size={18} className="text-slate-400" />
             Orden de Compra
           </Button>
+          <RegisterPurchaseOrderModal />
         </div>
       </div>
 

@@ -1,18 +1,16 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Search, FilterX, Calendar } from "lucide-react";
+import { Search, FilterX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DateRangeFilter } from "@/components";
 
 interface VisitToolbarProps {
   searchValue: string;
   onSearch: (val: string) => void;
   startDate?: string;
   endDate?: string;
-  onDateChange: (
-    type: "startDate" | "endDate",
-    val: string | undefined,
-  ) => void;
+  onDateChange: (dates: { startDate?: string; endDate?: string }) => void;
   onReset: () => void;
   hasFilters: boolean;
 }
@@ -41,32 +39,15 @@ export function VisitToolbar({
         </div>
 
         {/* Rango de Fechas */}
-        <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-200">
-          <div className="flex items-center gap-2 px-2 text-slate-500">
-            <Calendar size={14} />
-            <span className="text-[10px] font-bold uppercase">Desde</span>
-          </div>
-          <Input
-            type="date"
-            value={startDate || ""}
-            onChange={(e) =>
-              onDateChange("startDate", e.target.value || undefined)
-            }
-            className="h-8 border-none bg-transparent text-xs w-32 focus-visible:ring-0"
-          />
-          <div className="w-[1px] h-4 bg-slate-200" />
-          <div className="flex items-center gap-2 px-2 text-slate-500">
-            <span className="text-[10px] font-bold uppercase">Hasta</span>
-          </div>
-          <Input
-            type="date"
-            value={endDate || ""}
-            onChange={(e) =>
-              onDateChange("endDate", e.target.value || undefined)
-            }
-            className="h-8 border-none bg-transparent text-xs w-32 focus-visible:ring-0"
-          />
-        </div>
+        <DateRangeFilter
+          startDate={startDate}
+          endDate={endDate}
+          onDateChange={onDateChange}
+          title="Rango de Visita"
+          // Estilo específico para el departamento de Visitas (Orange/Amber)
+          className="border-orange-400 text-orange-600 hover:border-orange-500 hover:text-orange-700 active:text-orange-700 bg-orange-50/20"
+          btnColor="bg-orange-500 hover:bg-orange-600"
+        />
 
         {hasFilters && (
           <Button

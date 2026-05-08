@@ -1,7 +1,5 @@
 import { DepartmentService } from "@/services";
 import { useQuery } from "@tanstack/react-query";
-import { Department } from "@/interfaces";
-import { off } from "process";
 
 export const useDepartment = () => {
   const useQueryDeparments = useQuery({

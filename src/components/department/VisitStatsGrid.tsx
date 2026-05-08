@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useVisitStats } from "@/hooks/useVisitStats";
+import { useVisitStats } from "@/hooks/analitycs/useVisitStats";
 import {
   DropdownMenu,
   DropdownMenuContent,

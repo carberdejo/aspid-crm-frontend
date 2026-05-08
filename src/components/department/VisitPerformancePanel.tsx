@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn, DateFilterType } from "@/lib/utils";
-import { useVisitStats } from "@/hooks/useVisitStats";
+import { useVisitStats } from "@/hooks/analitycs/useVisitStats";
 import { Skeleton } from "../ui/skeleton";
 
 export function VisitPerformancePanel({ userId }: { userId: number }) {

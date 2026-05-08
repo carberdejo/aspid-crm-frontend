@@ -6,8 +6,8 @@ import { FileText } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { DataTable } from "@/components";
 import { quoteColumns } from "@/components/quote/table/QuoteColumns";
-import { useQuotes } from "@/hooks/useQuotes";
-import { useQuoteFilters } from "@/hooks/useQuoteFilters"; // Hook nuevo
+import { useQuotes } from "@/hooks/quote/useQuotes";
+import { useQuoteFilters } from "@/hooks/quote/useQuoteFilters"; // Hook nuevo
 import { QuoteFiltersTable } from "@/components/quote/table/QuoteFiltersTable";
 import { useAuthStore } from "@/store";
 

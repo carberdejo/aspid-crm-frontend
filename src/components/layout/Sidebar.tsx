@@ -11,7 +11,7 @@ import { useSidebarStore } from "@/store/useSidebarStore";
 import { generateNavSections } from "./NavItems";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDepartmentStore } from "@/store/useDepartmentStore";
-import { useDepartments } from "@/hooks/useDepartment";
+import { useDepartments } from "@/hooks/department/useDepartment";
 
 export default function Sidebar() {
   const pathname = usePathname();

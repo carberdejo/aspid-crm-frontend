@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RegisterQuoteModal } from "./RegisterQuoteModal";
-import { useQuotes } from "@/hooks/useQuotes"; // Tu hook actualizado
+import { useQuotes } from "@/hooks/quote/useQuotes"; // Tu hook actualizado
 import { useAuthStore } from "@/store/useAuthStore";
 import { QuoteFormValues } from "@/lib/schemas/quote";
 import { useVisitFlowStore } from "@/store";

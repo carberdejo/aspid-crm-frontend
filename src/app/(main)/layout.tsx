@@ -15,7 +15,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useDepartments } from "@/hooks/useDepartment";
+import { useDepartments } from "@/hooks/department/useDepartment";
 import { useDepartmentStore } from "@/store/useDepartmentStore";
 
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";

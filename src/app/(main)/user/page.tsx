@@ -4,8 +4,8 @@ import { Users } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { DataTable } from "@/components/shared/data-table/DataTable";
 import { columns } from "@/components/user/table/columns";
-import { useUsers } from "@/hooks/useUsers";
-import { useUserFilters } from "@/hooks/useUserFilters";
+import { useUsers } from "@/hooks/user/useUsers";
+import { useUserFilters } from "@/hooks/user/useUserFilters";
 import { DataTableToolbar, RegisterModal } from "@/components";
 
 export default function UserPage() {

@@ -64,7 +64,7 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
     accessorKey: "receivedAt",
     header: "Fecha Recepción",
     cell: ({ row }) => {
-      const date = new Date(row.original.receivedAt);
+      const date = new Date(`${row.original.receivedAt}T00:00:00`);
       return (
         <div className="flex items-center gap-2 text-slate-500">
           <CalendarIcon size={12} className="opacity-40" />

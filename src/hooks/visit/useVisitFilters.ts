@@ -1,7 +1,12 @@
 // src/hooks/useVisitFilters.ts
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { VisitFilter } from "@/interfaces/visit.interface";
 
+interface QueryFiltersState {
+  startDate?: string;
+  endDate?: string;
+  limit: number;
+}
 // src/hooks/useVisitFilters.ts
 export function useVisitFilters(
   initialDeptId?: number,
@@ -11,7 +16,7 @@ export function useVisitFilters(
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [queryFilters, setQueryFilters] = useState({
+  const [queryFilters, setQueryFilters] = useState<QueryFiltersState>({
     startDate: undefined,
     endDate: undefined,
     limit: 10,
@@ -28,13 +33,17 @@ export function useVisitFilters(
     [queryFilters, initialDeptId, initialUserId, searchTerm, page],
   );
 
-  const handleDateChange = (
-    type: "startDate" | "endDate",
-    value: string | undefined,
-  ) => {
+  const handleDateChange = (dates: {
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const sanitizedDates = {
+      startDate: dates.startDate || undefined,
+      endDate: dates.endDate || undefined,
+    };
     setQueryFilters((prev) => ({
       ...prev,
-      [type]: value,
+      ...sanitizedDates, // Aquí sobreescribimos ambos valores con lo que venga del componente
     }));
     setPage(1);
   };

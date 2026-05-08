@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { useQuoteDetail } from "@/hooks/useQuotes";
+import { useQuoteDetail } from "@/hooks/quote/useQuotes";
 import PageHeader from "@/components/common/PageHeader";
 import {
   ArrowLeft,

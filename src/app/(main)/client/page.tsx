@@ -3,7 +3,7 @@
 import { Building2 } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { useClients } from "@/hooks";
-import { useClientFilters } from "@/hooks/useClientFilters"; // El nuevo hook
+import { useClientFilters } from "@/hooks/client/useClientFilters"; // El nuevo hook
 import { ClientToolbar, DataTable } from "@/components";
 import { columns } from "../../../components/client/table/columnsClient";
 import { RegisterClientModal } from "@/components/client/form/RegisterClientModal";

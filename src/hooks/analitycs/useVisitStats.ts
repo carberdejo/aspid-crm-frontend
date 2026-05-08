@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { VisitMetricsQueryDto, VisitStatsResponse } from "@/interfaces";
+import { VisitStatsResponse } from "@/interfaces";
 import { analyticsService } from "@/services";
 import { DateFilterType } from "@/lib";
 

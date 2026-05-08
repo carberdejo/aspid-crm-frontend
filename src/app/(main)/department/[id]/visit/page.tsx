@@ -3,8 +3,8 @@
 import { use } from "react";
 import { MapPin } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
-import { useVisits } from "@/hooks/useVisits";
-import { useVisitFilters } from "@/hooks/useVisitFilters"; // Nuevo Hook
+import { useVisits } from "@/hooks/visit/useVisits";
+import { useVisitFilters } from "@/hooks/visit/useVisitFilters"; // Nuevo Hook
 import { DataTable } from "@/components";
 import { visitColumns } from "@/components/visit/table/VisitColumns";
 import { VisitRowDetails } from "@/components/visit/table/VisitRowDetails";

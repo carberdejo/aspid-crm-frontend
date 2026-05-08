@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../store/useAuthStore";
 import {
   ApiErrorResponse,
   LoginDto,
@@ -11,6 +10,7 @@ import { UserRole } from "@/interfaces";
 import { jwtDecode } from "jwt-decode";
 import { cookieUtils } from "@/lib/cookies";
 import { toast } from "sonner";
+import { useAuthStore } from "@/store";
 
 export const useAuth = () => {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useQuoteDetail, useQuotes } from "@/hooks/useQuotes";
+import { useQuoteDetail, useQuotes } from "@/hooks/quote/useQuotes";
 import { useState } from "react";
 import {
   AlertDialog,

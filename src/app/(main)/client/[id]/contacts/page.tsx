@@ -14,7 +14,7 @@ import {
   Edit,
 } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
-import { useClientDetail } from "@/hooks/useClientDetail";
+import { useClientDetail } from "@/hooks/client/useClientDetail";
 import { RegisterContactModal } from "@/components";
 import { Button } from "@/components/ui/button";
 import {

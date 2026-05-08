@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Search, FilterX, Calendar, SortAsc, SortDesc } from "lucide-react";
 import { PurchaseOrderFilters, SortOrder } from "@/interfaces";
+import { DateRangeFilter } from "@/components";
 
 interface Props {
   filters: PurchaseOrderFilters;
@@ -80,68 +81,15 @@ export function PurchaseOrderFiltersTable({
         </Select>
 
         {/* 3. POPOVER DE FECHAS (FILTROS AVANZADOS) */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={`h-12 rounded-xl border-slate-200 flex gap-2 font-black text-[10px] uppercase tracking-widest transition-all ${filters.startDate || filters.endDate ? "border-emerald-500 text-emerald-600 bg-emerald-50/30" : ""}`}
-            >
-              <Calendar className="size-4" />
-              Fechas
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-80 rounded-3xl p-6 shadow-2xl border-slate-100"
-            align="end"
-          >
-            <div className="space-y-4">
-              <h4 className="font-black text-primary uppercase text-xs">
-                Rango de Recepción
-              </h4>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                    Desde
-                  </label>
-                  <Input
-                    type="date"
-                    value={filters.startDate || ""}
-                    onChange={(e) =>
-                      onFilterChange({ startDate: e.target.value })
-                    }
-                    className="h-10 rounded-lg text-[10px] font-bold"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                    Hasta
-                  </label>
-                  <Input
-                    type="date"
-                    value={filters.endDate || ""}
-                    onChange={(e) =>
-                      onFilterChange({ endDate: e.target.value })
-                    }
-                    className="h-10 rounded-lg text-[10px] font-bold"
-                  />
-                </div>
-              </div>
-
-              {(filters.startDate || filters.endDate) && (
-                <Button
-                  onClick={() =>
-                    onFilterChange({ startDate: undefined, endDate: undefined })
-                  }
-                  variant="ghost"
-                  className="w-full text-[9px] font-black uppercase text-rose-500 hover:bg-rose-50"
-                >
-                  Resetear Fechas
-                </Button>
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <DateRangeFilter
+          startDate={filters.startDate}
+          endDate={filters.endDate}
+          onDateChange={onFilterChange} // Usamos la misma función genérica
+          title="Rango de Recepción"
+          // Definimos el color Emerald para Órdenes de Compra
+          className="border-emerald-500 text-emerald-600 hover:border-emerald-600 hover:text-emerald-700 active:text-emerald-700"
+          btnColor="bg-emerald-600 hover:bg-emerald-700"
+        />
 
         {/* 4. BOTÓN LIMPIAR TODO */}
         <Button

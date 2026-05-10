@@ -3,13 +3,14 @@ import { clientService } from '@/services/client.service';
 import {  ClientCreateDto, ClientFilters } from '@/interfaces/client.interface';
 import { toast } from 'sonner';
 import { ApiErrorResponse,  } from '@/interfaces';
+import { clientQueryKeys } from '@/lib/queryKeys';
 
 export const useClients = (filters: ClientFilters = {}) => {
 
   // const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['clients', filters],
+    queryKey: clientQueryKeys.list(filters),
     queryFn: () => clientService.getClients(filters),
     staleTime: 1000 * 60, // 5 minutos
   });

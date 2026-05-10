@@ -17,6 +17,7 @@ import {
 import { VisitFormValues } from "@/lib/schemas/visit";
 import { useVisitFlowStore } from "@/store";
 import { PaginatedResponse } from "@/interfaces";
+import { clientQueryKeys, contactQueryKeys } from "@/lib/queryKeys";
 
 export function VisitFlowContainer({
   trigger,
@@ -44,8 +45,9 @@ export function VisitFlowContainer({
 
   const handleClientCreated = useCallback(
     (newClient: ClienteCreateResponseItem) => {
+      // ✅ USA QUERY KEY NORMALIZADA
       queryClient.setQueryData(
-        ["clients", { limit: 10, name: "" }],
+        clientQueryKeys.list({ term: "", limit: 10 }),
         (old: PaginatedResponse<ClientListItem>) => {
           if (!old) return { items: [newClient], total: 1 };
           return {
@@ -55,6 +57,12 @@ export function VisitFlowContainer({
           };
         },
       );
+      
+      // ✅ También invalida la lista completa para refetch si es necesario
+      queryClient.invalidateQueries({
+        queryKey: clientQueryKeys.all,
+      });
+
       const newId = String(newClient.id);
       setNewClientId(newId);
       setSelectedClientId(newId);
@@ -78,18 +86,21 @@ export function VisitFlowContainer({
           targetClientId,
         );
 
+        // ✅ USA QUERY KEY NORMALIZADA
         queryClient.setQueryData(
-          ["contacts-client", targetClientId],
+          contactQueryKeys.byClient(targetClientId),
           (old: Contact[]) => {
             if (!old) return [newContact];
-            console.log({ data: [...old, newContact] });
+            console.log({ 
+              action: "Contact added to cache",
+              newContactCount: old.length + 1 
+            });
             return [...old, newContact];
           },
         );
 
-        queryClient.invalidateQueries({
-          queryKey: ["contacts-client", targetClientId],
-        });
+        // ✅ NO INVALIDAR INMEDIATAMENTE - Dejar que TanStack Query lo maneje naturalmente
+        // Esto evita race conditions donde invalidateQueries sobrescribe setQueryData
       }
 
       // 3. Mandamos el ID a Zustand y cerramos el modal
@@ -119,7 +130,7 @@ export function VisitFlowContainer({
         },
       });
     },
-    [user, departmentId, createVisitMutation],
+    [user, departmentId, createVisitMutation, closeAll],
   );
 
   // Abrimos especificando el flujo de Visita

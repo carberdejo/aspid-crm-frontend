@@ -16,6 +16,7 @@ import {
 import { PaginatedResponse, QuoteCreateDto, QuoteCurrency } from "@/interfaces";
 import { RegisterClientModal } from "@/components/client/form/RegisterClientModal";
 import { RegisterContactModal } from "@/components/client/form/RegisterContactModal";
+import { clientQueryKeys, contactQueryKeys } from "@/lib/queryKeys";
 
 export function QuoteFlowContainer({
   trigger,
@@ -47,8 +48,9 @@ export function QuoteFlowContainer({
   // 1. Manejar creación de cliente
   const handleClientCreated = useCallback(
     (newClient: ClienteCreateResponseItem) => {
+      // ✅ USA QUERY KEY NORMALIZADA
       queryClient.setQueryData(
-        ["clients", { limit: 10, name: "" }],
+        clientQueryKeys.list({ term: "", limit: 10 }),
         (old: PaginatedResponse<ClientListItem>) => {
           if (!old) return { items: [newClient], total: 1 };
           return {
@@ -58,6 +60,12 @@ export function QuoteFlowContainer({
           };
         },
       );
+      
+      // ✅ También invalida la lista completa para refetch si es necesario
+      queryClient.invalidateQueries({
+        queryKey: clientQueryKeys.all,
+      });
+
       const newId = String(newClient.id);
       setNewClientId(newId);
       setSelectedClientId(newId);
@@ -76,16 +84,19 @@ export function QuoteFlowContainer({
           : undefined;
 
       if (targetClientId) {
+        // ✅ USA QUERY KEY NORMALIZADA
         queryClient.setQueryData(
-          ["contacts-client", targetClientId],
+          contactQueryKeys.byClient(targetClientId),
           (old: Contact[]) => {
             if (!old) return [newContact];
             return [...old, newContact];
           },
         );
-        queryClient.invalidateQueries({
-          queryKey: ["contacts-client", targetClientId],
-        });
+        
+        // ✅ NO INVALIDAR INMEDIATAMENTE - Dejar que TanStack Query lo maneje naturalmente
+        // queryClient.invalidateQueries({
+        //   queryKey: contactQueryKeys.byClient(targetClientId),
+        // });
       }
 
       setNewContactId(String(newContact.id));

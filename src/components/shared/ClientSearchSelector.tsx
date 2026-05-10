@@ -58,9 +58,15 @@ export function ClientSearchSelector({
         onChange(newClientId);
         onClientChange?.(newClientId);
         clearNewClientId();
+      } else {
+        // ✅ MEJORADO: Log para debugging si no se encuentra
+        console.warn(
+          `⚠️ [ClientSearchSelector] Cliente ${newClientId} no encontrado en búsqueda actual`,
+          { searchedIn: clients.length, term: debouncedSearch }
+        );
       }
     }
-  }, [newClientId, clients, onChange, onClientChange, clearNewClientId]);
+  }, [newClientId, clients, onChange, onClientChange, clearNewClientId, debouncedSearch]);
 
   const selectedClient = clients.find((c) => String(c.id) === value);
 

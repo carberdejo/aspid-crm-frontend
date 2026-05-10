@@ -34,7 +34,18 @@ export function ContactSearchSelector({ value, onChange, clientId, disabled }: P
       if (newContact) {
         onChange(String(newContactId));
         clearNewContactId();
+      } else {
+        // ✅ MEJORADO: Log para debugging si no se encuentra
+        console.warn(
+          `⚠️ [ContactSearchSelector] Contacto ${newContactId} no en caché`,
+          { clientId, totalContacts: contacts.length }
+        );
       }
+    } else if (newContactId && isLoading) {
+      // ✅ MEJORADO: Log cuando aún está cargando
+      console.log(
+        `⏳ [ContactSearchSelector] Esperando contactos para cliente ${clientId}`
+      );
     }
   }, [newContactId, contacts, isLoading, onChange, clearNewContactId]);
 

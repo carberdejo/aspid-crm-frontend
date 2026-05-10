@@ -20,22 +20,29 @@ import {
   purchaseOrderFormSchema,
   PurchaseOrderFormValues,
 } from "@/lib/schemas/order";
+import { useAuthStore } from "@/store";
 
 export function PurchaseOrderForm({
   onSubmit,
   isLoading,
+  defaultQuote,
 }: {
   onSubmit: (data: PurchaseOrderFormValues) => void;
   isLoading: boolean;
+  defaultQuote?: Quote;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(
+    defaultQuote || null,
+  );
+  const userId = useAuthStore((state) => state.user?.sub); // Asegúrate de tener el userId disponible
 
   // 1. Desestructuración corregida según tu hook useQuotes
   const { quotes } = useQuotes({
     term: searchTerm,
     status: QuoteStatus.PENDIENTE,
     limit: 5,
+    userId,
   });
 
   // 2. Inicialización corregida del formulario
@@ -47,6 +54,7 @@ export function PurchaseOrderForm({
   } = useForm<PurchaseOrderFormValues>({
     resolver: zodResolver(purchaseOrderFormSchema),
     defaultValues: {
+      quoteId: defaultQuote?.id || undefined,
       receivedAt: new Date().toISOString().split("T")[0],
       poNumber: "",
     },
@@ -67,12 +75,21 @@ export function PurchaseOrderForm({
             <Label className="text-[10px] font-black uppercase text-slate-400 pl-1">
               Seleccionar Cotización
             </Label>
-            <QuoteSelector
-              options={quotes || []} // Aseguramos un array vacío si está cargando
-              onSearch={setSearchTerm}
-              onSelect={handleSelectQuote}
-              selectedId={selectedQuote?.id}
-            />
+            {defaultQuote ? (
+              <div className="h-14 px-4 flex items-center bg-emerald-50 border border-emerald-100 rounded-2xl">
+                <span className="text-[11px] font-black text-emerald-700 uppercase">
+                  VINCULADO A: {defaultQuote.quoteNumber}
+                </span>
+              </div>
+            ) : (
+              <QuoteSelector
+                options={quotes || []} // Aseguramos un array vacío si está cargando
+                onSearch={setSearchTerm}
+                onSelect={handleSelectQuote}
+                selectedId={selectedQuote?.id}
+              />
+            )}
+
             {errors.quoteId && (
               <p className="text-[9px] text-rose-500 font-bold uppercase animate-in fade-in slide-in-from-top-1">
                 {errors.quoteId.message}
@@ -82,7 +99,7 @@ export function PurchaseOrderForm({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase text-slate-400 pl-1">
-              Número de PO
+              Número de Orden de Compra
             </Label>
             <div className="relative">
               <Hash

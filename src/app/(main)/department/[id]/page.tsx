@@ -87,10 +87,6 @@ export default function DepartmentPage() {
           />
 
           {/* BOTÓN ORDEN DE COMPRA */}
-          <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-            <ShoppingCart size={18} className="text-slate-400" />
-            Orden de Compra
-          </Button>
           <RegisterPurchaseOrderModal />
         </div>
       </div>

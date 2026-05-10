@@ -20,10 +20,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { QuoteForm } from "../form/QuoteForm";
-import { Eye, FileText, Edit3, Trash2, Loader2 } from "lucide-react";
-import { Quote, QuoteCreateDto } from "@/interfaces";
+import {
+  Eye,
+  FileText,
+  Edit3,
+  Trash2,
+  Loader2,
+  ShoppingCart,
+} from "lucide-react";
+import { Quote, QuoteCreateDto, QuoteStatus } from "@/interfaces";
 import { useRouter } from "next/navigation";
 import { QuoteFormValues } from "@/lib/schemas/quote";
+import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPurchaseOrderModal";
 
 export const ActionsCell = ({ quote }: { quote: Quote }) => {
   const router = useRouter();
@@ -76,24 +84,43 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
 
   return (
     <div className="flex items-center justify-center gap-1">
+      {quote.status === QuoteStatus.PENDIENTE && (
+        <RegisterPurchaseOrderModal
+          initialQuote={quote}
+          trigger={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-full transition-all group"
+              title="Generar Orden de Compra"
+            >
+              <ShoppingCart
+                size={16}
+                className="group-hover:scale-110 transition-transform"
+              />
+            </Button>
+          }
+        />
+      )}
       {/* 1. VER DETALLE (Icono directo) */}
       <Button
         variant="ghost"
         size="icon"
         className="h-8 w-8 text-slate-400 hover:text-primary rounded-full"
         onClick={handleGoToDetail}
+        title="Ver Detalle"
       >
         <Eye size={16} />
       </Button>
 
       {/* 2. DESCARGAR PDF */}
-      <Button
+      {/* <Button
         variant="ghost"
         size="icon"
         className="h-8 w-8 text-slate-400 hover:text-secondary rounded-full"
       >
         <FileText size={16} />
-      </Button>
+      </Button> */}
 
       {/* 3. EDITAR (Dialog con Formulario) */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
@@ -102,6 +129,7 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-slate-400 hover:text-blue-600"
+            title="Editar Cotización"
           >
             <Edit3 size={16} />
           </Button>
@@ -154,6 +182,7 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-slate-400 hover:text-rose-600 rounded-full"
+            title="Rechazar Cotización"
           >
             <Trash2 size={16} />
           </Button>

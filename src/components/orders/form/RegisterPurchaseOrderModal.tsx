@@ -9,24 +9,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, ShoppingBag } from "lucide-react";
+import { ShoppingBag, ShoppingCart } from "lucide-react";
 import { PurchaseOrderForm } from "./PurchaseOrderForm";
-import { CreatePurchaseOrderDto } from "@/interfaces";
-import { toast } from "sonner";
+import { CreatePurchaseOrderDto, Quote } from "@/interfaces";
 import { useCreatePurchaseOrder } from "@/hooks";
 
-export function RegisterPurchaseOrderModal() {
+interface RegisterPurchaseOrderModalProps {
+  initialQuote?: Quote; // Opcional
+  trigger?: React.ReactNode; // Para personalizar el botón que lo abre
+}
+
+export function RegisterPurchaseOrderModal({
+  initialQuote,
+  trigger,
+}: RegisterPurchaseOrderModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutate: createPurchaseOrder, isPending } = useCreatePurchaseOrder();
 
   const handleSuccess = async (data: CreatePurchaseOrderDto) => {
     createPurchaseOrder(data, {
       onSuccess: () => {
-        toast.success("Orden de Compra registrada correctamente");
         setIsOpen(false);
-      },
-      onError: () => {
-        toast.error("Error al registrar la orden");
       },
     });
   };
@@ -34,10 +37,12 @@ export function RegisterPurchaseOrderModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest gap-2 shadow-lg shadow-emerald-200 transition-all active:scale-95">
-          <Plus size={16} />
-          Nueva Orden
-        </Button>
+        {trigger || (
+          <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+            <ShoppingCart size={18} className="text-slate-400" />
+            Orden de Compra
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[800px] rounded-[3rem] p-10 overflow-hidden border-none shadow-2xl bg-white">
@@ -56,7 +61,11 @@ export function RegisterPurchaseOrderModal() {
         </DialogHeader>
 
         {/* El formulario ahora estará dentro del diseño estandarizado */}
-        <PurchaseOrderForm onSubmit={handleSuccess} isLoading={isPending} />
+        <PurchaseOrderForm
+          onSubmit={handleSuccess}
+          isLoading={isPending}
+          defaultQuote={initialQuote}
+        />
       </DialogContent>
     </Dialog>
   );

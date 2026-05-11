@@ -3,11 +3,15 @@ import { PurchaseOrderService } from "../../services";
 import { toast } from "sonner";
 import { ApiErrorResponse, PurchaseOrderFilters } from "@/interfaces";
 
-export const usePurchaseOrders = (filters: PurchaseOrderFilters) => {
+export const usePurchaseOrders = (
+  filters: PurchaseOrderFilters,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ["purchase-orders", filters],
     queryFn: () => PurchaseOrderService.findAll(filters),
     staleTime: 60 * 1000,
+    enabled: options?.enabled ?? true,
   });
 };
 

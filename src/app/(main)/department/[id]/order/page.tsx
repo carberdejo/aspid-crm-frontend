@@ -5,8 +5,17 @@ import { purchaseOrderColumns } from "@/components/orders/table/PurchaseOrderCol
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { usePurchaseOrderFilters } from "@/hooks";
 import { usePurchaseOrders } from "@/hooks/order/usePurchaseOrders";
+import { useAuthStore } from "@/store";
+import { use } from "react";
 
-export default function PurchaseOrdersPage() {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+export default function PurchaseOrdersPage({ params }: Props) {
+  const departmentId = use(params).id;
+  // const departmentId = Number(resolvedParams);
+  const userId = useAuthStore((state) => state.user?.sub);
+
   const {
     page,
     setPage,
@@ -15,9 +24,11 @@ export default function PurchaseOrdersPage() {
     filters,
     handleReset,
     handleFilterChange,
-  } = usePurchaseOrderFilters();
+  } = usePurchaseOrderFilters(+departmentId, userId);
 
-  const { data, isLoading } = usePurchaseOrders(filters);
+  const { data, isLoading } = usePurchaseOrders(filters, {
+    enabled: !!userId,
+  });
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">

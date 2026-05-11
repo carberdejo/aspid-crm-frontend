@@ -1,7 +1,7 @@
 import { PurchaseOrderFilters, SortOrder } from "@/interfaces";
 import { useState, useMemo, useCallback } from "react";
 
-export function usePurchaseOrderFilters() {
+export function usePurchaseOrderFilters(departmentId: number, userId?: number) {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -17,10 +17,12 @@ export function usePurchaseOrderFilters() {
   const filters = useMemo<PurchaseOrderFilters>(
     () => ({
       ...queryFilters,
+      departmentId,
+      userId,
       term: searchTerm,
       offset: (page - 1) * (queryFilters.limit || 10),
     }),
-    [queryFilters, searchTerm, page],
+    [queryFilters, searchTerm, page, departmentId, userId],
   );
 
   const handleReset = () => {

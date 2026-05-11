@@ -26,7 +26,7 @@ export const useCreateContact = () => {
       console.log({ data: response }); // Verifica qué datos estás recibiendo del servicio
       // Invalida la lista de contactos de ese cliente específico
       queryClient.invalidateQueries({
-        queryKey: contactQueryKeys.byClient(response.item.clientId),
+        queryKey: contactQueryKeys.byClient(+response.item.clientId),
       });
       // Invalida la lista de clientes para que el contador de contactos se actualice
       queryClient.invalidateQueries({ queryKey: clientQueryKeys.all });

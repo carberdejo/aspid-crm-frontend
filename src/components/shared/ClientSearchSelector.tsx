@@ -58,32 +58,39 @@ export function ClientSearchSelector({
         onChange(newClientId);
         onClientChange?.(newClientId);
         clearNewClientId();
-      } else {
-        // ✅ MEJORADO: Log para debugging si no se encuentra
-        console.warn(
-          `⚠️ [ClientSearchSelector] Cliente ${newClientId} no encontrado en búsqueda actual`,
-          { searchedIn: clients.length, term: debouncedSearch }
-        );
       }
     }
-  }, [newClientId, clients, onChange, onClientChange, clearNewClientId, debouncedSearch]);
+  }, [
+    newClientId,
+    clients,
+    onChange,
+    onClientChange,
+    clearNewClientId,
+    debouncedSearch,
+  ]);
 
   const selectedClient = clients.find((c) => String(c.id) === value);
+
+  // --- FUNCIÓN PARA CORTAR EL TEXTO MANUALMENTE ---
+  const formatDisplayValue = (text: string, limit: number = 35) => {
+    if (text.length <= limit) return text;
+    return text.substring(0, limit) + "...";
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        {/* Usamos un Button que PARECE un input. Esto elimina los conflictos de foco. */}
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className="w-full h-14 justify-between rounded-2xl border-slate-200 bg-slate-50/50 hover:bg-slate-100 font-medium"
+          // Eliminamos cualquier clase compleja que pueda causar error
+          className="w-full h-14 justify-between rounded-2xl border-slate-200 bg-slate-50/50 hover:bg-slate-100 font-medium px-4"
         >
-          <span className="truncate">
+          <span className="text-left flex-1 block">
             {selectedClient
-              ? selectedClient.commercialName
+              ? formatDisplayValue(selectedClient.commercialName)
               : "Buscar cliente..."}
           </span>
           {isLoading ? (
@@ -94,19 +101,23 @@ export function ClientSearchSelector({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl shadow-2xl">
-        {/* Desactivamos shouldFilter porque filtramos en el servidor con debouncedSearch */}
+      {/* Eliminamos el var() dinámico por ahora para evitar errores de PostCSS */}
+      <PopoverContent
+        className="w-[350px] md:w-[450px] p-0 rounded-2xl shadow-2xl border-slate-100 bg-white"
+        align="start"
+      >
         <Command shouldFilter={false}>
-          {/* Este es el Input real de búsqueda que vive DENTRO del popover */}
           <CommandInput
             placeholder="Escribe el nombre del cliente..."
             value={searchTerm}
             onValueChange={setSearchTerm}
-            className="h-12"
+            className="h-12 border-none focus:ring-0 text-[11px] font-bold uppercase"
           />
-          <CommandList className="max-h-[300px]">
+          <CommandList className="max-h-[300px] overflow-y-auto">
             {!isLoading && clients.length === 0 && (
-              <CommandEmpty>No se encontraron clientes.</CommandEmpty>
+              <CommandEmpty className="py-6 text-center text-[10px] font-black uppercase text-slate-400">
+                No se encontraron clientes.
+              </CommandEmpty>
             )}
             <CommandGroup>
               {clients.map((client) => (
@@ -116,7 +127,7 @@ export function ClientSearchSelector({
                   onSelect={(currentValue) => {
                     onChange(currentValue);
                     onClientChange?.(currentValue);
-                    setSearchTerm(""); // Reseteamos la búsqueda al seleccionar
+                    setSearchTerm("");
                     setOpen(false);
                   }}
                   className="cursor-pointer py-3"
@@ -126,7 +137,7 @@ export function ClientSearchSelector({
                   />
                   <div className="flex flex-col">
                     <span className="font-bold text-primary text-xs uppercase">
-                      {client.commercialName}
+                      {formatDisplayValue(client.commercialName, 45)}
                     </span>
                     <span className="text-[9px] text-slate-400 font-mono">
                       RUC: {client.ruc}

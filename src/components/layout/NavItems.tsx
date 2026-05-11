@@ -1,8 +1,6 @@
 import {
   LayoutDashboard,
   FolderKanban,
-  FileText,
-  Settings,
   Users,
   BarChart3,
   type LucideIcon,
@@ -42,12 +40,12 @@ const getAdminPrincipalSection = (): NavSection => ({
       icon: LayoutDashboard,
       active: false,
     },
-    {
-      title: "Facturaciones",
-      href: "/invoice",
-      icon: FileText,
-      active: false,
-    },
+    // {
+    //   title: "Facturaciones",
+    //   href: "/invoice",
+    //   icon: FileText,
+    //   active: false,
+    // },
     {
       title: "Usuarios",
       href: "/user",
@@ -58,20 +56,30 @@ const getAdminPrincipalSection = (): NavSection => ({
 });
 
 // Sección REPORTES - Todas las áreas/departamentos disponibles en el sistema (Solo ADMIN)
-const getReportesSection = (departments: Department[]): NavSection => {
-  const items: NavItem[] = departments
-    .filter((dept) => dept.isActive)
+const getReportesSection = (
+  deptIds: number[],
+  allDepartments: Department[],
+  title: string = "REPORTES DE ÁREA",
+): NavSection | null => {
+  const reportItems: NavItem[] = deptIds
+    .map((id) => allDepartments.find((d) => d.id === id))
+    .filter(
+      (dept) =>
+        dept && dept.isActive && normalize(dept.name) !== "administracion",
+    )
     .map((dept) => ({
-      title: dept.name,
-      href: `/department/${dept.id}`,
+      title: `Reportes ${dept!.name}`,
+      href: `/department/${dept!.id}/reports`, // Ruta sugerida
       icon: BarChart3,
       active: false,
-      deptId: dept.id,
+      deptId: dept!.id,
     }));
 
+  if (reportItems.length === 0) return null;
+
   return {
-    title: "REPORTES",
-    items,
+    title,
+    items: reportItems,
   };
 };
 
@@ -203,9 +211,14 @@ export const generateNavSections = (
     // ADMIN NAVIGATION
     sections.push(getAdminPrincipalSection());
 
+    const allDeptIds = departments.map((d) => d.id);
     // Agregar REPORTES (todos los departamentos del sistema)
-    const reportesSection = getReportesSection(departments);
-    if (reportesSection.items.length > 0) {
+    const reportesSection = getReportesSection(
+      allDeptIds,
+      departments,
+      "REPORTES GENERALES",
+    );
+    if (reportesSection) {
       sections.push(reportesSection);
     }
 

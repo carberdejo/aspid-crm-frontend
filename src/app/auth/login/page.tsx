@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Key, Loader2, ChevronRight, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoginFormValues, loginSchema } from "@/lib/schemas/login";
@@ -18,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import logoAcmeWhite from "@/assets/logo-acme.png";
+import { useAuth } from "@/hooks";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);

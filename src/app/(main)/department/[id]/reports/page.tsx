@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import SalesIndicatorsDashboard from "@/components/reports/SalesIndicatorsDashboard";
 
 // Datos de ejemplo segmentados por semanas y usuarios
 const mockDataByMonth = {
@@ -83,15 +84,15 @@ const mockDataByMonth = {
 };
 
 export default function DepartmentReportsPage() {
-  const [isClient, setIsClient] = useState(false);
+  // const [isClient, setIsClient] = useState(false);
   const [month, setMonth] = useState("mayo");
-  const [filterMetric, setFilterMetric] = useState("all");
+  // const [filterMetric, setFilterMetric] = useState("all");
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsClient(true);
+  // }, []);
 
-  if (!isClient) return <div className="h-screen bg-slate-50/30" />;
+  // if (!isClient) return <div className="h-screen bg-slate-50/30" />;
 
   const currentData =
     mockDataByMonth[month as keyof typeof mockDataByMonth] || [];
@@ -99,7 +100,7 @@ export default function DepartmentReportsPage() {
   return (
     <div className="flex flex-col h-screen bg-slate-50/30 overflow-hidden">
       {/* SECCIÓN SUPERIOR: TABLA ANALÍTICA (50%) */}
-      <div className="h-1/2 p-4 flex flex-col">
+      {/* <div className="h-1/2 p-4 flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-black text-primary uppercase tracking-tighter">
             Reporte Semanal{" "}
@@ -139,7 +140,6 @@ export default function DepartmentReportsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody className="divide-y divide-slate-100">
-                {/* BLOQUE VISITAS SEMANALES */}
                 <TableRow className="bg-slate-50/30">
                   <TableCell
                     colSpan={currentData.length + 1}
@@ -174,9 +174,7 @@ export default function DepartmentReportsPage() {
                     </TableCell>
                   ))}
                 </TableRow>
-                {/* ... se pueden añadir s3 y s4 igual ... */}
 
-                {/* BLOQUE RATIOS Y CUMPLIMIENTO */}
                 <TableRow className="bg-slate-50/30">
                   <TableCell
                     colSpan={currentData.length + 1}
@@ -227,7 +225,8 @@ export default function DepartmentReportsPage() {
             </Table>
           </div>
         </Card>
-      </div>
+      </div> */}
+      <SalesIndicatorsDashboard />
 
       {/* SECCIÓN INFERIOR: GRÁFICO (50%) */}
       <div className="h-1/2 p-4 flex flex-col">

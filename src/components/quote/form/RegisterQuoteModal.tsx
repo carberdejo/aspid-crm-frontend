@@ -14,11 +14,11 @@ interface RegisterQuoteModalProps {
   userId: number;
   onSubmit: (data: QuoteFormValues) => void;
   isLoading: boolean;
-  onNewClient: () => void;
-  onNewContact: () => void;
-  newClientId?: string;
-  newContactId?: string;
-  onClientChange?: (clientId: string) => void;
+  // onNewClient: () => void;
+  // onNewContact: () => void;
+  // newClientId?: string;
+  // newContactId?: string;
+  // onClientChange?: (clientId: string) => void;
 }
 
 export function RegisterQuoteModal({

@@ -45,7 +45,6 @@ const ORDER_TYPES = ["IMPORTACION", "STOCK", "ENTREGA_PARCIAL"];
 
 interface QuoteFormProps {
   departmentId: number;
-  // userId: number;
   onSubmit: (values: QuoteFormValues) => void;
   isLoading: boolean;
   defaultValues?: Partial<QuoteFormValues>;
@@ -57,12 +56,12 @@ export function QuoteForm({
   isLoading,
   defaultValues,
 }: QuoteFormProps) {
-  const openClient = useVisitFlowStore((state) => state.openClient);
+  // const openClient = useVisitFlowStore((state) => state.openClient);
   const openContact = useVisitFlowStore((state) => state.openContact);
   const setSelectedClientId = useVisitFlowStore(
     (state) => state.setSelectedClientId,
   );
-  const newClientId = useVisitFlowStore((state) => state.newClientId);
+  // const newClientId = useVisitFlowStore((state) => state.newClientId);
   const newContactId = useVisitFlowStore((state) => state.newContactId);
 
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -94,12 +93,12 @@ export function QuoteForm({
     name: "clientId",
   });
 
-  useEffect(() => {
-    if (newClientId) {
-      form.setValue("clientId", newClientId, { shouldValidate: true });
-      setSelectedClientId(newClientId);
-    }
-  }, [newClientId, form, setSelectedClientId]);
+  // useEffect(() => {
+  //   if (newClientId) {
+  //     form.setValue("clientId", newClientId, { shouldValidate: true });
+  //     setSelectedClientId(newClientId);
+  //   }
+  // }, [newClientId, form, setSelectedClientId]);
 
   useEffect(() => {
     if (newContactId) {
@@ -107,13 +106,13 @@ export function QuoteForm({
     }
   }, [newContactId, form]);
 
-  const { errors } = form.formState;
+  // const { errors } = form.formState;
 
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      console.log("Campos con errores:", errors);
-    }
-  }, [errors]);
+  // useEffect(() => {
+  //   if (Object.keys(errors).length > 0) {
+  //     console.log("Campos con errores:", errors);
+  //   }
+  // }, [errors]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -158,7 +157,7 @@ export function QuoteForm({
                 </FormItem>
               )}
             />
-            <Button
+            {/* <Button
               type="button"
               onClick={openClient}
               className="shrink-0 h-14 px-8 rounded-2xl bg-[#1e293b] hover:bg-primary text-white font-bold flex gap-2 shadow-lg shadow-slate-200 active:scale-95 transition-all"
@@ -167,7 +166,7 @@ export function QuoteForm({
               <span className="uppercase tracking-widest text-[10px]">
                 Nuevo
               </span>
-            </Button>
+            </Button> */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">

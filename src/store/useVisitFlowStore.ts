@@ -39,7 +39,7 @@ export const useVisitFlowStore = create<VisitFlowStore>((set) => ({
   // Zustand fusiona esto automáticamente con el resto del estado, no borra los IDs
   // Al abrir el MAIN, marcamos qué flujo es (VISIT o QUOTE)
   openMain: (flow) => set({ activeModal: "MAIN", flowType: flow }),
-  openClient: () => set({ activeModal: "CLIENT" }),
+  openClient: () => set({ activeModal: "CLIENT" }) /* PROXIMO A ELIMINAR */,
   openContact: () => set({ activeModal: "CONTACT" }),
 
   // Aquí sí sobreescribimos todo para resetear
@@ -47,16 +47,17 @@ export const useVisitFlowStore = create<VisitFlowStore>((set) => ({
     set({
       activeModal: null,
       flowType: null,
-      newClientId: undefined,
+      newClientId: undefined /* PROXIMO A ELIMINAR */,
       newContactId: undefined,
       selectedClientId: undefined,
     }),
   backToMain: () => set({ activeModal: "MAIN" }),
 
   // 3. Gestión de IDs de nuevos registros
-  setNewClientId: (id) => set({ newClientId: id }),
+  setNewClientId: (id) => set({ newClientId: id }) /* PROXIMO A ELIMINAR */,
   setNewContactId: (id) => set({ newContactId: id }),
-  clearNewClientId: () => set({ newClientId: undefined }),
+  clearNewClientId: () =>
+    set({ newClientId: undefined }) /* PROXIMO A ELIMINAR */,
   clearNewContactId: () => set({ newContactId: undefined }),
 
   // 4. Gestión del cliente seleccionado actualmente

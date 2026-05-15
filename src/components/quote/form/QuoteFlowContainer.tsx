@@ -46,42 +46,38 @@ export function QuoteFlowContainer({
   const { createQuote, isCreating } = useQuotes();
 
   // 1. Manejar creación de cliente
-  const handleClientCreated = useCallback(
-    (newClient: ClienteCreateResponseItem) => {
-      // ✅ USA QUERY KEY NORMALIZADA
-      queryClient.setQueryData(
-        clientQueryKeys.list({ term: "", limit: 10 }),
-        (old: PaginatedResponse<ClientListItem>) => {
-          if (!old) return { items: [newClient], total: 1 };
-          return {
-            ...old,
-            items: [newClient, ...old.items],
-            total: (old.total || 0) + 1,
-          };
-        },
-      );
-      
-      // ✅ También invalida la lista completa para refetch si es necesario
-      queryClient.invalidateQueries({
-        queryKey: clientQueryKeys.all,
-      });
+  // const handleClientCreated = useCallback(
+  //   (newClient: ClienteCreateResponseItem) => {
+  //     // ✅ USA QUERY KEY NORMALIZADA
+  //     queryClient.setQueryData(
+  //       clientQueryKeys.list({ term: "", limit: 10 }),
+  //       (old: PaginatedResponse<ClientListItem>) => {
+  //         if (!old) return { items: [newClient], total: 1 };
+  //         return {
+  //           ...old,
+  //           items: [newClient, ...old.items],
+  //           total: (old.total || 0) + 1,
+  //         };
+  //       },
+  //     );
 
-      const newId = String(newClient.id);
-      setNewClientId(newId);
-      setSelectedClientId(newId);
-      backToMain();
-    },
-    [queryClient, setNewClientId, setSelectedClientId, backToMain],
-  );
+  //     // ✅ También invalida la lista completa para refetch si es necesario
+  //     queryClient.invalidateQueries({
+  //       queryKey: clientQueryKeys.all,
+  //     });
+
+  //     const newId = String(newClient.id);
+  //     setNewClientId(newId);
+  //     setSelectedClientId(newId);
+  //     backToMain();
+  //   },
+  //   [queryClient, setNewClientId, setSelectedClientId, backToMain],
+  // );
 
   const handleContactCreated = useCallback(
     (response: ClientAndContactResponseCreate<Contact>) => {
       const newContact = response.item;
-      const targetClientId = selectedClientId
-        ? Number(selectedClientId)
-        : newClientId
-          ? Number(newClientId)
-          : undefined;
+      const targetClientId = Number(selectedClientId);
 
       if (targetClientId) {
         // ✅ USA QUERY KEY NORMALIZADA
@@ -92,17 +88,12 @@ export function QuoteFlowContainer({
             return [...old, newContact];
           },
         );
-        
-        // ✅ NO INVALIDAR INMEDIATAMENTE - Dejar que TanStack Query lo maneje naturalmente
-        // queryClient.invalidateQueries({
-        //   queryKey: contactQueryKeys.byClient(targetClientId),
-        // });
       }
 
       setNewContactId(String(newContact.id));
       backToMain();
     },
-    [selectedClientId, newClientId, queryClient, setNewContactId, backToMain],
+    [selectedClientId, queryClient, setNewContactId, backToMain],
   );
 
   const handleQuoteSubmit = useCallback(
@@ -151,30 +142,24 @@ export function QuoteFlowContainer({
         userId={user?.sub || 0}
         onSubmit={handleQuoteSubmit}
         isLoading={isCreating} // Usamos 'isCreating' de tu hook
-        onNewClient={() => useVisitFlowStore.getState().openClient()}
-        onNewContact={() => useVisitFlowStore.getState().openContact()}
-        newClientId={newClientId}
-        newContactId={newContactId}
-        onClientChange={(id) => setSelectedClientId(id)}
+        // onNewClient={() => useVisitFlowStore.getState().openClient()}
+        // onNewContact={() => useVisitFlowStore.getState().openContact()}
+        // newClientId={newClientId}
+        // newContactId={newContactId}
+        // onClientChange={(id) => setSelectedClientId(id)}
       />
 
-      <RegisterClientModal
+      {/* <RegisterClientModal
         isOpen={activeModal === "CLIENT"}
         onOpenChange={(open) => (!open ? backToMain() : null)}
         onSuccess={handleClientCreated}
         showTrigger={false}
-      />
+      /> */}
 
       <RegisterContactModal
         isOpen={activeModal === "CONTACT"}
         onOpenChange={(open) => (!open ? backToMain() : null)}
-        clientId={
-          selectedClientId
-            ? Number(selectedClientId)
-            : newClientId
-              ? Number(newClientId)
-              : undefined
-        }
+        clientId={Number(selectedClientId)}
         onSuccess={handleContactCreated}
         showTrigger={false}
       />

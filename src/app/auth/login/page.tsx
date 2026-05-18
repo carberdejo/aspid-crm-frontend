@@ -37,9 +37,9 @@ export default function LoginPage() {
   const { login, isLoading, isError, error } = useAuth();
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col bg-[#1a2a53] overflow-y-auto">
+    <div className="relative min-h-screen w-full flex flex-col bg-primary overflow-y-auto">
       <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2a53]/50 via-transparent to-[#1a2a53]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2a53]/50 via-transparent to-primary" />
       </div>
 
       <main className="relative z-10 flex-1 w-full max-w-7xl mx-auto flex items-center justify-center p-8 md:p-12">
@@ -62,7 +62,7 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <h1 className="text-white text-6xl font-black uppercase tracking-tighter leading-none">
-                Concar <span className="text-secondary">ACME & CIA</span>
+                CONCAR <span className="text-secondary">ACME & CIA</span>
               </h1>
             </div>
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 w-fit px-4 py-2 rounded-full">
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
                 <div className="space-y-8">
                   <div className="space-y-2 border-b border-slate-100 pb-6">
-                    <h3 className="text-2xl font-black text-primary uppercase tracking-tight">
+                    <h3 className="text-2xl font-black text-secondary uppercase tracking-tight">
                       Iniciar Sesión
                     </h3>
                     <p className="text-sm text-slate-500 font-medium italic text-balance">

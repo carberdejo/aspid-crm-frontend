@@ -5,7 +5,7 @@ import {
   LoginDto,
   LoginResponse,
   Logout,
-  ResponseCreate,
+  ResponseOperation,
 } from "@/interfaces/api.interface";
 
 export const authService = {
@@ -41,9 +41,9 @@ export const authService = {
   },
 
   // Cierra una sesión específica por ID
-  terminateSession: async (logout: Logout): Promise<ResponseCreate> => {
+  terminateSession: async (logout: Logout): Promise<ResponseOperation> => {
     console.log("🚀 Payload enviado al servidor:", logout);
-    const { data } = await concarApi.post<ApiResponse<ResponseCreate>>(
+    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
       `/auth/logout`,
       logout,
     );

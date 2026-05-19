@@ -1,5 +1,9 @@
 import { concarApi } from "@/api/concarApi";
-import { ApiResponse, PaginatedResponse, ResponseCreate } from "@/interfaces";
+import {
+  ApiResponse,
+  PaginatedResponse,
+  ResponseOperation,
+} from "@/interfaces";
 import {
   VisitCreateDto,
   VisitFilter,
@@ -9,8 +13,8 @@ import {
 import { cleanParams } from "@/lib/utils";
 
 export const VisitService = {
-  create: async (create: VisitCreateDto): Promise<ResponseCreate> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseCreate>>(
+  create: async (create: VisitCreateDto): Promise<ResponseOperation> => {
+    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
       "/visits",
       create,
     );

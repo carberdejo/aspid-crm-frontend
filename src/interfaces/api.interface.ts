@@ -1,5 +1,4 @@
 import { UserRole } from "./role-user.interface";
-import { Phone } from "lucide-react";
 
 export interface ApiResponse<T> {
   code: number;
@@ -12,7 +11,7 @@ export interface ApiErrorResponse {
   errors: string[] | null;
 }
 
-export interface ResponseCreate {
+export interface ResponseOperation {
   message: string;
 }
 
@@ -22,19 +21,6 @@ export interface PaginatedResponse<T> {
   total: number;
   limit: number;
   offset: number;
-}
-
-// Interfaz User
-export interface User {
-  codUser: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  departments: string[];
-  isActive: boolean;
-  phone: string;
-  countryCode: string;
 }
 
 export interface Payload {

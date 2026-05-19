@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clientSchema, ClientFormValues } from "@/lib/schemas/client"; // Asegúrate de tener este schema
 import { Loader2, Search } from "lucide-react";
@@ -15,9 +15,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useClients, useRuc } from "@/hooks";
+import {
+  useClients,
+  useIndustrySegments,
+  usePortfolios,
+  useRuc,
+} from "@/hooks";
 import { toast } from "sonner";
 import { ClienteCreateResponseItem } from "@/interfaces";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components";
 
 interface ClientFormProps {
   // El "?" hace que el cliente sea opcional al llamar a la función
@@ -27,13 +39,20 @@ interface ClientFormProps {
 export function ClientForm({ onSuccess }: ClientFormProps) {
   const { createClient, isCreating } = useClients();
 
+  // Consumimos los catálogos usando TanStack Query
+  const { portfolios, isLoading: isLoadingPortfolios } = usePortfolios({});
+  const { industrySegments, isLoading: isLoadingSegments } =
+    useIndustrySegments({});
+
   const form = useForm<ClientFormValues>({
-    resolver: zodResolver(clientSchema),
+    resolver: zodResolver(clientSchema) as Resolver<ClientFormValues>,
     defaultValues: {
       commercialName: "",
       businessName: "",
       ruc: "",
       address: "",
+      segmentId: undefined,
+      portfolioId: undefined,
     },
   });
 
@@ -124,7 +143,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
         </div>
 
         {/* Datos Autocompletados */}
-        <div className="grid grid-cols-1 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="businessName"
@@ -181,6 +200,87 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                     className="h-11 border-gray-200"
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Selector de Segmento Industrial */}
+          <FormField
+            control={form.control}
+            name="segmentId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                  Segmento Industrial
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value?.toString() || ""}
+                  disabled={isLoadingSegments}
+                >
+                  <FormControl>
+                    <SelectTrigger className="h-11">
+                      <SelectValue
+                        placeholder={
+                          isLoadingSegments
+                            ? "Cargando..."
+                            : "Seleccione un rubro"
+                        }
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {industrySegments.map((segment) => (
+                      <SelectItem
+                        key={segment.id}
+                        value={segment.id.toString()}
+                      >
+                        {segment.code} - {segment.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Selector de Cartera de Accesos */}
+          <FormField
+            control={form.control}
+            name="portfolioId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                  Cartera Asignada
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value?.toString() || ""}
+                  disabled={isLoadingPortfolios}
+                >
+                  <FormControl>
+                    <SelectTrigger className="h-11">
+                      <SelectValue
+                        placeholder={
+                          isLoadingPortfolios
+                            ? "Cargando..."
+                            : "Seleccione una cartera"
+                        }
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {portfolios.map((portfolio) => (
+                      <SelectItem
+                        key={portfolio.id}
+                        value={portfolio.id.toString()}
+                      >
+                        {portfolio.code} - {portfolio.zone || portfolio.type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

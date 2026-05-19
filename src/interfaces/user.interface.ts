@@ -1,15 +1,5 @@
 import { Department, GenericFilters, UserRole } from ".";
 
-// export interface User {
-//   codUser: string;
-//   email: string;
-//   firstName: string;
-//   lastName: string;
-//   role: UserRole;
-//   departments: string[]; // Array si puede estar en varios
-//   isActive: boolean;
-// }
-
 export interface UserCreateDto {
   codUser: string;
   email: string;
@@ -36,6 +26,20 @@ export interface UserDetail {
 
 export interface UserProfile extends UserDetail {
   sessions: UserSession[];
+}
+
+// Interfaz User
+export interface User {
+  id: number;
+  codUser: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  departments: string[];
+  isActive: boolean;
+  phone: string;
+  countryCode: string;
 }
 
 export interface UserSession {

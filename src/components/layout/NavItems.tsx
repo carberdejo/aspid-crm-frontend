@@ -3,6 +3,8 @@ import {
   FolderKanban,
   Users,
   BarChart3,
+  Briefcase, // Sugerencia de icono para Directorio/Clientes
+  Settings, // Sugerencia de icono para Administración
   type LucideIcon,
 } from "lucide-react";
 import { Department } from "@/interfaces";
@@ -20,7 +22,7 @@ export interface NavItem {
   href: string;
   icon: LucideIcon;
   active?: boolean;
-  deptId?: number; // ID del departamento para items dinámicos
+  deptId?: number;
 }
 
 export interface NavSection {
@@ -28,125 +30,9 @@ export interface NavSection {
   items: NavItem[];
 }
 
-// ==================== SECCIONES PARA ADMIN ====================
+// ==================== SECCIONES COMUNES (TODOS LOS ROLES) ====================
 
-// Sección PRINCIPAL - Solo para ADMIN
-const getAdminPrincipalSection = (): NavSection => ({
-  title: "PRINCIPAL",
-  items: [
-    {
-      title: "Dashboard",
-      href: "/dashboard",
-      icon: LayoutDashboard,
-      active: false,
-    },
-    // {
-    //   title: "Facturaciones",
-    //   href: "/invoice",
-    //   icon: FileText,
-    //   active: false,
-    // },
-    {
-      title: "Usuarios",
-      href: "/user",
-      icon: Users,
-      active: false,
-    },
-  ],
-});
-
-// Sección REPORTES - Todas las áreas/departamentos disponibles en el sistema (Solo ADMIN)
-const getReportesSection = (
-  deptIds: number[],
-  allDepartments: Department[],
-  title: string = "REPORTES DE ÁREA",
-): NavSection | null => {
-  const reportItems: NavItem[] = deptIds
-    .map((id) => allDepartments.find((d) => d.id === id))
-    .filter(
-      (dept) =>
-        dept && dept.isActive && normalize(dept.name) !== "administracion",
-    )
-    .map((dept) => ({
-      title: `Reportes ${dept!.name}`,
-      href: `/department/${dept!.id}/reports`, // Ruta sugerida
-      icon: BarChart3,
-      active: false,
-      deptId: dept!.id,
-    }));
-
-  if (reportItems.length === 0) return null;
-
-  return {
-    title,
-    items: reportItems,
-  };
-};
-
-// Sección DEPARTAMENTOS - Aparece solo si el ADMIN tiene un departamento distinto a "Administración"
-const getDepartamentosSection = (
-  userDeptIds: number[],
-  departments: Department[],
-): NavSection | null => {
-  // Filtrar el departamento "Administración" (asumimos que tiene un nombre específico o ID específico)
-  const adminDept = departments.find(
-    (d) => normalize(d.name) === "administracion",
-  );
-
-  // Si el usuario tiene solo el departamento de Administración, no mostrar sección
-  if (
-    userDeptIds.length === 1 &&
-    adminDept &&
-    userDeptIds[0] === adminDept.id
-  ) {
-    return null;
-  }
-
-  // Filtrar departamentos que NO sean Administración
-  const departmentItems: NavItem[] = userDeptIds
-    .map((deptId) => departments.find((d) => d.id === deptId))
-    .filter((dept) => dept && normalize(dept.name) !== "administracion")
-    .map((dept) => ({
-      title: dept!.name,
-      href: `/department/${dept!.id}`,
-      icon: FolderKanban,
-      active: false,
-      deptId: dept!.id,
-    }));
-
-  if (departmentItems.length === 0) {
-    return null;
-  }
-
-  return {
-    title: "MIS ÁREAS",
-    items: departmentItems,
-  };
-};
-
-// Sección compartida CONFIGURACIÓN - Clientes y Ajustes (Compartida con ADMIN y USERS)
-const getSharedConfigSection = (): NavSection => ({
-  title: "OTROS",
-  items: [
-    {
-      title: "Clientes",
-      href: "/client",
-      icon: Users,
-      active: false,
-    },
-    // {
-    //   title: "Ajustes",
-    //   href: "/settings",
-    //   icon: Settings,
-    //   active: false,
-    // },
-  ],
-});
-
-// ==================== SECCIONES PARA USERS/PERSONAL ====================
-
-// Sección PRINCIPAL - Para USERS (sin Usuarios ni Facturaciones)
-const getUserPrincipalSection = (): NavSection => ({
+const getPrincipalSection = (): NavSection => ({
   title: "PRINCIPAL",
   items: [
     {
@@ -158,14 +44,25 @@ const getUserPrincipalSection = (): NavSection => ({
   ],
 });
 
-// Sección DEPARTAMENTOS - Para USERS (solo sus departamentos asignados)
-const getUserDepartamentosSection = (
+// Elevamos "Clientes" a su propia sección comercial, visible para todos.
+const getDirectorioSection = (): NavSection => ({
+  title: "DIRECTORIO",
+  items: [
+    { title: "Clientes", href: "/client", icon: Briefcase, active: false },
+  ],
+});
+
+// Unificamos la lógica de "Mis Áreas". Aplica igual para Admin y Users.
+const getOperacionesSection = (
   userDeptIds: number[],
   departments: Department[],
 ): NavSection | null => {
   const items: NavItem[] = userDeptIds
     .map((deptId) => departments.find((d) => d.id === deptId))
-    .filter((dept) => dept && normalize(dept.name) !== "administracion")
+    .filter(
+      (dept) =>
+        dept && dept.isActive && normalize(dept.name) !== "administracion",
+    )
     .map((dept) => ({
       title: dept!.name,
       href: `/department/${dept!.id}`,
@@ -174,32 +71,42 @@ const getUserDepartamentosSection = (
       deptId: dept!.id,
     }));
 
-  if (items.length === 0) {
-    return null;
-  }
-
-  return {
-    title: "MIS ÁREAS",
-    items,
-  };
+  return items.length > 0 ? { title: "MIS ÁREAS", items } : null;
 };
 
-// ==================== FUNCIÓN PRINCIPAL DE GENERACIÓN ====================
+// ==================== SECCIONES EXCLUSIVAS (SOLO ADMIN) ====================
 
-/**
- * Genera las secciones de navegación según el rol del usuario
- *
- * ADMIN:
- *   - PRINCIPAL: Dashboard, Facturaciones, Usuarios
- *   - REPORTES: Todos los departamentos disponibles en el sistema
- *   - DEPARTAMENTOS: Solo si tiene un depto distinto a "Administración"
- *   - CONFIGURACIÓN: Clientes, Ajustes
- *
- * USER:
- *   - PRINCIPAL: Dashboard
- *   - MIS ÁREAS: Sus departamentos asignados
- *   - CONFIGURACIÓN: Clientes, Ajustes
- */
+const getAnaliticaSection = (departments: Department[]): NavSection | null => {
+  const items: NavItem[] = departments
+    .filter(
+      (dept) => dept.isActive && normalize(dept.name) !== "administracion",
+    )
+    .map((dept) => ({
+      title: `Reportes ${dept.name}`,
+      href: `/department/${dept.id}/reports`,
+      icon: BarChart3,
+      active: false,
+      deptId: dept.id,
+    }));
+
+  return items.length > 0 ? { title: "ANALÍTICA", items } : null;
+};
+
+const getAdministracionSection = (): NavSection => ({
+  title: "ADMINISTRACIÓN",
+  items: [
+    { title: "Usuarios", href: "/user", icon: Users, active: false },
+    {
+      title: "Datos Maestros",
+      href: "/admin/master-data",
+      icon: Settings,
+      active: false,
+    },
+  ],
+});
+
+// ==================== GENERADOR DINÁMICO ====================
+
 export const generateNavSections = (
   userRole: UserRole,
   userDeptIds: number[],
@@ -207,44 +114,24 @@ export const generateNavSections = (
 ): NavSection[] => {
   const sections: NavSection[] = [];
 
+  // 1. Agregamos las secciones que TODO el mundo debe ver
+  sections.push(getPrincipalSection());
+  sections.push(getDirectorioSection());
+
+  // 2. Agregamos las áreas de trabajo (Depende de qué departamentos tenga asignados)
+  const operacionesSection = getOperacionesSection(userDeptIds, departments);
+  if (operacionesSection) {
+    sections.push(operacionesSection);
+  }
+
+  // 3. Agregamos las secciones bloqueadas (Solo para el Admin)
   if (userRole === UserRole.ADMIN) {
-    // ADMIN NAVIGATION
-    sections.push(getAdminPrincipalSection());
-
-    const allDeptIds = departments.map((d) => d.id);
-    // Agregar REPORTES (todos los departamentos del sistema)
-    const reportesSection = getReportesSection(
-      allDeptIds,
-      departments,
-      "REPORTES GENERALES",
-    );
-    if (reportesSection) {
-      sections.push(reportesSection);
+    const analiticaSection = getAnaliticaSection(departments);
+    if (analiticaSection) {
+      sections.push(analiticaSection);
     }
 
-    // Agregar DEPARTAMENTOS solo si tiene uno distinto a Administración
-    const deptosSection = getDepartamentosSection(userDeptIds, departments);
-    if (deptosSection) {
-      sections.push(deptosSection);
-    }
-
-    // Agregar sección compartida CONFIGURACIÓN
-    sections.push(getSharedConfigSection());
-  } else {
-    // USER/PERSONAL NAVIGATION
-    // sections.push(getUserPrincipalSection());
-
-    // Agregar MIS ÁREAS (sus departamentos asignados)
-    const userDeptosSection = getUserDepartamentosSection(
-      userDeptIds,
-      departments,
-    );
-    if (userDeptosSection) {
-      sections.push(userDeptosSection);
-    }
-
-    // Agregar sección compartida CONFIGURACIÓN
-    sections.push(getSharedConfigSection());
+    sections.push(getAdministracionSection());
   }
 
   return sections;

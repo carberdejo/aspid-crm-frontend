@@ -3,7 +3,7 @@ import { UserCreateDto, UserDetail, UserFilters } from "@/interfaces";
 import {
   ApiResponse,
   PaginatedResponse,
-  ResponseCreate,
+  ResponseOperation,
   User,
 } from "@/interfaces/api.interface";
 
@@ -63,7 +63,7 @@ export const userService = {
    */
   create: async (userData: UserCreateDto): Promise<string> => {
     // console.log({userData})
-    const { data } = await concarApi.post<ApiResponse<ResponseCreate>>(
+    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
       "/users",
       userData,
     );

@@ -7,7 +7,7 @@ import {
   QuoteDelete,
   QuoteDetail,
   QuoteStatus,
-  ResponseCreate,
+  ResponseOperation,
 } from "@/interfaces";
 import { cleanParams } from "@/lib/utils";
 
@@ -60,7 +60,7 @@ export const quoteService = {
    * El backend solo responde { message: "..." }
    */
   create: async (quoteData: QuoteCreateDto): Promise<string> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseCreate>>(
+    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
       "/quotes",
       quoteData,
     );
@@ -88,7 +88,7 @@ export const quoteService = {
     id: number,
     { statusReason }: QuoteDelete,
   ): Promise<string> => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseCreate>>(
+    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
       `/quotes/delete/${id}`,
       {
         statusReason,

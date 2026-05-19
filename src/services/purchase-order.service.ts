@@ -2,7 +2,7 @@ import { concarApi } from "@/api/concarApi";
 import {
   ApiResponse,
   PaginatedResponse,
-  ResponseCreate,
+  ResponseOperation,
 } from "@/interfaces/api.interface";
 import {
   CreatePurchaseOrderDto,
@@ -30,7 +30,7 @@ export const PurchaseOrderService = {
   },
 
   create: async (payload: CreatePurchaseOrderDto): Promise<string> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseCreate>>(
+    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
       "/orders",
       payload,
     );

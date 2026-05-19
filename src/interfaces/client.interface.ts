@@ -8,6 +8,10 @@ export interface ClientListItem {
   address: string;
   createdAt: string;
   contacts: number;
+  segmentId: number;
+  portfolioId: number;
+  segment?: IndustrySegment;
+  portfolio?: Portfolio;
 }
 
 export interface ClientItem {
@@ -25,6 +29,8 @@ export interface ClientCreateDto {
   businessName: string;
   ruc: string;
   address: string;
+  segmentId: number;
+  portfolioId: number;
 }
 
 export interface ClientFilters extends GenericFilters {
@@ -79,4 +85,21 @@ export interface ClientDetail {
   address: string;
   createdAt: Date;
   contacts: Contact[];
+}
+
+export interface IndustrySegment {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface Portfolio {
+  id: string;
+  code: string;
+  type: string;
+  zone: string;
+}
+
+export interface UpdateClientInput extends Partial<ClientCreateDto> {
+  id: string;
 }

@@ -68,7 +68,7 @@ export default function DepartmentPage() {
           <VisitFlowContainer
             departmentId={+id}
             trigger={
-              <Button className="bg-primary hover:bg-primary text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-blue-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+              <Button className="bg -primary hover:bg-primary text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-blue-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
                 <ClipboardList size={18} className="text-blue-100" />
                 Visitas
               </Button>

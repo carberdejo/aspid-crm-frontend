@@ -1,60 +1,165 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronRight, Building2, UserCircle } from "lucide-react";
+import {
+  ChevronRight,
+  Building2,
+  UserCircle,
+  AlertTriangle,
+  Factory,
+  Briefcase,
+  MapPin,
+} from "lucide-react";
 import { ClientListItem } from "@/interfaces/client.interface";
 
 import { cn } from "@/lib";
 import Link from "next/link";
 import { ActionCellClient } from "./ActionCellClient";
-
-// type ClientTableMeta = {
-//   openContactSheet?: (client: ClientListItem) => void;
-// };
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const columns: ColumnDef<ClientListItem>[] = [
+  // 1. CARTERA (Mejorada)
   {
-    accessorKey: "commercialName",
-    header: "Cliente",
+    id: "portfolio",
+    header: "Cartera",
+    cell: ({ row }) => {
+      const portfolio = row.original.portfolio;
+      if (!portfolio)
+        return <span className="text-sm text-slate-300 font-medium">-</span>;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border-indigo-200 shadow-sm"
+          >
+            <Briefcase size={14} className="mr-1.5" />
+            {portfolio.code}
+          </Badge>
+          {!portfolio.isActive && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <AlertTriangle size={16} className="text-destructive" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Esta cartera de ingeniería está inactiva.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
+    },
+  },
+  // 2. SEGMENTO (Mejorada)
+  {
+    id: "segment",
+    header: "Segmento",
+    cell: ({ row }) => {
+      const segment = row.original.segment;
+      if (!segment)
+        return <span className="text-sm text-slate-300 font-medium">-</span>;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold px-2.5 py-1 bg-slate-50 text-slate-700 border-slate-200 shadow-sm"
+          >
+            <Factory size={14} className="mr-1.5" />
+            {segment.code}
+          </Badge>
+          {!segment.isActive && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <AlertTriangle size={16} className="text-amber-500" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Este segmento industrial está inactivo.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
+    },
+  },
+  // 3. CLIENTE
+  {
+    accessorKey: "businessName",
+    header: "Razón Social",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-slate-400 group-hover:text-primary group-hover:bg-primary/5 transition-colors">
-          <Building2 size={16} />
+        <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-400 group-hover:text-primary group-hover:bg-primary/5 transition-colors">
+          <Building2 size={18} />
         </div>
         <div className="flex flex-col min-w-0">
           <Link
             href={`/client/${row.original.id}/contacts`}
-            className="font-black text-primary leading-none hover:text-secondary transition-colors  italic uppercase tracking-tight"
+            className="font-black text-primary text-[13px] leading-tight hover:text-secondary transition-colors uppercase tracking-tight"
           >
-            {row.original.commercialName}
-          </Link>
-          <span className="text-[9px] text-muted-foreground uppercase tracking-widest mt-1.5 opacity-70">
             {row.original.businessName}
-          </span>
+          </Link>
+          {row.original.commercialName && (
+            <span className="text-[10.5px] text-muted-foreground italic tracking-wide mt-1 opacity-80 truncate max-w-[280px]">
+              {row.original.commercialName}
+            </span>
+          )}
         </div>
       </div>
     ),
   },
+  // 4. RUC
   {
     accessorKey: "ruc",
     header: "RUC",
     cell: ({ row }) => (
-      <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
+      <span className="font-mono text-[13px] font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md border border-slate-200">
         {row.getValue("ruc")}
       </span>
     ),
   },
+  // 5. UBICACIÓN
   {
-    accessorKey: "address",
-    header: () => (
-      <span className="hidden md:inline">DIRECCIÓN</span> // Oculto en móvil
-    ),
+    id: "location",
+    header: "Ubicación",
+    cell: ({ row }) => {
+      const { province, district } = row.original;
+      if (!province && !district)
+        return <span className="text-sm text-slate-300 font-medium">-</span>;
+
+      return (
+        <div className="flex flex-col min-w-0 max-w-[180px]">
+          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 truncate uppercase">
+            <MapPin size={14} className="text-slate-400" />
+            {province || "N/A"}
+          </span>
+          <span className="text-[11px] text-slate-500 pl-5 truncate uppercase font-medium mt-0.5">
+            {district || "Sin distrito"}
+          </span>
+        </div>
+      );
+    },
+  },
+  // 6. ZONA
+  {
+    accessorKey: "zone",
+    header: "Zona",
     cell: ({ row }) => (
-      <span className="text-xs text-gray-500 truncate max-w-[250px] hidden md:block">
-        {row.getValue("address")}
+      <span className="text-xs font-bold text-slate-600 uppercase">
+        {row.getValue("zone") || "-"}
       </span>
     ),
   },
+  // 7. CONTACTOS
   {
     accessorKey: "contacts",
     header: "Contactos",
@@ -68,23 +173,23 @@ export const columns: ColumnDef<ClientListItem>[] = [
           className={cn(
             "inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all cursor-pointer group/badge",
             count > 0
-              ? "bg-slate-50 border-slate-100 hover:border-secondary/30 hover:bg-secondary/5"
-              : "bg-slate-50/50 border-transparent opacity-40 grayscale",
+              ? "bg-slate-50 border-slate-200 hover:border-secondary/40 hover:bg-secondary/5 shadow-sm"
+              : "bg-slate-50/50 border-transparent opacity-50 grayscale",
           )}
         >
           <div
             className={cn(
               "h-5 w-5 rounded-full flex items-center justify-center transition-colors",
               count > 0
-                ? "bg-secondary text-white"
+                ? "bg-secondary text-white shadow-sm"
                 : "bg-slate-200 text-slate-400",
             )}
           >
-            <UserCircle size={12} />
+            <UserCircle size={13} />
           </div>
           <span
             className={cn(
-              "text-[11px] font-black tracking-tighter",
+              "text-xs font-black tracking-tighter",
               count > 0
                 ? "text-slate-700 group-hover/badge:text-secondary"
                 : "text-slate-400",
@@ -94,7 +199,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
           </span>
           {count > 0 && (
             <ChevronRight
-              size={10}
+              size={12}
               className="text-slate-300 group-hover/badge:text-secondary group-hover/badge:translate-x-0.5 transition-all"
             />
           )}
@@ -102,6 +207,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
       );
     },
   },
+  // 8. ACCIONES
   {
     id: "actions",
     header: "Acciones",

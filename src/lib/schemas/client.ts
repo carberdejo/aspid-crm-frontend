@@ -16,6 +16,9 @@ export const clientSchema = z.object({
   portfolioId: z.coerce
     .number()
     .positive("Debes seleccionar una cartera de accesos"),
+  district: z.string().min(3, "El distrito es obligatorio"),
+  zone: z.string().min(3, "La zona es obligatoria"),
+  province: z.string().min(3, "La provincia es obligatoria"),
 });
 
 export type ClientFormValues = z.infer<typeof clientSchema>;

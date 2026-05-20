@@ -10,8 +10,11 @@ export interface ClientListItem {
   contacts: number;
   segmentId: number;
   portfolioId: number;
-  segment?: IndustrySegment;
-  portfolio?: Portfolio;
+  segment?: IndustrySegmenListItem;
+  portfolio?: PortfolioListItem;
+  district: string;
+  zone: string;
+  province: string;
 }
 
 export interface ClientItem {
@@ -41,6 +44,8 @@ export interface ResponseRuc {
   ruc: string;
   razonSocial: string;
   direccion: string;
+  distrito: string;
+  provincia: string;
 }
 
 export interface ClientAndContactResponseCreate<T> {
@@ -87,17 +92,17 @@ export interface ClientDetail {
   contacts: Contact[];
 }
 
-export interface IndustrySegment {
+export interface IndustrySegmenListItem {
   id: string;
   code: string;
-  name: string;
+  // name: string;
+  isActive: boolean;
 }
 
-export interface Portfolio {
+export interface PortfolioListItem {
   id: string;
   code: string;
-  type: string;
-  zone: string;
+  isActive: boolean;
 }
 
 export interface UpdateClientInput extends Partial<ClientCreateDto> {

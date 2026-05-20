@@ -2,7 +2,7 @@
 
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { clientSchema, ClientFormValues } from "@/lib/schemas/client"; // Asegúrate de tener este schema
+import { clientSchema, ClientFormValues } from "@/lib/schemas/client";
 import { Loader2, Search } from "lucide-react";
 
 import {
@@ -22,7 +22,7 @@ import {
   useRuc,
 } from "@/hooks";
 import { toast } from "sonner";
-import { ClienteCreateResponseItem } from "@/interfaces";
+import { ClienteCreateResponseItem, IndustrySegment } from "@/interfaces";
 import {
   Select,
   SelectContent,
@@ -30,9 +30,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components";
+import { useState } from "react"; // Necesario para el estado de carga manual
+import { Portfolio } from "@/interfaces/portfolio.interface";
 
 interface ClientFormProps {
-  // El "?" hace que el cliente sea opcional al llamar a la función
   onSuccess: (client?: ClienteCreateResponseItem) => void;
 }
 
@@ -44,6 +45,9 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
   const { industrySegments, isLoading: isLoadingSegments } =
     useIndustrySegments({});
 
+  // Estado local para controlar el loader del botón de búsqueda
+  const [isSearchingRuc, setIsSearchingRuc] = useState(false);
+
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientSchema) as Resolver<ClientFormValues>,
     defaultValues: {
@@ -53,50 +57,85 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
       address: "",
       segmentId: undefined,
       portfolioId: undefined,
+      district: "",
+      zone: "",
+      province: "",
     },
   });
 
-  // Extraemos el valor actual del RUC para la query
-  const currentRuc = form.watch("ruc");
-  // Hook de TanStack Query para el RUC
-  const { refetch, isFetching } = useRuc(currentRuc);
+  // OPTIMIZACIÓN 1: Ya no usamos watch("ruc") para no renderizar en cada pulsación.
+  // En su lugar, consumimos el hook `useRuc` que expone una función `fetchByRuc(ruc)`
+  // para ejecutar la búsqueda con el valor actual del input al hacer click.
+  const { fetchByRuc } = useRuc();
 
   const onSearchRuc = async () => {
-    if (currentRuc.length !== 11) {
-      return toast.error("El RUC debe tener 11 dígitos");
+    // OPTIMIZACIÓN 2: Leemos el valor exacto en el momento del clic, sin vigilar el input.
+    const currentRuc = form.getValues("ruc");
+
+    if (!currentRuc || currentRuc.length !== 11) {
+      toast.error("El RUC debe tener exactamente 11 dígitos");
+      // UX: Hacemos focus en el campo si hay error
+      form.setFocus("ruc");
+      return;
     }
 
-    const { data, isSuccess } = await refetch();
+    try {
+      setIsSearchingRuc(true);
 
-    if (isSuccess && data?.razonSocial) {
-      const info = data; // Accedemos a la propiedad data del ResponseRuc
+      // Ejecutamos la búsqueda pasando el RUC actual
+      const info = await fetchByRuc(currentRuc);
+      console.log("Resultado de la búsqueda RUC:", info);
+      if (info && info.razonSocial) {
+        form.setValue("businessName", info.razonSocial, {
+          shouldValidate: true,
+        });
+        form.setValue("address", info.direccion, { shouldValidate: true });
+        form.setValue("commercialName", info.razonSocial, {
+          shouldValidate: true,
+        });
 
-      form.setValue("businessName", info.razonSocial, { shouldValidate: true });
-      form.setValue("address", info.direccion, { shouldValidate: true });
-      form.setValue("commercialName", info.razonSocial, {
-        shouldValidate: true,
-      });
+        // Manejamos posibles valores nulos de SUNAT con un fallback de string vacío
+        form.setValue("district", info.distrito || "", {
+          shouldValidate: true,
+        });
+        form.setValue("province", info.provincia || "", {
+          shouldValidate: true,
+        });
 
-      toast.success("Información recuperada de SUNAT");
-    } else {
-      // 2. Si isSuccess es true pero no hay razonSocial, lo tratamos como "No encontrado"
-      toast.error("RUC no hallado en los registros de SUNAT");
+        toast.success("Información recuperada de SUNAT");
 
-      // Opcional: Limpiar los campos si antes tenían algo de una búsqueda previa
-      form.setValue("businessName", "");
-      form.setValue("address", "");
+        // UX: Movemos el foco al siguiente campo vacío lógico (Nombre Comercial)
+        form.setFocus("commercialName");
+      } else {
+        toast.error("RUC no hallado en los registros de SUNAT");
+        clearSunatFields();
+      }
+    } catch (error) {
+      const msg =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.message ||
+        "Error al conectar con SUNAT. Intente de nuevo.";
+      toast.error(msg);
+      clearSunatFields();
+    } finally {
+      setIsSearchingRuc(false);
     }
+  };
+
+  const clearSunatFields = () => {
+    form.setValue("businessName", "");
+    form.setValue("address", "");
+    form.setValue("district", "");
+    form.setValue("province", "");
+    // No limpiamos la zona porque no viene de SUNAT
   };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((v) => {
-          // Llamamos a createClient (que es la mutación de TanStack Query)
           createClient(v, {
             onSuccess: (response) => {
-              // 'response' es lo que devuelve tu backend: { message: string, data: ClientItem }
-              // Pasamos solo la DATA al callback del modal
               onSuccess(response.item);
             },
           });
@@ -120,16 +159,21 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                       {...field}
                       placeholder="20XXXXXXXXX"
                       maxLength={11}
+                      // UX: Solo permitir números en el input type="text"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        field.onChange(value);
+                      }}
                       className="h-11 bg-white border-gray-200 font-mono text-lg"
                     />
                   </FormControl>
                   <Button
                     type="button"
                     onClick={onSearchRuc}
-                    disabled={isFetching}
-                    className="bg-primary hover:bg-primary/90 text-white w-14 h-11"
+                    disabled={isSearchingRuc || field.value.length !== 11} // UX: Deshabilita el botón si no hay 11 dígitos
+                    className="bg-primary hover:bg-primary/90 text-white w-14 h-11 transition-all"
                   >
-                    {isFetching ? (
+                    {isSearchingRuc ? (
                       <Loader2 className="animate-spin" size={20} />
                     ) : (
                       <Search size={20} />
@@ -148,7 +192,9 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             control={form.control}
             name="businessName"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="md:col-span-2">
+                {" "}
+                {/* UX: La Razón Social suele ser larga */}
                 <FormLabel className="text-xs font-bold text-gray-700 uppercase">
                   Razón Social
                 </FormLabel>
@@ -156,8 +202,9 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                   <Input
                     {...field}
                     placeholder="Se llenará automáticamente..."
-                    className="h-11 bg-gray-50 border-gray-200 font-medium"
+                    className="h-11 bg-gray-50 border-gray-200 font-medium text-gray-600"
                     readOnly
+                    tabIndex={-1} // UX: Evita que el usuario haga tab aquí ya que es readonly
                   />
                 </FormControl>
                 <FormMessage />
@@ -169,7 +216,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             control={form.control}
             name="commercialName"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="md:col-span-2">
                 <FormLabel className="text-xs font-bold text-gray-700 uppercase">
                   Nombre Comercial
                 </FormLabel>
@@ -189,7 +236,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             control={form.control}
             name="address"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="md:col-span-2">
                 <FormLabel className="text-xs font-bold text-gray-700 uppercase">
                   Dirección Fiscal
                 </FormLabel>
@@ -204,6 +251,47 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="province"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                  Provincia
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Provincia..."
+                    className="h-11 border-gray-200"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="district"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                  Distrito
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Distrito..."
+                    className="h-11 border-gray-200"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Selector de Segmento Industrial */}
           <FormField
             control={form.control}
@@ -230,7 +318,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {industrySegments.map((segment) => (
+                    {industrySegments?.map((segment: IndustrySegment) => (
                       <SelectItem
                         key={segment.id}
                         value={segment.id.toString()}
@@ -271,7 +359,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {portfolios.map((portfolio) => (
+                    {portfolios?.map((portfolio: Portfolio) => (
                       <SelectItem
                         key={portfolio.id}
                         value={portfolio.id.toString()}
@@ -281,6 +369,28 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="zone"
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                {" "}
+                {/* UX: Ocupar todo el ancho si está solo abajo */}
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                  Zona / Sector (Opcional)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Ej. Zona Industrial..."
+                    className="h-11 border-gray-200"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -298,10 +408,10 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
           </Button>
           <Button
             type="submit"
-            disabled={isCreating || isFetching}
+            disabled={isCreating || isSearchingRuc}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
           >
-            {isCreating ? "PROCESANDO..." : "REGISTRAR CLIENTE"}
+            {isCreating ? "PROCESANDO..." : "REGISTRAR EMPRESA"}
           </Button>
         </div>
       </form>

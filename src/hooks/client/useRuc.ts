@@ -1,12 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
-import { clientService } from '@/services/client.service';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { clientService } from "@/services/client.service";
 
-export const useRuc = (ruc: string) => {
-  return useQuery({
-    queryKey: ['ruc-search', ruc],
-    queryFn: () => clientService.findByRuc(ruc),
-    enabled: false, // 👈 Evita que se ejecute al cargar el componente
+export const useRuc = (ruc?: string) => {
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["ruc-search", ruc ?? ""],
+    queryFn: () => clientService.findByRuc(ruc ?? ""),
+    enabled: false, // No ejecutar automáticamente: usaremos fetchByRuc manual
     retry: false,
-    staleTime: Infinity, // El RUC de una empresa no cambia, lo guardamos en caché para siempre
+    staleTime: Infinity,
   });
+
+  const fetchByRuc = async (searchRuc: string) => {
+    if (!searchRuc) throw new Error("RUC vacío");
+    return queryClient.fetchQuery({
+      queryKey: ["ruc-search", searchRuc],
+      queryFn: () => clientService.findByRuc(searchRuc),
+    });
+  };
+
+  return { ...query, fetchByRuc };
 };

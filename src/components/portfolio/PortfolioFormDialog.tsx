@@ -37,7 +37,9 @@ import {
 import { User } from "@/interfaces";
 import {
   Portfolio,
+  PortfolioType,
   PortfolioUser,
+  PortfolioZone,
   RoleInPortfolio,
 } from "@/interfaces/portfolio.interface";
 
@@ -45,22 +47,6 @@ interface PortfolioFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   portfolio?: Portfolio | null;
-}
-
-// ENUMS CREADOS PARA SELECTS
-export enum PortfolioType {
-  INDUSTRIAL = "INDUSTRIAL",
-  DIDACTICA = "DIDACTICA",
-  DISTRIBUIDOR = "DISTRIBUIDOR",
-}
-
-export enum PortfolioZone {
-  NORTE = "NORTE",
-  SUR = "SUR",
-  CENTRO = "CENTRO",
-  ESTE = "ESTE",
-  OESTE = "OESTE",
-  CALLAO = "CALLAO",
 }
 
 // HELPER PARA NORMALIZAR TEXTO (Mayúsculas y sin tildes)

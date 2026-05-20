@@ -65,9 +65,12 @@ export function PortfoliosTab() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button onClick={handleCreate} className="bg-primary text-white gap-2">
+        <Button
+          onClick={handleCreate}
+          className="gap-2 bg-secondary hover:bg-secondary-dark text-white px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95"
+        >
           <Plus size={18} />
-          Nueva Cartera
+          Registrar Cartera
         </Button>
       </div>
 

@@ -46,3 +46,19 @@ export interface PortfolioUpdateDto extends Partial<PortfolioCreateDto> {
 export interface PortfolioQuery extends GenericFilters {
   term?: string;
 }
+
+// ENUMS CREADOS PARA SELECTS
+export enum PortfolioType {
+  INDUSTRIAL = "INDUSTRIAL",
+  DIDACTICA = "DIDACTICA",
+  DISTRIBUIDOR = "DISTRIBUIDOR",
+}
+
+export enum PortfolioZone {
+  NORTE = "NORTE",
+  SUR = "SUR",
+  CENTRO = "CENTRO",
+  ESTE = "ESTE",
+  OESTE = "OESTE",
+  CALLAO = "CALLAO",
+}

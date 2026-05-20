@@ -1,4 +1,5 @@
 import { concarApi } from "@/api/concarApi";
+import { ImportResults } from "@/hooks/client/useImportClients";
 import {
   ApiResponse,
   ClientAndContactResponseCreate,
@@ -22,7 +23,7 @@ export const clientService = {
     // Limpiamos dinámicamente: si agregas 'sector' o 'ciudad' a ClientFilters,
     // cleanParams lo manejará automáticamente.
     const params = cleanParams(filters as Record<string, unknown>);
-
+    console.log("datos en service", params);
     const { data } = await concarApi.get<
       ApiResponse<PaginatedResponse<ClientListItem>>
     >("/clients", {
@@ -70,6 +71,21 @@ export const clientService = {
       ApiResponse<ClientAndContactResponseCreate<Contact>>
     >("/clients/contacts", contactData);
     console.log({ dataservice: data.data });
+    return data.data;
+  },
+
+  importClientsFromExcel: async (file: File) => {
+    const formData = new FormData(); // Creamos un FormData para enviar el archivo como multipart/form-data
+    formData.append("file", file); // 'file' es el nombre que espera el FileInterceptor en NestJS
+    const { data } = await concarApi.post<ApiResponse<ImportResults>>(
+      "/clients/import-excel",
+      formData, // Enviamos el archivo al backend
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // Indicamos que es un archivo
+        },
+      },
+    );
     return data.data;
   },
 };

@@ -3,7 +3,7 @@ import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StandardButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon?: LucideIcon;
+  icon?: LucideIcon | React.ReactNode; // Para permitir tanto iconos de Lucide como cualquier nodo (ej. para casos especiales)
   label: string;
   colorClass?: string; // Para pasar fondos personalizados
 }

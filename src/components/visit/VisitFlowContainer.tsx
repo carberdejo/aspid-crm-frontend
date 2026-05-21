@@ -34,7 +34,7 @@ export function VisitFlowContainer({
     backToMain,
     // setNewClientId,
     setNewContactId,
-    setSelectedClientId,
+    // setSelectedClientId,
     selectedClientId,
     // newClientId,
   } = useVisitFlowStore();

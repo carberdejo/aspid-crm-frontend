@@ -8,11 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { ShoppingBag, ShoppingCart } from "lucide-react";
 import { PurchaseOrderForm } from "./PurchaseOrderForm";
 import { CreatePurchaseOrderDto, Quote } from "@/interfaces";
 import { useCreatePurchaseOrder } from "@/hooks";
+import { StandardButton } from "@/components/common/StandardButton";
 
 interface RegisterPurchaseOrderModalProps {
   initialQuote?: Quote; // Opcional
@@ -38,10 +38,15 @@ export function RegisterPurchaseOrderModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-            <ShoppingCart size={18} className="text-slate-400" />
-            Orden de Compra
-          </Button>
+          // <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+          //   <ShoppingCart size={18} className="text-slate-400" />
+          //   Orden de Compra
+          // </Button>
+          <StandardButton
+            icon={ShoppingCart}
+            label="Orden de Compra"
+            colorClass="bg-accent hover:bg-accent-dark text-white"
+          />
         )}
       </DialogTrigger>
 

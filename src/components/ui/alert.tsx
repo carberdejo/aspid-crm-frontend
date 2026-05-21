@@ -15,6 +15,7 @@ const alertVariants = cva(
           "bg-card text-amber-600 *:data-[slot=alert-description]:text-amber-600/90 *:[svg]:text-current",
         success:
           "bg-card text-green-600 *:data-[slot=alert-description]:text-green-600/90 *:[svg]:text-current",
+        info: "bg-card text-blue-600 *:data-[slot=alert-description]:text-blue-600/90 *:[svg]:text-current",
       },
     },
     defaultVariants: {

@@ -121,6 +121,7 @@ export const useQuotes = (
     // Data
     quotes: query.data?.items || [],
     total: query.data?.total || 0,
+    totalAmountUSD: query.data?.totalAmountUSD || 0,
     isLoading: query.isLoading,
     isError: query.isError,
 

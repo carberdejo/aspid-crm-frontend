@@ -16,6 +16,8 @@ import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
 import { useAuthStore } from "@/store";
 import { VisitPerformancePanel } from "@/components/department/VisitPerformancePanel";
 import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPurchaseOrderModal";
+import { StandardButton } from "@/components/common/StandardButton";
+import { RegisterClientModal } from "@/components";
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -60,6 +62,21 @@ export default function DepartmentPage() {
           icon={Briefcase}
           iconColor="primary"
           variant="compact"
+          action={
+            <div className="flex items-center gap-3">
+              <StandardButton
+                // icon={FileSpreadsheet}
+                label="Importar Excel"
+                // Sobrescribimos el color por defecto al verde corporativo
+                colorClass="bg-emerald-600 hover:bg-emerald-700 text-white"
+                // onClick={() => setIsImportModalOpen(true)}
+              />
+
+              {/* Asumimos que dentro de este componente actualizarás el trigger al nuevo StandardButton */}
+              <RegisterClientModal />
+              <RegisterPurchaseOrderModal />
+            </div>
+          } // No necesitamos acción aquí, los botones están a la derecha
         />
 
         {/* LADO DERECHO: Acciones con Estilo Premium */}
@@ -68,10 +85,15 @@ export default function DepartmentPage() {
           <VisitFlowContainer
             departmentId={+id}
             trigger={
-              <Button className="bg -primary hover:bg-primary text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-blue-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-                <ClipboardList size={18} className="text-blue-100" />
-                Visitas
-              </Button>
+              // <Button className="bg -primary hover:bg-primary text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-blue-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+              //   <ClipboardList size={18} className="text-blue-100" />
+              //   Visitas
+              // </Button>
+              <StandardButton
+                icon={ClipboardList}
+                label="Visitas"
+                colorClass="bg-primary hover:bg-primary-dark text-white"
+              />
             }
           />
 
@@ -79,10 +101,11 @@ export default function DepartmentPage() {
           <QuoteFlowContainer
             departmentId={+id}
             trigger={
-              <Button className="bg-secondary hover:bg-orange-600 text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-orange-500/20 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-                <FileText size={18} className="text-orange-200" />
-                Cotizaciones
-              </Button>
+              <StandardButton
+                icon={FileText}
+                label="Cotizaciones"
+                colorClass="bg-secondary hover:bg-orange-600 text-white"
+              />
             }
           />
 

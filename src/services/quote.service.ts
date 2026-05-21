@@ -6,6 +6,7 @@ import {
   QuoteCreateDto,
   QuoteDelete,
   QuoteDetail,
+  QuotePaginatedResponse,
   QuoteStatus,
   ResponseOperation,
 } from "@/interfaces";
@@ -34,10 +35,10 @@ export const quoteService = {
    */
   getQuotes: async (
     filters: QuoteFilters = {},
-  ): Promise<PaginatedResponse<Quote>> => {
+  ): Promise<QuotePaginatedResponse> => {
     const params = cleanParams(filters);
 
-    const { data } = await concarApi.get<ApiResponse<PaginatedResponse<Quote>>>(
+    const { data } = await concarApi.get<ApiResponse<QuotePaginatedResponse>>(
       "/quotes",
       { params },
     );

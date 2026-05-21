@@ -1,3 +1,5 @@
+import { PaginatedResponse } from ".";
+
 export enum QuoteStatus {
   PENDIENTE = "PENDIENTE",
   APROBADO = "APROBADO",
@@ -110,4 +112,8 @@ export interface QuoteUpdateDto {
   orderType?: string;
   description?: string;
   collaboratorId?: number | null;
+}
+
+export interface QuotePaginatedResponse extends PaginatedResponse<Quote> {
+  totalAmountUSD: number;
 }

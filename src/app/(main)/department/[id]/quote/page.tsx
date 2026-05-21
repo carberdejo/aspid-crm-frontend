@@ -1,15 +1,23 @@
-// src/app/dashboard/quotes/page.tsx
 "use client";
 
 import { use } from "react";
-import { FileText } from "lucide-react";
+import { FileText, CircleDollarSign, TrendingUp } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { DataTable } from "@/components";
 import { quoteColumns } from "@/components/quote/table/QuoteColumns";
 import { useQuotes } from "@/hooks/quote/useQuotes";
-import { useQuoteFilters } from "@/hooks/quote/useQuoteFilters"; // Hook nuevo
+import { useQuoteFilters } from "@/hooks/quote/useQuoteFilters";
 import { QuoteFiltersTable } from "@/components/quote/table/QuoteFiltersTable";
 import { useAuthStore } from "@/store";
+
+// Formateador de moneda profesional
+const formatUSD = (amount: number) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(amount);
+};
 
 export default function QuotesPage({
   params,
@@ -19,10 +27,8 @@ export default function QuotesPage({
   const resolvedParams = use(params);
   const departmentId = Number(resolvedParams.id);
 
-  // Extraemos el ID con selector para eficiencia
   const userId = useAuthStore((state) => state.user?.sub);
 
-  // Lógica de filtros delegada
   const {
     page,
     searchTerm,
@@ -32,8 +38,8 @@ export default function QuotesPage({
     handleReset,
   } = useQuoteFilters(departmentId, userId);
 
-  // Fetch de datos (Solo se activa si hay userId para evitar duplicados en carga)
-  const { quotes, total, isLoading } = useQuotes(filters, {
+  // Asegúrate de que useQuotes retorne el nuevo campo totalAmountUSD
+  const { quotes, total, totalAmountUSD, isLoading } = useQuotes(filters, {
     enabled: !!userId,
   });
 
@@ -47,6 +53,33 @@ export default function QuotesPage({
         count={total}
         countLabel="cotizaciones"
       />
+
+      {/* --- NUEVO: BARRA DE RESUMEN FINANCIERO --- */}
+      {!isLoading && (
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in slide-in-from-bottom-2 duration-500">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
+              <CircleDollarSign size={24} strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                Valor Total Filtrado (Mark-to-Market)
+              </p>
+              <p className="text-sm font-medium text-slate-500 mt-0.5">
+                Consolidado en dólares a la tasa de hoy
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+            <TrendingUp size={18} className="text-emerald-500" />
+            <span className="text-3xl font-black text-slate-800 tracking-tight">
+              {formatUSD(totalAmountUSD || 0)}
+            </span>
+          </div>
+        </div>
+      )}
+      {/* ------------------------------------------ */}
 
       <DataTable
         columns={quoteColumns}

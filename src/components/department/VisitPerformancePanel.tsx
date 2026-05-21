@@ -7,173 +7,123 @@ import {
   Calendar,
   BarChart3,
   Building2,
-  ChevronDown,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { cn, DateFilterType } from "@/lib/utils";
+import { DateFilterType } from "@/lib/utils";
 import { useVisitStats } from "@/hooks/analitycs/useVisitStats";
 import { Skeleton } from "../ui/skeleton";
+import { DateFilterSelect } from "./DateFilterSelect"; // Reutilizamos tu nuevo selector
 
 export function VisitPerformancePanel({ userId }: { userId: number }) {
   const [filterType, setFilterType] = useState<DateFilterType>("this-week");
   const { stats, isLoading } = useVisitStats(userId, filterType);
 
-  if (isLoading) return <Skeleton className="h-[320px] rounded-[2.5rem]" />;
+  if (isLoading) return <Skeleton className="h-[380px] rounded-[2rem]" />;
 
-  const performanceItems = [
-    {
-      title: "Cliente Líder en Visitas",
-      name: stats?.mostVisitedClient?.name || "Sin registros",
-      count: stats?.mostVisitedClient?.count || 0,
-      icon: Building2,
-      color: "text-secondary",
-    },
-    {
-      title: "Contacto con Mayor Fidelización",
-      name: stats?.mostVisitedContact?.name || "Sin registros",
-      count: stats?.mostVisitedContact?.count || 0,
-      icon: Users,
-      color: "text-blue-600",
-    },
-  ];
+  // Formateador seguro de fecha para el Día Pico
+  const formatPeakDate = (dateString?: string | null) => {
+    if (!dateString) return "Sin datos";
+    try {
+      return format(new Date(dateString), "dd 'de' MMMM", { locale: es });
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
-    // Agregamos h-full y flex flex-col para que el contenido se estire y alinee abajo
-    <div className="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col h-full min-h-[320px]">
-      {/* HEADER */}
-      <div className="flex justify-between items-center gap-4 mb-8">
+    <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between min-h-[380px] w-full overflow-hidden">
+      {/* 1. HEADER: Título y Selector alineados correctamente */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full border-b border-slate-50 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-primary text-white">
-            <BarChart3 size={20} />
+          <div className="p-2.5 rounded-xl bg-slate-900 text-white shrink-0">
+            <BarChart3 size={18} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-black text-primary uppercase italic tracking-tight truncate">
+            <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider leading-none">
               Rendimiento de Campo
             </h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-              Análisis de actividad
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1.5">
+              Análisis de actividad operativa
             </p>
           </div>
         </div>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 rounded-xl border-slate-100 text-[10px] font-black uppercase tracking-widest gap-2.5 px-4 shadow-none shrink-0"
-            >
-              <Calendar size={14} className="text-secondary" />
-              {filterType.replace("-", " ")}
-              <ChevronDown size={14} className="text-slate-300" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-48 rounded-xl p-2 shadow-xl border-slate-100 bg-white z-50"
-          >
-            {/* AGREGADOS LOS ITEMS QUE FALTABAN */}
-            <DropdownMenuItem
-              onClick={() => setFilterType("this-week")}
-              className="text-[10px] font-bold uppercase cursor-pointer"
-            >
-              Esta Semana
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setFilterType("last-week")}
-              className="text-[10px] font-bold uppercase cursor-pointer"
-            >
-              Semana Pasada
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setFilterType("this-month")}
-              className="text-[10px] font-bold uppercase cursor-pointer"
-            >
-              Este Mes
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setFilterType("last-month")}
-              className="text-[10px] font-bold uppercase cursor-pointer"
-            >
-              Mes Pasado
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* CUERPO - Agregamos flex-1 para que empuje al footer */}
-      <div className="flex-1 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-50">
-          {performanceItems.map((item, i) => (
-            <div key={i} className="flex items-center gap-4 group min-w-0">
-              <div
-                className={cn(
-                  "shrink-0 h-12 w-12 rounded-xl flex items-center justify-center border-2 border-dashed",
-                  item.color,
-                  "border-current/30 group-hover:bg-primary group-hover:text-white transition-colors",
-                )}
-              >
-                <item.icon size={20} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 truncate leading-none mb-1">
-                  {item.title}
-                </p>
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <h4 className="text-xs font-black text-primary uppercase italic truncate tracking-tight">
-                    {item.name}
-                  </h4>
-                  {item.count > 0 && (
-                    <span
-                      className={cn(
-                        "shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold bg-current/10",
-                        item.color,
-                      )}
-                    >
-                      {item.count}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="w-full sm:w-auto">
+          <DateFilterSelect value={filterType} onChange={setFilterType} />
         </div>
       </div>
 
-      {/* PIE - Alineado abajo gracias al flex-1 del cuerpo */}
-      <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-50 bg-slate-50/50 p-4 rounded-2xl mt-auto">
-        <div className="flex items-center gap-2 text-slate-600">
-          <TrendingUp size={14} className="text-primary shrink-0" />
-          <div className="flex flex-col">
-            <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400">
-              Total
+      {/* 2. GRID PRINCIPAL: Ocupa el espacio eficientemente */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 flex-1 w-full">
+        {/* Card: Cliente Líder */}
+        <div className="p-4 rounded-2xl bg-orange-50/40 border border-orange-100/50 flex flex-col justify-between min-h-[100px] transition-all hover:bg-orange-50/70">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="p-1.5 rounded-lg bg-orange-50 text-secondary shrink-0">
+              <Building2 size={16} />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Cliente Líder en Visitas
             </span>
-            <span className="text-lg font-black text-primary font-mono leading-none tracking-tighter">
+          </div>
+          <div className="flex items-baseline justify-between gap-2 mt-auto">
+            <h4 className="text-sm font-bold text-slate-800 truncate max-w-[80%]">
+              {stats?.mostVisitedClient?.name || "Sin registros"}
+            </h4>
+            <span className="text-lg font-black text-secondary bg-orange-100/60 px-2.5 py-0.5 rounded-lg shrink-0">
+              {stats?.mostVisitedClient?.count || 0}
+            </span>
+          </div>
+        </div>
+
+        {/* Card: Contacto Líder */}
+        <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-100/50 flex flex-col justify-between min-h-[100px] transition-all hover:bg-blue-50/70">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 shrink-0">
+              <Users size={16} />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Contacto con Mayor Fidelización
+            </span>
+          </div>
+          <div className="flex items-baseline justify-between gap-2 mt-auto">
+            <h4 className="text-sm font-bold text-slate-800 truncate max-w-[80%]">
+              {stats?.mostVisitedContact?.name || "Sin registros"}
+            </h4>
+            <span className="text-lg font-black text-blue-600 bg-blue-100/60 px-2.5 py-0.5 rounded-lg shrink-0">
+              {stats?.mostVisitedContact?.count || 0}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. FOOTER: Indicadores Macizos y Visibles */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full border-t border-slate-100 pt-5">
+        {/* Total General */}
+        <div className="flex items-center gap-4 p-3 rounded-2xl border border-slate-100 bg-slate-50/30">
+          <div className="p-3 rounded-xl bg-blue-50 text-primary shrink-0">
+            <TrendingUp size={20} strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+              Total Visitas
+            </span>
+            <span className="text-3xl font-black text-slate-900 tracking-tight mt-0.5">
               {stats?.total || 0}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-slate-600">
-          <Calendar size={14} className="text-emerald-600 shrink-0" />
-          <div className="flex flex-col">
-            <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400">
-              Día Pico
+        {/* Día Pico */}
+        <div className="flex items-center gap-4 p-3 rounded-2xl border border-slate-100 bg-slate-50/30">
+          <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+            <Calendar size={20} strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+              Día de Mayor Actividad
             </span>
-            <span className="text-[10px] font-black text-emerald-700 uppercase italic leading-none">
-              {stats?.peakActivityDay?.date
-                ? format(new Date(stats.peakActivityDay.date), "dd MMM", {
-                    locale: es,
-                  })
-                : "N/A"}
+            <span className="text-base font-extrabold text-emerald-700 truncate tracking-tight mt-1 capitalize">
+              {formatPeakDate(stats?.peakActivityDay?.date)}
             </span>
           </div>
         </div>

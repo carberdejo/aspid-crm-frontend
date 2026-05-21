@@ -1,7 +1,6 @@
 import { ApiErrorResponse } from "@/interfaces";
 import { clientService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios"; // O tu instancia configurada de axios
 import { toast } from "sonner";
 
 // Definimos la interfaz de la respuesta que armamos en NestJS
@@ -10,11 +9,11 @@ export interface ImportResults {
   stats: {
     totalRowsProcessed: number;
     successfullyInserted: number;
-    skippedDuplicatesCount: number;
+    successfullyUpdated: number;
     errorsCount: number;
   };
   details: {
-    skippedRucs: string[];
+    updatedRucs: string[];
     errors: { row: number; reason: string }[];
   };
 }

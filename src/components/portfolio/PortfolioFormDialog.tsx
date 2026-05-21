@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -42,6 +42,7 @@ import {
   PortfolioZone,
   RoleInPortfolio,
 } from "@/interfaces/portfolio.interface";
+import { Combobox } from "../ui/combobox";
 
 interface PortfolioFormDialogProps {
   open: boolean;
@@ -64,7 +65,20 @@ export function PortfolioFormDialog({
 }: PortfolioFormDialogProps) {
   const { createPortfolio, isCreating } = useCreatePortfolio();
   const { isUpdating, updatePortfolio } = useUpdatePortfolio();
-  const { users: availableUsers } = useUsers();
+  const [userSearch, setUserSearch] = useState("");
+
+  const { users: availableUsers } = useUsers({
+    isActive: true,
+    term: userSearch,
+  });
+
+  const userOptions = useMemo(() => {
+    if (!availableUsers) return [];
+    return availableUsers.map((u: User) => ({
+      value: u.id.toString(),
+      label: `${u.firstName.toUpperCase()} ${u.lastName.toUpperCase()}`,
+    }));
+  }, [availableUsers]);
 
   const isEditing = !!portfolio;
   const isProcessing = isCreating || isUpdating;
@@ -276,27 +290,26 @@ export function PortfolioFormDialog({
                     <FormField
                       control={form.control}
                       name={`users.${index}.userId`}
-                      render={({ field }) => (
+                      render={({ field: rfhField }) => (
                         <FormItem className="flex-1">
-                          <Select
-                            onValueChange={(val) => field.onChange(Number(val))}
-                            value={field.value ? field.value.toString() : ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="bg-white">
-                                <SelectValue placeholder="Seleccionar Usuario" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {availableUsers.map((u: User) => (
-                                <SelectItem key={u.id} value={u.id.toString()}>
-                                  {/* Mostrar nombres en MAYÚSCULAS si lo deseas, o dejarlo como viene */}
-                                  {u.firstName.toUpperCase()}{" "}
-                                  {u.lastName.toUpperCase()}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Combobox
+                              options={userOptions}
+                              value={
+                                rfhField.value ? rfhField.value.toString() : ""
+                              }
+                              onChange={(val) =>
+                                rfhField.onChange(val ? Number(val) : 0)
+                              }
+                              // --- LO QUE FALTA AGREGAR ---
+                              onSearchChange={setUserSearch} // Conecta lo que tipeas con tu estado local
+                              shouldFilter={false} // Apaga el filtro de Shadcn porque tu backend ya filtra
+                              // ----------------------------
+
+                              placeholder="Buscar Usuario..."
+                            />
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />

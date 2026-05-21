@@ -81,13 +81,19 @@ const getAnaliticaSection = (departments: Department[]): NavSection | null => {
     .filter(
       (dept) => dept.isActive && normalize(dept.name) !== "administracion",
     )
-    .map((dept) => ({
-      title: `Reportes ${dept.name}`,
-      href: `/department/${dept.id}/reports`,
-      icon: BarChart3,
-      active: false,
-      deptId: dept.id,
-    }));
+    .map((dept) => {
+      // Creamos un ID HTML seguro: sin acentos, minúsculas y espacios por guiones
+      const sectionId = normalize(dept.name).replace(/\s+/g, "-");
+
+      return {
+        title: `Reportes ${dept.name}`,
+        // Ajusta "/analytics" o "/dashboard/analytics" según donde vayas a crear tu page.tsx
+        href: `/analytics#${sectionId}`,
+        icon: BarChart3,
+        active: false,
+        deptId: dept.id,
+      };
+    });
 
   return items.length > 0 ? { title: "ANALÍTICA", items } : null;
 };

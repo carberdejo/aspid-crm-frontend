@@ -10,15 +10,18 @@ import {
   industrySegmentsQuery,
   IndustrySegmentUpdateDto,
 } from "@/interfaces/industry-segment.interface";
+import { cleanParams } from "@/lib";
 
 export const industrySegmentsService = {
   // El que usará el form de clientes
   getindustrySegments: async (
     query: industrySegmentsQuery,
   ): Promise<PaginatedResponse<IndustrySegment>> => {
+    const params = cleanParams(query as Record<string, unknown>);
+
     const { data } = await concarApi.get<
       ApiResponse<PaginatedResponse<IndustrySegment>>
-    >(`/catalogs/segments`, { params: query });
+    >(`/catalogs/segments`, { params });
     return data.data;
   },
 

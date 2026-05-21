@@ -23,13 +23,13 @@ export const clientService = {
     // Limpiamos dinámicamente: si agregas 'sector' o 'ciudad' a ClientFilters,
     // cleanParams lo manejará automáticamente.
     const params = cleanParams(filters as Record<string, unknown>);
-    console.log("datos en service", params);
+    // console.log("datos en service", params);
     const { data } = await concarApi.get<
       ApiResponse<PaginatedResponse<ClientListItem>>
     >("/clients", {
       params,
     });
-    console.log({ data: data.data });
+    // console.log({ data: data.data });
     return data.data; // Retorna solo la data paginada, no el mensaje ni el código
   },
 

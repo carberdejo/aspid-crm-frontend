@@ -4,12 +4,12 @@ import type { QuoteFilters } from "@/services/quote.service";
 
 /**
  * Query Keys Factory
- * 
+ *
  * Centraliza todas las query keys de la aplicación para garantizar:
  * 1. Consistencia en toda la app
  * 2. Fácil mantenimiento
  * 3. Evita mismatches entre setQueryData y useQuery
- * 
+ *
  * Uso:
  * - En hooks: queryKey: clientQueryKeys.list(filters)
  * - En setQueryData: clientQueryKeys.list({ term: "", limit: 10 })
@@ -17,7 +17,7 @@ import type { QuoteFilters } from "@/services/quote.service";
 
 /**
  * Query Keys para Clientes
- * Normaliza SIEMPRE con propiedades: term (no "name"), limit
+ * Normaliza SIEMPRE con propiedades: term (no "name"), limit, offset
  */
 export const clientQueryKeys = {
   all: ["clients"] as const,
@@ -32,6 +32,7 @@ export const clientQueryKeys = {
       {
         term: filters.term || "",
         limit: filters.limit || 10,
+        offset: filters.offset || 0,
         // Agregar más filtros aquí si es necesario (ej: sector, ciudad, etc)
       },
     ] as const,
@@ -42,10 +43,7 @@ export const clientQueryKeys = {
    * @param limit Límite de resultados
    */
   search: (term: string, limit = 10) =>
-    [
-      "clients",
-      { term: term || "", limit },
-    ] as const,
+    ["clients", { term: term || "", limit }] as const,
 
   /**
    * Detalle individual de cliente
@@ -64,8 +62,7 @@ export const contactQueryKeys = {
    * Contactos de un cliente específico
    * @param clientId ID del cliente
    */
-  byClient: (clientId: number) =>
-    ["contacts-client", clientId] as const,
+  byClient: (clientId: number) => ["contacts-client", clientId] as const,
 
   /**
    * Detalle individual de contacto
@@ -84,11 +81,7 @@ export const visitQueryKeys = {
    * Lista de visitas con filtros
    * @param filters Objeto con filtros
    */
-  list: (filters: VisitFilter = {}) =>
-    [
-      "visits",
-      filters,
-    ] as const,
+  list: (filters: VisitFilter = {}) => ["visits", filters] as const,
 
   /**
    * Detalle individual de visita
@@ -107,11 +100,7 @@ export const quoteQueryKeys = {
    * Lista de cotizaciones con filtros
    * @param filters Objeto con filtros
    */
-  list: (filters: QuoteFilters = {}) =>
-    [
-      "quotes",
-      filters,
-    ] as const,
+  list: (filters: QuoteFilters = {}) => ["quotes", filters] as const,
 
   /**
    * Detalle individual de cotización

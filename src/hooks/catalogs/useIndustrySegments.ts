@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export const useIndustrySegments = (filters: industrySegmentsQuery) => {
   const query = useQuery({
-    queryKey: ["industry-segments"],
+    queryKey: ["industry-segments", filters],
     queryFn: () => industrySegmentsService.getindustrySegments(filters),
     staleTime: Infinity, // Los segmentos de industria no cambian frecuentemente, así que los mantenemos frescos indefinidamente
   });

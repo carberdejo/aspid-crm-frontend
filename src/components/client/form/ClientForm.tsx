@@ -32,6 +32,8 @@ import {
 } from "@/components";
 import { useState } from "react"; // Necesario para el estado de carga manual
 import { Portfolio } from "@/interfaces/portfolio.interface";
+import { Combobox } from "@/components/ui/combobox";
+import React from "react";
 
 interface ClientFormProps {
   onSuccess: (client?: ClienteCreateResponseItem) => void;
@@ -39,11 +41,18 @@ interface ClientFormProps {
 
 export function ClientForm({ onSuccess }: ClientFormProps) {
   const { createClient, isCreating } = useClients();
-
+  const [segmentSearch, setSegmentSearch] = useState("");
+  const [portfolioSearch, setPortfolioSearch] = useState("");
   // Consumimos los catálogos usando TanStack Query
-  const { portfolios, isLoading: isLoadingPortfolios } = usePortfolios({});
+  const { portfolios, isLoading: isLoadingPortfolios } = usePortfolios({
+    limit: 1000,
+    term: portfolioSearch,
+  });
   const { industrySegments, isLoading: isLoadingSegments } =
-    useIndustrySegments({});
+    useIndustrySegments({
+      limit: 1000,
+      term: segmentSearch,
+    });
 
   // Estado local para controlar el loader del botón de búsqueda
   const [isSearchingRuc, setIsSearchingRuc] = useState(false);
@@ -62,6 +71,23 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
       province: "",
     },
   });
+
+  // Mapeamos los datos de la API al formato que espera el Combobox
+  const segmentOptions = React.useMemo(() => {
+    if (!industrySegments) return [];
+    return industrySegments.map((segment: IndustrySegment) => ({
+      value: segment.id.toString(),
+      label: `${segment.code} - ${segment.name}`,
+    }));
+  }, [industrySegments]);
+
+  const portfolioOptions = React.useMemo(() => {
+    if (!portfolios) return [];
+    return portfolios.map((portfolio: Portfolio) => ({
+      value: portfolio.id.toString(),
+      label: `${portfolio.code} - ${portfolio.zone || portfolio.type}`,
+    }));
+  }, [portfolios]);
 
   // OPTIMIZACIÓN 1: Ya no usamos watch("ruc") para no renderizar en cada pulsación.
   // En su lugar, consumimos el hook `useRuc` que expone una función `fetchByRuc(ruc)`
@@ -297,37 +323,24 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             control={form.control}
             name="segmentId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase mb-1">
                   Segmento Industrial
                 </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
+                <Combobox
+                  options={segmentOptions}
                   value={field.value?.toString() || ""}
+                  onChange={(val) =>
+                    field.onChange(val ? Number(val) : undefined)
+                  }
+                  // 3. Conectamos la búsqueda remota
+                  onSearchChange={setSegmentSearch}
+                  shouldFilter={false} // <- Clave: El backend filtra, no el frontend
+                  placeholder={
+                    isLoadingSegments ? "Cargando..." : "Seleccione un rubro"
+                  }
                   disabled={isLoadingSegments}
-                >
-                  <FormControl>
-                    <SelectTrigger className="h-11">
-                      <SelectValue
-                        placeholder={
-                          isLoadingSegments
-                            ? "Cargando..."
-                            : "Seleccione un rubro"
-                        }
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {industrySegments?.map((segment: IndustrySegment) => (
-                      <SelectItem
-                        key={segment.id}
-                        value={segment.id.toString()}
-                      >
-                        {segment.code} - {segment.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -338,37 +351,26 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             control={form.control}
             name="portfolioId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-xs font-bold text-gray-700 uppercase mb-1">
                   Cartera Asignada
                 </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
+                <Combobox
+                  options={portfolioOptions}
                   value={field.value?.toString() || ""}
+                  onChange={(val) =>
+                    field.onChange(val ? Number(val) : undefined)
+                  }
+                  // 3. Conectamos la búsqueda remota
+                  onSearchChange={setPortfolioSearch}
+                  shouldFilter={false} // <- Clave: El backend filtra, no el frontend
+                  placeholder={
+                    isLoadingPortfolios
+                      ? "Cargando..."
+                      : "Seleccione una cartera"
+                  }
                   disabled={isLoadingPortfolios}
-                >
-                  <FormControl>
-                    <SelectTrigger className="h-11">
-                      <SelectValue
-                        placeholder={
-                          isLoadingPortfolios
-                            ? "Cargando..."
-                            : "Seleccione una cartera"
-                        }
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {portfolios?.map((portfolio: Portfolio) => (
-                      <SelectItem
-                        key={portfolio.id}
-                        value={portfolio.id.toString()}
-                      >
-                        {portfolio.code} - {portfolio.zone || portfolio.type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
                 <FormMessage />
               </FormItem>
             )}

@@ -15,6 +15,7 @@ export const useIndustrySegments = (filters: industrySegmentsQuery) => {
   });
   return {
     industrySegments: query.data?.items || [],
+    total: query.data?.total || 0,
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,
@@ -48,7 +49,7 @@ export const useUpdateIndustrySegment = () => {
       id,
       data,
     }: {
-      id: string;
+      id: number;
       data: IndustrySegmentUpdateDto;
     }) => industrySegmentsService.update(id, data),
     onSuccess: (updatedSegment) => {
@@ -71,7 +72,7 @@ export const useUpdateIndustrySegment = () => {
 export const useToggleIndustrySegmentStatus = () => {
   const queryClient = useQueryClient();
   const query = useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+    mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
       isActive
         ? industrySegmentsService.deactivate(id)
         : industrySegmentsService.reactivate(id),

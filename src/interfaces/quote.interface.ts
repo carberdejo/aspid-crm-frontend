@@ -21,6 +21,8 @@ export enum QuoteOrderType {
 export enum QuoteCurrency {
   USD = "USD",
   PEN = "PEN",
+  CLP = "CLP",
+  MXN = "MXN",
 }
 export interface UserLite {
   id: number;

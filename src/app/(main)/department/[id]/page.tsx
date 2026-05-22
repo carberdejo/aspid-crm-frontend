@@ -62,21 +62,21 @@ export default function DepartmentPage() {
           icon={Briefcase}
           iconColor="primary"
           variant="compact"
-          action={
-            <div className="flex items-center gap-3">
-              <StandardButton
-                // icon={FileSpreadsheet}
-                label="Importar Excel"
-                // Sobrescribimos el color por defecto al verde corporativo
-                colorClass="bg-emerald-600 hover:bg-emerald-700 text-white"
-                // onClick={() => setIsImportModalOpen(true)}
-              />
+          // action={
+          //   <div className="flex items-center gap-3">
+          //     <StandardButton
+          //       // icon={FileSpreadsheet}
+          //       label="Importar Excel"
+          //       // Sobrescribimos el color por defecto al verde corporativo
+          //       colorClass="bg-emerald-600 hover:bg-emerald-700 text-white"
+          //       // onClick={() => setIsImportModalOpen(true)}
+          //     />
 
-              {/* Asumimos que dentro de este componente actualizarás el trigger al nuevo StandardButton */}
-              <RegisterClientModal />
-              <RegisterPurchaseOrderModal />
-            </div>
-          } // No necesitamos acción aquí, los botones están a la derecha
+          //     {/* Asumimos que dentro de este componente actualizarás el trigger al nuevo StandardButton */}
+          //     <RegisterClientModal />
+          //     <RegisterPurchaseOrderModal />
+          //   </div>
+          // }
         />
 
         {/* LADO DERECHO: Acciones con Estilo Premium */}
@@ -143,9 +143,9 @@ export default function DepartmentPage() {
           </div>
         </div>
         <div className="lg:col-span-4 bg-white rounded-[2.5rem] min-h-[400px] border border-slate-50 shadow-sm p-8 flex flex-col">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-left">
+          {/* <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-left">
             Agendar Fechas
-          </h3>
+          </h3> */}
           {/* <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100 flex items-center justify-center">
             <p className="text-slate-300 font-bold uppercase text-[10px] tracking-widest italic">
               Calendario (Pendiente Backend)

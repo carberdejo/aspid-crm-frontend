@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
+import { createElement, isValidElement, type ReactNode } from "react";
 
 interface StandardButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: LucideIcon | ReactNode; // Para permitir tanto iconos de Lucide como cualquier nodo (ej. para casos especiales)
@@ -10,13 +10,20 @@ interface StandardButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 }
 
 export function StandardButton({
-  icon: Icon,
+  icon,
   label,
   // Tu color por defecto (ej. para Registrar Empresa)
   colorClass = "bg-secondary hover:bg-secondary-dark text-white",
   className,
   ...props
 }: StandardButtonProps) {
+  const iconNode =
+    icon && isValidElement(icon)
+      ? icon
+      : icon
+        ? createElement(icon as React.ElementType, { size: 18 })
+        : null;
+
   return (
     <Button
       className={cn(
@@ -26,7 +33,7 @@ export function StandardButton({
       )}
       {...props}
     >
-      {Icon && (typeof Icon === "function" ? <Icon size={18} /> : Icon)}
+      {iconNode}
       {label}
     </Button>
   );

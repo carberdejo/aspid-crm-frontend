@@ -1,11 +1,7 @@
 "use client";
 
-import { QuoteSummaryCard } from "../department/QuoteSummaryCard";
-import SalesIndicatorsDashboard from "../reports/SalesIndicatorsDashboard";
-import { SalesIndicatorsChart } from "./SalesIndicatorsChart";
 import { SalesIndicatorsTable } from "./SalesIndicatorsTable";
-
-// Importa tus otros reportes aquí...
+import { SalesIndicatorsChart } from "./SalesIndicatorsChart";
 
 interface DepartmentAnalyticsWrapperProps {
   departmentId: number;
@@ -16,51 +12,57 @@ export function DepartmentAnalyticsWrapper({
   departmentId,
   departmentName,
 }: DepartmentAnalyticsWrapperProps) {
-  // Normalizamos solo para saber qué bloque renderizar internamente
   const normalizedName = departmentName
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/\s+/g, "");
 
-  // Caso: VENTAS
   if (normalizedName === "ventas") {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          {/* El panel de visitas que optimizamos (asumimos que ocupa más ancho) */}
-          {/* <VisitPerformancePanel userId={0} />{" "} */}
-          <SalesIndicatorsTable />
-          {/* Ojo: Ajusta cómo pasas el userId si es general */}
-        </div>
-        <div className="lg:col-span-4">
-          {/* El panel de dinero que optimizamos */}
-          <QuoteSummaryCard userId={0} />
-        </div>
+      <div className="w-full space-y-6">
+        {/* Pasamos únicamente el ID, ellos se encargan del resto */}
+        <SalesIndicatorsTable departmentId={departmentId} />
+        <SalesIndicatorsChart departmentId={departmentId} />
       </div>
     );
   }
 
-  // Caso: PROYECTOS
+  if (normalizedName === "desarrollodenegocio") {
+    return (
+      <div className="w-full space-y-6">
+        {/* Pasamos únicamente el ID, ellos se encargan del resto */}
+        <SalesIndicatorsTable departmentId={departmentId} />
+        <SalesIndicatorsChart departmentId={departmentId} />
+      </div>
+    );
+  }
+
   if (normalizedName === "proyectos") {
     return (
-      <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-[2rem]">
-        <div className="text-slate-400 font-bold uppercase tracking-widest">
-          Módulo de Proyectos en Construcción
-          {/* <SalesIndicatorsDashboard /> */}
-          <SalesIndicatorsTable />
-          <SalesIndicatorsChart />
-        </div>
+      <div className="w-full space-y-6">
+        {/* Pasamos únicamente el ID, ellos se encargan del resto */}
+        <SalesIndicatorsTable departmentId={departmentId} />
+        <SalesIndicatorsChart departmentId={departmentId} />
       </div>
     );
   }
 
-  // Fallback por defecto para áreas que aún no tienen reportes diseñados
+  if (normalizedName === "servicios") {
+    return (
+      <div className="w-full space-y-6">
+        {/* Pasamos únicamente el ID, ellos se encargan del resto */}
+        <SalesIndicatorsTable departmentId={departmentId} />
+        <SalesIndicatorsChart departmentId={departmentId} />
+      </div>
+    );
+  }
+
   return (
     <div className="p-12 text-center bg-slate-50 rounded-[2rem]">
-      <div className="text-slate-400 font-medium">
-        No hay gráficos configurados actualmente para el área de{" "}
-        {departmentName}.
-      </div>
+      <p className="text-slate-400 font-medium">
+        No hay gráficos configurados para {departmentName}.
+      </p>
     </div>
   );
 }

@@ -26,31 +26,29 @@ export const industrySegmentsService = {
   },
 
   create: async (data: IndustrySegmentCreateDto) => {
-    const response = await concarApi.post<ApiResponse<IndustrySegment>>(
-      `/catalogs/segments`,
-      data,
-    );
-    return response.data;
+    const { data: responseData } = await concarApi.post<
+      ApiResponse<ResponseOperation>
+    >(`/catalogs/segments`, data);
+    return responseData.data;
   },
 
-  update: async (id: string, data: IndustrySegmentUpdateDto) => {
-    const response = await concarApi.patch<ApiResponse<ResponseOperation>>(
-      `/catalogs/segments/${id}`,
-      data,
-    );
-    return response.data;
+  update: async (id: number, data: IndustrySegmentUpdateDto) => {
+    const { data: responseData } = await concarApi.patch<
+      ApiResponse<ResponseOperation>
+    >(`/catalogs/segments/${id}`, data);
+    return responseData.data;
   },
 
-  deactivate: async (id: string) => {
-    const response = await concarApi.patch<ApiResponse<ResponseOperation>>(
+  deactivate: async (id: number) => {
+    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
       `/catalogs/segments/${id}/deactivate`,
     );
-    return response.data;
+    return data.data;
   },
-  reactivate: async (id: string) => {
-    const response = await concarApi.patch<ApiResponse<ResponseOperation>>(
+  reactivate: async (id: number) => {
+    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
       `/catalogs/segments/${id}/reactivate`,
     );
-    return response.data;
+    return data.data;
   },
 };

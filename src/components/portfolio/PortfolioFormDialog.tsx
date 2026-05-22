@@ -42,7 +42,6 @@ import {
   PortfolioZone,
   RoleInPortfolio,
 } from "@/interfaces/portfolio.interface";
-import { Combobox } from "../ui/combobox";
 import { UserSearchSelector } from "./UserSearchSelector";
 
 interface PortfolioFormDialogProps {
@@ -286,13 +285,15 @@ export function PortfolioFormDialog({
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex gap-3 items-start bg-slate-50 p-3 rounded-lg border"
+                    // Agregamos overflow-hidden para contener cualquier desbordamiento rebelde
+                    className="flex gap-2 sm:gap-3 items-start bg-slate-50 p-2 sm:p-3 rounded-lg border overflow-hidden"
                   >
                     <FormField
                       control={form.control}
                       name={`users.${index}.userId`}
                       render={({ field: rfhField }) => (
-                        <FormItem className="flex-1">
+                        // CLAVE 1: flex-1 junto con min-w-0 obliga al contenedor a respetar los límites
+                        <FormItem className="flex-1 min-w-0">
                           <FormControl>
                             <UserSearchSelector
                               value={rfhField.value}
@@ -308,7 +309,8 @@ export function PortfolioFormDialog({
                       control={form.control}
                       name={`users.${index}.roleInPortfolio`}
                       render={({ field }) => (
-                        <FormItem className="w-[180px]">
+                        // CLAVE 2: Ajustamos el ancho y usamos shrink-0 para que el select nunca se aplaste
+                        <FormItem className="w-[130px] sm:w-[160px] shrink-0">
                           <Select
                             onValueChange={field.onChange}
                             value={field.value}
@@ -320,16 +322,17 @@ export function PortfolioFormDialog({
                             </FormControl>
                             <SelectContent>
                               <SelectItem value={RoleInPortfolio.RESPONSABLE}>
-                                {RoleInPortfolio.RESPONSABLE}
+                                RESPONSABLE
                               </SelectItem>
                               <SelectItem value={RoleInPortfolio.ING_PROYECTOS}>
-                                {RoleInPortfolio.ING_PROYECTOS}
+                                ING_PROYECTOS
                               </SelectItem>
                               <SelectItem value={RoleInPortfolio.SERVICIOS}>
-                                {RoleInPortfolio.SERVICIOS}
+                                SERVICIOS
                               </SelectItem>
                             </SelectContent>
                           </Select>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -339,7 +342,8 @@ export function PortfolioFormDialog({
                       variant="ghost"
                       size="icon"
                       onClick={() => remove(index)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      // CLAVE 3: shrink-0 para que el botón de eliminar conserve su forma circular
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 shrink-0 mt-0.5"
                     >
                       <Trash2 size={18} />
                     </Button>

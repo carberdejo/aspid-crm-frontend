@@ -1,6 +1,6 @@
 import { GenericFilters } from ".";
 export interface IndustrySegment {
-  id: string;
+  id: number;
   code: string;
   name: string;
   isActive: boolean;
@@ -12,7 +12,7 @@ export interface IndustrySegmentCreateDto {
 }
 
 export interface IndustrySegmentUpdateDto extends Partial<IndustrySegmentCreateDto> {
-  id?: string;
+  id?: number;
   isActive?: boolean;
 }
 

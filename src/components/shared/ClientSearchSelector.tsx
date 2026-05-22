@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useClients } from "@/hooks";
-import { useVisitFlowStore } from "@/store/useVisitFlowStore";
+// ¡Adiós useVisitFlowStore! Ya no lo necesitamos aquí.
 
 interface Props {
   value: string;
@@ -36,9 +36,13 @@ export function ClientSearchSelector({
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const newClientId = useVisitFlowStore((state) => state.newClientId);
-  const clearNewClientId = useVisitFlowStore((state) => state.clearNewClientId);
+  // Caché local para el cliente seleccionado
+  const [selectedClientData, setSelectedClientData] = useState<{
+    id: string;
+    commercialName: string;
+  } | null>(null);
 
+  // 1. Debounce para no saturar el backend al escribir
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchTerm), 300);
     return () => clearTimeout(timer);
@@ -49,29 +53,26 @@ export function ClientSearchSelector({
     limit: 10,
   });
 
+  // 2. Efecto para sincronizar la UI cuando el 'value' cambia desde react-hook-form
   useEffect(() => {
-    if (newClientId && clients.length > 0) {
-      const newClient = clients.find(
-        (c) => String(c.id) === String(newClientId),
-      );
-      if (newClient) {
-        onChange(newClientId);
-        onClientChange?.(newClientId);
-        clearNewClientId();
+    if (value) {
+      const foundClient = clients.find((c) => String(c.id) === value);
+      if (foundClient) {
+        // Actualización funcional para evitar renders en cascada (Bailout)
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSelectedClientData((prev) => {
+          if (prev?.id === String(foundClient.id)) return prev;
+          return {
+            id: String(foundClient.id),
+            commercialName: foundClient.commercialName,
+          };
+        });
       }
+    } else {
+      setSelectedClientData((prev) => (prev === null ? prev : null));
     }
-  }, [
-    newClientId,
-    clients,
-    onChange,
-    onClientChange,
-    clearNewClientId,
-    debouncedSearch,
-  ]);
+  }, [value, clients]);
 
-  const selectedClient = clients.find((c) => String(c.id) === value);
-
-  // --- FUNCIÓN PARA CORTAR EL TEXTO MANUALMENTE ---
   const formatDisplayValue = (text: string, limit: number = 35) => {
     if (text.length <= limit) return text;
     return text.substring(0, limit) + "...";
@@ -85,12 +86,11 @@ export function ClientSearchSelector({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          // Eliminamos cualquier clase compleja que pueda causar error
           className="w-full h-14 justify-between rounded-2xl border-slate-200 bg-slate-50/50 hover:bg-slate-100 font-medium px-4"
         >
           <span className="text-left flex-1 block">
-            {selectedClient
-              ? formatDisplayValue(selectedClient.commercialName)
+            {selectedClientData
+              ? formatDisplayValue(selectedClientData.commercialName)
               : "Buscar cliente..."}
           </span>
           {isLoading ? (
@@ -101,7 +101,6 @@ export function ClientSearchSelector({
         </Button>
       </PopoverTrigger>
 
-      {/* Eliminamos el var() dinámico por ahora para evitar errores de PostCSS */}
       <PopoverContent
         className="w-[350px] md:w-[450px] p-0 rounded-2xl shadow-2xl border-slate-100 bg-white"
         align="start"
@@ -127,6 +126,13 @@ export function ClientSearchSelector({
                   onSelect={(currentValue) => {
                     onChange(currentValue);
                     onClientChange?.(currentValue);
+
+                    // Guardamos la info del cliente seleccionado para la UI
+                    setSelectedClientData({
+                      id: String(client.id),
+                      commercialName: client.commercialName,
+                    });
+
                     setSearchTerm("");
                     setOpen(false);
                   }}

@@ -269,8 +269,21 @@ export function QuoteForm({
                         >
                           Dólares (USD)
                         </SelectItem>
+                        <SelectItem
+                          value={QuoteCurrency.CLP}
+                          className="text-xs font-bold uppercase"
+                        >
+                          Pesos Chilenos (CLP)
+                        </SelectItem>
+                        <SelectItem
+                          value={QuoteCurrency.MXN}
+                          className="text-xs font-bold uppercase"
+                        >
+                          Pesos Mexicanos (MXN)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage className="text-[10px] uppercase font-bold text-red-500" />
                   </FormItem>
                 )}
               />

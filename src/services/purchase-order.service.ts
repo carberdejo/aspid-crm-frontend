@@ -3,12 +3,10 @@ import {
   ApiResponse,
   PaginatedResponse,
   ResponseOperation,
-} from "@/interfaces/api.interface";
-import {
   CreatePurchaseOrderDto,
   PurchaseOrder,
   PurchaseOrderFilters,
-} from "@/interfaces/purchase-order.interface";
+} from "@/interfaces";
 
 export const PurchaseOrderService = {
   findAll: async (

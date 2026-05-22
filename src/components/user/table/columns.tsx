@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { User } from "@/interfaces/api.interface";
 import { Edit, Trash } from "lucide-react";
 import { UserRole } from "@/interfaces/role-user.interface";
+import { User } from "@/interfaces";
 
 /**
  * Formatear role para mostrar en español

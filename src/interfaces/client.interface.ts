@@ -38,6 +38,8 @@ export interface ClientCreateDto {
 
 export interface ClientFilters extends GenericFilters {
   term?: string;
+  segmentId?: number;
+  portfolioId?: number;
 }
 
 export interface ResponseRuc {

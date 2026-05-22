@@ -12,6 +12,7 @@ import {
   ContactCreateDto,
   PaginatedResponse,
   ResponseRuc,
+  UserFilters,
 } from "@/interfaces";
 import { cleanParams } from "@/lib/utils";
 
@@ -87,5 +88,19 @@ export const clientService = {
       },
     );
     return data.data;
+  },
+
+  exportClientsToExcel: async (filter: ClientFilters) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { limit, offset, ...exportFilters } = filter; // Desestructuramos para limpiar el objeto de filtros
+    console.log({ exportFilters });
+    const { data } = await concarApi.post<Blob>(
+      "/clients/export-excel",
+      exportFilters, // Enviamos solo los filtros relevantes para la exportación
+      {
+        responseType: "blob", // ¡CRÍTICO PARA ARCHIVOS!
+      },
+    );
+    return data; // Retorna el Blob del archivo Excel
   },
 };

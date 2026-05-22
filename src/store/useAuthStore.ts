@@ -1,8 +1,8 @@
-import { Payload } from '@/interfaces/api.interface';
-import { cookieUtils } from '@/lib/cookies';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { jwtDecode } from 'jwt-decode';
+import { Payload } from "@/interfaces";
+import { cookieUtils } from "@/lib/cookies";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthState {
   token: string | null;
@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
         const payload = {
           ...decoded,
           sub: +decoded.sub,
-        }
+        };
         set({ token: accessToken, refreshToken, user: payload });
         // Guardar también en cookies para el middleware
         cookieUtils.setToken(accessToken);
@@ -49,18 +49,22 @@ export const useAuthStore = create<AuthState>()(
         const { token, user } = get();
         // Verificamos que existan ambos
         return !!(token && user);
-      }
+      },
     }),
-    { 
-      name: 'auth-storage',
-        // Solo persistimos el token si queremos que el user se hidrate del token al cargar      onRehydrateStorage: () => (state) => {
-      partialize: (state) => ({ token: state.token, user: state.user, refreshToken: state.refreshToken }),
+    {
+      name: "auth-storage",
+      // Solo persistimos el token si queremos que el user se hidrate del token al cargar      onRehydrateStorage: () => (state) => {
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        refreshToken: state.refreshToken,
+      }),
       onRehydrateStorage: () => (state) => {
         // Si al recargar hay un token, aseguramos que la cookie esté presente
         if (state?.token) {
           cookieUtils.setToken(state.token);
         }
-      }
-    }
-  )
+      },
+    },
+  ),
 );

@@ -43,6 +43,7 @@ import {
   RoleInPortfolio,
 } from "@/interfaces/portfolio.interface";
 import { Combobox } from "../ui/combobox";
+import { UserSearchSelector } from "./UserSearchSelector";
 
 interface PortfolioFormDialogProps {
   open: boolean;
@@ -293,20 +294,9 @@ export function PortfolioFormDialog({
                       render={({ field: rfhField }) => (
                         <FormItem className="flex-1">
                           <FormControl>
-                            <Combobox
-                              options={userOptions}
-                              value={
-                                rfhField.value ? rfhField.value.toString() : ""
-                              }
-                              onChange={(val) =>
-                                rfhField.onChange(val ? Number(val) : 0)
-                              }
-                              // --- LO QUE FALTA AGREGAR ---
-                              onSearchChange={setUserSearch} // Conecta lo que tipeas con tu estado local
-                              shouldFilter={false} // Apaga el filtro de Shadcn porque tu backend ya filtra
-                              // ----------------------------
-
-                              placeholder="Buscar Usuario..."
+                            <UserSearchSelector
+                              value={rfhField.value}
+                              onChange={rfhField.onChange}
                             />
                           </FormControl>
                           <FormMessage />

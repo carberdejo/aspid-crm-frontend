@@ -5,13 +5,6 @@ import axios from "axios";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_BASE) {
-  // Log a clear warning so it's easy to spot in prod logs / browser console
-  // When this is missing axios will send requests to the same origin
-  // (which explains POST -> :4502 when your frontend runs on that port)
-  // Make sure to set NEXT_PUBLIC_API_URL in your production environment.
-  // Example: NEXT_PUBLIC_API_URL=https://api.mycompany.com
-  // This message helps debugging failed login 405 issues.
-
   console.error(
     "[concarApi] WARNING: NEXT_PUBLIC_API_URL is not set. Requests will be sent to the frontend origin.",
   );
@@ -58,6 +51,10 @@ concarApi.interceptors.request.use((config) => {
 // 2. Interceptor de Respuesta: Manejar Refresh Token y Contrato de Negocio
 concarApi.interceptors.response.use(
   (response) => {
+    if (response.config.responseType === "blob") {
+      return response;
+    }
+
     if (response.data.code !== 1) {
       return Promise.reject(
         new Error(response.data.message || "Error del servidor"),

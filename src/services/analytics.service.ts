@@ -1,6 +1,6 @@
 import { concarApi } from "@/api/concarApi";
 import { DateFilterType, getDateRange } from "@/lib/utils";
-import { ApiResponse } from "../interfaces/api.interface";
+import { ApiResponse } from "../interfaces";
 import {
   QuotesSummary,
   VisitStatsResponse,

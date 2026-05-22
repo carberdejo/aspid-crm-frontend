@@ -8,12 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter, Search, FilterX } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Search, FilterX } from "lucide-react";
 import { QuoteStatus } from "@/interfaces";
 import { QuoteFilters } from "@/services/quote.service";
 import { DateRangeFilter } from "@/components";

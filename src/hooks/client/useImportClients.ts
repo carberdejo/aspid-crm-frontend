@@ -1,4 +1,4 @@
-import { ApiErrorResponse } from "@/interfaces";
+import { ApiErrorResponse, ClientFilters } from "@/interfaces";
 import { clientService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -29,6 +29,33 @@ export const useImportClients = () => {
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(error.message || "Error al importar el archivo");
+    },
+  });
+};
+
+export const useExportClients = () => {
+  return useMutation({
+    mutationFn: (filters: ClientFilters) =>
+      clientService.exportClientsToExcel(filters),
+    onSuccess: (blobData) => {
+      // Magia del navegador para descargar el archivo silenciosamente
+      const url = window.URL.createObjectURL(new Blob([blobData]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Maestra_Clientes_ACME.xlsx");
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpieza de memoria
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Excel generado y descargado correctamente");
+    },
+    onError: (error) => {
+      console.error("Error exporting:", error);
+      toast.error("Error al descargar el Excel. Intente nuevamente.");
     },
   });
 };

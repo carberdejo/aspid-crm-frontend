@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 interface StandardButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon?: LucideIcon | React.ReactNode; // Para permitir tanto iconos de Lucide como cualquier nodo (ej. para casos especiales)
+  icon?: LucideIcon | ReactNode; // Para permitir tanto iconos de Lucide como cualquier nodo (ej. para casos especiales)
   label: string;
   colorClass?: string; // Para pasar fondos personalizados
 }
@@ -25,7 +26,7 @@ export function StandardButton({
       )}
       {...props}
     >
-      {Icon && <Icon size={18} />}
+      {Icon && (typeof Icon === "function" ? <Icon size={18} /> : Icon)}
       {label}
     </Button>
   );

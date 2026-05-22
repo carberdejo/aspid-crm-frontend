@@ -5,7 +5,7 @@ import {
   PaginatedResponse,
   ResponseOperation,
   User,
-} from "@/interfaces/api.interface";
+} from "@/interfaces";
 
 /**
  * Limpia los parámetros para que no envíe valores undefined o vacíos

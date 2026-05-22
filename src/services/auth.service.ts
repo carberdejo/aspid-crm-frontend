@@ -1,12 +1,12 @@
 import { concarApi } from "@/api/concarApi";
-import { UserProfile } from "@/interfaces";
 import {
+  UserProfile,
   ApiResponse,
   LoginDto,
   LoginResponse,
   Logout,
   ResponseOperation,
-} from "@/interfaces/api.interface";
+} from "@/interfaces";
 
 export const authService = {
   login: async (credentials: LoginDto): Promise<LoginResponse> => {

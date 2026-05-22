@@ -1,4 +1,4 @@
-import { GenericFilters } from "./api.interface";
+import { GenericFilters } from ".";
 
 export interface PurchaseOrder {
   id: number;

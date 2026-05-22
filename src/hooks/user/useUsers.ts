@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/services/user.service";
-import type { ApiErrorResponse, User } from "@/interfaces/api.interface";
+import type { ApiErrorResponse, User } from "@/interfaces";
 import { UserCreateDto, UserFilters } from "@/interfaces";
 import { toast } from "sonner";
 

@@ -44,12 +44,12 @@ export function DepartmentAnalyticsWrapper({
   if (normalizedName === "proyectos") {
     return (
       <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-[2rem]">
-        <p className="text-slate-400 font-bold uppercase tracking-widest">
+        <div className="text-slate-400 font-bold uppercase tracking-widest">
           Módulo de Proyectos en Construcción
           {/* <SalesIndicatorsDashboard /> */}
           <SalesIndicatorsTable />
           <SalesIndicatorsChart />
-        </p>
+        </div>
       </div>
     );
   }
@@ -57,10 +57,10 @@ export function DepartmentAnalyticsWrapper({
   // Fallback por defecto para áreas que aún no tienen reportes diseñados
   return (
     <div className="p-12 text-center bg-slate-50 rounded-[2rem]">
-      <p className="text-slate-400 font-medium">
+      <div className="text-slate-400 font-medium">
         No hay gráficos configurados actualmente para el área de{" "}
         {departmentName}.
-      </p>
+      </div>
     </div>
   );
 }

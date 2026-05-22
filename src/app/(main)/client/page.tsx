@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, FileSpreadsheet } from "lucide-react";
+import { Building2, Download, FileSpreadsheet, Loader2 } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { useClients } from "@/hooks";
 import { useClientFilters } from "@/hooks/client/useClientFilters";
@@ -12,7 +12,8 @@ import { useState } from "react";
 import { ImportClientsDialog } from "@/components/client/ImportClientsDialog";
 import { StandardButton } from "@/components/common/StandardButton"; // Asegúrate de ajustar la ruta
 import { useAuthStore } from "@/store";
-import { UserRole } from "@/interfaces";
+import { ClientListItem, UserRole } from "@/interfaces";
+import { useExportClients } from "@/hooks/client/useImportClients";
 
 export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<{
@@ -21,7 +22,6 @@ export default function ClientsPage() {
   } | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const pageSize = 10;
 
   // Simulación de rol (debes extraer esto de tu auth store / context)
   // const userRole2 = "ADMIN";
@@ -39,11 +39,12 @@ export default function ClientsPage() {
   console.log({ filters });
 
   const { clients, total, isLoading, isError, error } = useClients(filters);
+  const { mutate: exportExcel, isPending: isExporting } = useExportClients();
 
   if (isError) return <ErrorDisplay message={error?.message} />;
 
-  const openContactSheet = (client: any) => {
-    setSelectedClient({ id: client.id, name: client.commercialName });
+  const openContactSheet = (client: ClientListItem) => {
+    setSelectedClient({ id: +client.id, name: client.commercialName });
     setIsSheetOpen(true);
   };
 
@@ -61,6 +62,17 @@ export default function ClientsPage() {
           <div className="flex items-center gap-3">
             {userRole === UserRole.ADMIN && (
               <>
+                {/* BOTÓN 1: EXPORTAR (Gris/Azul oscuro para diferenciarlo) */}
+                <StandardButton
+                  icon={isExporting ? Loader2 : Download}
+                  label={isExporting ? "Generando..." : "Exportar Lista"}
+                  colorClass="bg-slate-800 hover:bg-slate-900 text-white"
+                  disabled={isExporting} // Deshabilita para evitar doble clic
+                  className={isExporting ? "animate-pulse" : ""}
+                  onClick={() => exportExcel(filters)} // Pasamos los filtros actuales para exportar la lista filtrada
+                />
+
+                {/* BOTÓN 2: IMPORTAR */}
                 <StandardButton
                   icon={FileSpreadsheet}
                   label="Importar Excel"

@@ -1,11 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
-import {
-  ApiErrorResponse,
-  LoginDto,
-  Payload,
-} from "@/interfaces/api.interface";
+import { ApiErrorResponse, LoginDto, Payload } from "@/interfaces";
 import { UserRole } from "@/interfaces";
 import { jwtDecode } from "jwt-decode";
 import { cookieUtils } from "@/lib/cookies";

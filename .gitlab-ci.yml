@@ -1,0 +1,34 @@
+# Usamos una imagen oficial de Docker para ejecutar comandos de Docker
+image: docker:24.0.5
+
+# Necesitamos este servicio para poder construir imágenes dentro de GitLab
+services:
+  - docker:24.0.5-dind
+
+# Definimos nuestras etapas. Por ahora, solo una.
+stages:
+  - build
+
+# Variables del pipeline
+variables:
+  # Aquí usamos el nombre de tu repositorio en Docker Hub
+  DOCKER_IMAGE_NAME: "carlozzs/concar-frontend"
+
+# --- AQUI EMPIEZA NUESTRO TRABAJO ---
+construir_y_subir_imagen:
+  stage: build
+  script:
+    - echo "Iniciando sesión en Docker Hub..."
+    # Usamos variables secretas para no exponer tus contraseñas en el código
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    
+    - echo "Construyendo la imagen de NextJS inyectando la URL de producción..."
+    # Pasamos la variable NEXT_PUBLIC_API_URL de GitLab al Dockerfile
+    - docker build --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL -t $DOCKER_IMAGE_NAME:latest .
+    
+    - echo "Subiendo la imagen a Docker Hub..."
+    - docker push $DOCKER_IMAGE_NAME:latest
+  
+  # Solo queremos que esto se ejecute cuando empujas a la rama principal
+  only:
+    - master

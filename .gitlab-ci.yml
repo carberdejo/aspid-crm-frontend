@@ -23,8 +23,8 @@ construir_y_subir_imagen:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     
     - echo "Construyendo la imagen de NextJS inyectando la URL de producción..."
-    # Pasamos la variable NEXT_PUBLIC_API_URL de GitLab al Dockerfile
-    - docker build --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL -t $DOCKER_IMAGE_NAME:latest .
+    # Pasamos la variable NEXT_PUBLIC_API_URL de GitLab al Dockerfile (con comillas por seguridad)
+    - docker build --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" -t $DOCKER_IMAGE_NAME:latest .
     
     - echo "Subiendo la imagen a Docker Hub..."
     - docker push $DOCKER_IMAGE_NAME:latest

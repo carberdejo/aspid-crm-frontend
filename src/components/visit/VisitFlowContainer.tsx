@@ -3,21 +3,17 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RegisterContactModal } from "..";
-import { RegisterClientModal } from "../client/form/RegisterClientModal";
 import { RegisterVisitModal } from "./RegisterVisitModal";
 import { useVisits } from "@/hooks/visit/useVisits";
 import { useAuthStore } from "@/store/useAuthStore";
 import { VisitCreateDto } from "@/interfaces/visit.interface";
 import {
   ClientAndContactResponseCreate,
-  ClienteCreateResponseItem,
-  ClientListItem,
   Contact,
 } from "@/interfaces/client.interface";
 import { VisitFormValues } from "@/lib/schemas/visit";
 import { useVisitFlowStore } from "@/store";
-import { PaginatedResponse } from "@/interfaces";
-import { clientQueryKeys, contactQueryKeys } from "@/lib/queryKeys";
+import { contactQueryKeys } from "@/lib/queryKeys";
 
 export function VisitFlowContainer({
   trigger,
@@ -32,44 +28,13 @@ export function VisitFlowContainer({
     openMain,
     closeAll,
     backToMain,
-    // setNewClientId,
     setNewContactId,
-    // setSelectedClientId,
     selectedClientId,
-    // newClientId,
   } = useVisitFlowStore();
   const { user } = useAuthStore();
   const { useCreateVisits } = useVisits();
   const createVisitMutation = useCreateVisits();
   const queryClient = useQueryClient();
-
-  // const handleClientCreated = useCallback(
-  //   (newClient: ClienteCreateResponseItem) => {
-  //     // ✅ USA QUERY KEY NORMALIZADA
-  //     queryClient.setQueryData(
-  //       clientQueryKeys.list({ term: "", limit: 10 }),
-  //       (old: PaginatedResponse<ClientListItem>) => {
-  //         if (!old) return { items: [newClient], total: 1 };
-  //         return {
-  //           ...old,
-  //           items: [newClient, ...old.items],
-  //           total: (old.total || 0) + 1,
-  //         };
-  //       },
-  //     );
-
-  //     // ✅ También invalida la lista completa para refetch si es necesario
-  //     queryClient.invalidateQueries({
-  //       queryKey: clientQueryKeys.all,
-  //     });
-
-  //     const newId = String(newClient.id);
-  //     setNewClientId(newId);
-  //     setSelectedClientId(newId);
-  //     backToMain();
-  //   },
-  //   [queryClient, setNewClientId, setSelectedClientId, backToMain],
-  // );
 
   const handleContactCreated = useCallback(
     (response: ClientAndContactResponseCreate<Contact>) => {
@@ -113,7 +78,6 @@ export function VisitFlowContainer({
       };
       createVisitMutation.mutate(visitData, {
         onSuccess: () => {
-          // queryClient.invalidateQueries({ queryKey: ['visits', { departmentId }] });
           console.log("✅ Visita registrada con éxito");
           closeAll();
         },
@@ -139,24 +103,10 @@ export function VisitFlowContainer({
         isLoading={createVisitMutation.isPending}
       />
 
-      {/* <RegisterClientModal
-        isOpen={activeModal === "CLIENT"}
-        onOpenChange={(open) => (!open ? backToMain() : null)}
-        onSuccess={handleClientCreated}
-        showTrigger={false}
-      /> */}
-
       <RegisterContactModal
         isOpen={activeModal === "CONTACT"}
         onOpenChange={(open) => (!open ? backToMain() : null)}
-        clientId={
-          // selectedClientId
-          //   ? Number(selectedClientId)
-          //   : newClientId
-          //     ? Number(newClientId)
-          //     : undefined
-          Number(selectedClientId)
-        }
+        clientId={Number(selectedClientId)}
         onSuccess={handleContactCreated}
         showTrigger={false}
       />

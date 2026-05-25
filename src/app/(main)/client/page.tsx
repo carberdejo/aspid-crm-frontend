@@ -23,8 +23,6 @@ export default function ClientsPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-  // Simulación de rol (debes extraer esto de tu auth store / context)
-  // const userRole2 = "ADMIN";
   const userRole = useAuthStore((state) => state.user?.role) || "USER"; // Ajusta según tu store de autenticación
 
   const {
@@ -33,6 +31,7 @@ export default function ClientsPage() {
     filters,
     searchTerm,
     setSearchTerm,
+    handleFilterChange,
     handleReset,
     hasFilters,
   } = useClientFilters();
@@ -105,8 +104,10 @@ export default function ClientsPage() {
         meta={{ openContactSheet }}
         filters={
           <ClientToolbar
-            searchValue={searchTerm}
-            onSearch={setSearchTerm}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            filters={filters}
+            onFilterChange={handleFilterChange}
             onReset={handleReset}
             hasFilters={hasFilters}
           />

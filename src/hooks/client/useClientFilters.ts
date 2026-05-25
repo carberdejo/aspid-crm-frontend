@@ -1,46 +1,69 @@
-// src/hooks/client/useClientFilters.ts
 import { useState, useMemo, useEffect } from "react";
 
+// Define la interfaz de los filtros si no la tienes en tus interfaces globales
+export interface ClientFilters {
+  term?: string;
+  portfolioId?: number;
+  segmentId?: number;
+  limit?: number;
+  offset?: number;
+}
+
 export function useClientFilters(pageSize: number = 10) {
-  // 1. Estado independiente para la página
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
 
-  // 2. Debounce simple solo para el término (no toca el offset aquí)
+  const [queryFilters, setQueryFilters] = useState<Partial<ClientFilters>>({
+    portfolioId: undefined,
+    segmentId: undefined,
+    limit: pageSize,
+  });
+
+  // Debounce para el término de búsqueda
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedTerm(searchTerm);
-      setPage(1); // Si el usuario escribe algo nuevo, lo regresamos a la pag 1
+      setPage(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // 3. El objeto 'filters' se construye dinámicamente, igual que en PurchaseOrders
-  const filters = useMemo(
+  // Filtro unificado para el backend
+  const filters = useMemo<ClientFilters>(
     () => ({
+      ...queryFilters,
       term: debouncedTerm,
-      limit: pageSize,
-      offset: (page - 1) * pageSize, // ¡Aquí está la magia que faltaba!
+      offset: (page - 1) * (queryFilters.limit || 10),
     }),
-    [debouncedTerm, page, pageSize],
+    [queryFilters, debouncedTerm, page],
   );
 
-  // 4. Reset general
+  const handleFilterChange = (newFilters: Partial<ClientFilters>) => {
+    setQueryFilters((prev) => ({ ...prev, ...newFilters }));
+    setPage(1); // Siempre volver a la página 1 al cambiar un filtro
+  };
+
   const handleReset = () => {
     setSearchTerm("");
     setDebouncedTerm("");
+    setQueryFilters({ limit: pageSize });
     setPage(1);
   };
 
+  const hasFilters =
+    searchTerm.length > 0 ||
+    queryFilters.portfolioId !== undefined ||
+    queryFilters.segmentId !== undefined;
+
   return {
-    // Exponemos setPage directamente para que la DataTable lo use
     page,
     setPage,
     searchTerm,
     setSearchTerm,
     filters,
+    handleFilterChange,
     handleReset,
-    hasFilters: searchTerm.length > 0,
+    hasFilters,
   };
 }

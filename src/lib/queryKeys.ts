@@ -29,12 +29,13 @@ export const clientQueryKeys = {
   list: (filters: Partial<ClientFilters> = {}) =>
     [
       "clients",
-      {
-        term: filters.term || "",
-        limit: filters.limit || 10,
-        offset: filters.offset || 0,
-        // Agregar más filtros aquí si es necesario (ej: sector, ciudad, etc)
-      },
+      // {
+      //   term: filters.term || "",
+      //   limit: filters.limit || 10,
+      //   offset: filters.offset || 0,
+      //   // Agregar más filtros aquí si es necesario (ej: sector, ciudad, etc)
+      // },
+      filters,
     ] as const,
 
   /**

@@ -7,22 +7,12 @@ import {
   Phone,
   Building2,
   Loader2,
-  MessageCircle,
-  ExternalLink,
-  Copy,
   Briefcase,
   Edit,
 } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { useClientDetail } from "@/hooks/client/useClientDetail";
 import { RegisterContactModal } from "@/components";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export default function ClientContactsPage() {
   const params = useParams();
@@ -31,11 +21,6 @@ export default function ClientContactsPage() {
 
   const { data: client, isLoading } = useClientDetail(+clientId);
   const contacts = client?.contacts || [];
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    // Aquí podrías disparar un toast de sonner o similar
-  };
 
   if (isLoading) {
     return (

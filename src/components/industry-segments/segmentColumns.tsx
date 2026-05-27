@@ -17,7 +17,7 @@ export const getSegmentColumns = ({
 }: SegmentColumnActions): ColumnDef<IndustrySegment>[] => [
   {
     accessorKey: "code",
-    header: "Código",
+    header: "Abreviatura",
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
@@ -34,7 +34,7 @@ export const getSegmentColumns = ({
   },
   {
     accessorKey: "name",
-    header: "Rubro / Nombre",
+    header: "Segmentación",
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 uppercase text-xs">
         {row.getValue("name")}

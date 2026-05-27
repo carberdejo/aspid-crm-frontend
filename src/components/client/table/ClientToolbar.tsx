@@ -78,7 +78,7 @@ export function ClientToolbar({
             onChange={(value) =>
               onFilterChange({ portfolioId: value ? Number(value) : undefined })
             }
-            placeholder="PORTAFOLIO..."
+            placeholder="CARTERA..."
             // disabled={loadingPortfolios}
           />
         </div>
@@ -91,7 +91,7 @@ export function ClientToolbar({
             onChange={(value) =>
               onFilterChange({ segmentId: value ? Number(value) : undefined })
             }
-            placeholder="SEGMENTO..."
+            placeholder="SEGMENTACIÓN..."
             // disabled={loadingSegments}
           />
         </div>

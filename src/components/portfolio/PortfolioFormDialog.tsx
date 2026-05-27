@@ -321,14 +321,14 @@ export function PortfolioFormDialog({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value={RoleInPortfolio.RESPONSABLE}>
-                                RESPONSABLE
+                              <SelectItem value={RoleInPortfolio.ASESOR}>
+                                {RoleInPortfolio.ASESOR}
                               </SelectItem>
                               <SelectItem value={RoleInPortfolio.ING_PROYECTOS}>
-                                ING_PROYECTOS
+                                {RoleInPortfolio.ING_PROYECTOS}
                               </SelectItem>
                               <SelectItem value={RoleInPortfolio.SERVICIOS}>
-                                SERVICIOS
+                                {RoleInPortfolio.SERVICIOS}
                               </SelectItem>
                             </SelectContent>
                           </Select>

@@ -3,10 +3,9 @@ import * as z from "zod";
 // Sub-esquema para validar a cada usuario asignado a la cartera
 export const portfolioUserItemSchema = z.object({
   userId: z.coerce.number().positive("Selecciona un usuario del sistema"),
-  roleInPortfolio: z.enum(
-    ["RESPONSABLE", "ING_PROYECTOS", "SERVICIOS"] as const,
-    { error: "El rol operativo es requerido" },
-  ),
+  roleInPortfolio: z.enum(["ASESOR", "ING_PROYECTOS", "SERVICIOS"] as const, {
+    error: "El rol operativo es requerido",
+  }),
 });
 
 // Esquema principal de la Cartera

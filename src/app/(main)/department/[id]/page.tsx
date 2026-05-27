@@ -81,6 +81,11 @@ export default function DepartmentPage() {
 
         {/* LADO DERECHO: Acciones con Estilo Premium */}
         <div className="flex items-center gap-3">
+          <StandardButton
+            icon={FileText}
+            label="Entregas"
+            colorClass="bg-secondary hover:bg-orange-600 text-white"
+          />
           {/* BOTÓN VISITAS (Vía FlowContainer) */}
           <VisitFlowContainer
             departmentId={+id}
@@ -111,6 +116,12 @@ export default function DepartmentPage() {
 
           {/* BOTÓN ORDEN DE COMPRA */}
           <RegisterPurchaseOrderModal />
+          {/* BOTÓN REGISTRAR FACTURA */}
+          <StandardButton
+            icon={FileText}
+            label="Registrar Factura"
+            colorClass="bg-secondary hover:bg-orange-600 text-white"
+          />
         </div>
       </div>
 

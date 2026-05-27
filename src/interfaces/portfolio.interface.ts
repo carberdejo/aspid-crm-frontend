@@ -30,7 +30,7 @@ export interface PortfolioCreateDto {
 }
 
 export enum RoleInPortfolio {
-  RESPONSABLE = "RESPONSABLE",
+  ASESOR = "ASESOR",
   ING_PROYECTOS = "ING_PROYECTOS",
   SERVICIOS = "SERVICIOS",
 }

@@ -61,7 +61,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
   // 2. SEGMENTO (Mejorada)
   {
     id: "segment",
-    header: "Segmento",
+    header: "Segmentación",
     cell: ({ row }) => {
       const segment = row.original.segment;
       if (!segment)

@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Briefcase } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
-import { Button } from "@/components/ui/button";
-import { ClipboardList, FileText, ShoppingCart } from "lucide-react";
 import { useHeaderStore } from "@/store/useHeaderStore";
 import { useDepartmentStore } from "@/store/useDepartmentStore";
 import { VisitFlowContainer } from "@/components/visit/VisitFlowContainer";
@@ -13,11 +11,14 @@ import { OperationCards } from "@/components/department/OperationCards";
 import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
 import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
-import { useAuthStore } from "@/store";
+import { useAuthStore, useVisitFlowStore } from "@/store";
 import { VisitPerformancePanel } from "@/components/department/VisitPerformancePanel";
 import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPurchaseOrderModal";
-import { StandardButton } from "@/components/common/StandardButton";
-import { RegisterClientModal } from "@/components";
+import { RegisterDeliveryModal } from "@/components/deliverys/RegisterDeliveryModal";
+import { CreateOperationMenu } from "@/components/department/CreateOperationMenu";
+import { RegisterInvoiceModal } from "@/components/invoices/form/RegisterInvoiceModal";
+
+type OperationModalType = "order" | "delivery" | "invoice" | null;
 
 export default function DepartmentPage() {
   const params = useParams();
@@ -25,7 +26,10 @@ export default function DepartmentPage() {
 
   const { getDepartmentById } = useDepartmentStore();
   const { setHeaderTitle } = useHeaderStore();
-  const { user } = useAuthStore(); // Para obtener el userId y pasarlo a QuoteSummaryCard (pendiente)
+  const { user } = useAuthStore();
+
+  const openMainFlow = useVisitFlowStore((state) => state.openMain);
+  const [activeModal, setActiveModal] = useState<OperationModalType>(null);
 
   // ✅ SIMPLIFICADO: Solo obtener datos del store (ya validados por middleware)
   const department = getDepartmentById(Number(id));
@@ -50,95 +54,70 @@ export default function DepartmentPage() {
     );
   }
 
-  // if (isLoading) return <SkeletonGrid />; // Un loader bonito
+  // MANEJADOR CENTRAL DE ACCIONES DEL MENÚ
+  const handleMenuAction = (
+    type: "visit" | "quote" | "order" | "delivery" | "invoice",
+  ) => {
+    if (type === "visit") openMainFlow("VISIT");
+    else if (type === "quote") openMainFlow("QUOTE");
+    else setActiveModal(type); // Asigna "order", "delivery" o "invoice"
+  };
 
   return (
     <div className="space-y-6 bg-transparent">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
-        {/* LADO IZQUIERDO: Identidad del Departamento */}
-        <PageHeader
-          title={department.name}
-          subtitle="Gestión de Operaciones"
-          icon={Briefcase}
-          iconColor="primary"
-          variant="compact"
-          // action={
-          //   <div className="flex items-center gap-3">
-          //     <StandardButton
-          //       // icon={FileSpreadsheet}
-          //       label="Importar Excel"
-          //       // Sobrescribimos el color por defecto al verde corporativo
-          //       colorClass="bg-emerald-600 hover:bg-emerald-700 text-white"
-          //       // onClick={() => setIsImportModalOpen(true)}
-          //     />
+      <PageHeader
+        title={department.name}
+        subtitle="Gestión de Operaciones"
+        icon={Briefcase}
+        iconColor="primary"
+        variant="compact"
+        // PASAMOS EL MENÚ Y LOS MODALES INVISIBLES COMO UN SOLO BLOQUE DE ACCIÓN
+        action={
+          <div className="flex items-center gap-4">
+            {/* 1. EL BOTÓN VISIBLE (Menú Desplegable) */}
+            <CreateOperationMenu onAction={handleMenuAction} />
 
-          //     {/* Asumimos que dentro de este componente actualizarás el trigger al nuevo StandardButton */}
-          //     <RegisterClientModal />
-          //     <RegisterPurchaseOrderModal />
-          //   </div>
-          // }
-        />
+            {/* 2. LOS MODALES INVISIBLES */}
+            {/* Flujos controlados por Zustand */}
+            <VisitFlowContainer departmentId={+id} trigger={null} />
+            <QuoteFlowContainer departmentId={+id} trigger={null} />
 
-        {/* LADO DERECHO: Acciones con Estilo Premium */}
-        <div className="flex items-center gap-3">
-          <StandardButton
-            icon={FileText}
-            label="Entregas"
-            colorClass="bg-secondary hover:bg-orange-600 text-white"
-          />
-          {/* BOTÓN VISITAS (Vía FlowContainer) */}
-          <VisitFlowContainer
-            departmentId={+id}
-            trigger={
-              // <Button className="bg -primary hover:bg-primary text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-blue-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-              //   <ClipboardList size={18} className="text-blue-100" />
-              //   Visitas
-              // </Button>
-              <StandardButton
-                icon={ClipboardList}
-                label="Visitas"
-                colorClass="bg-primary hover:bg-primary-dark text-white"
-              />
-            }
-          />
+            {/* Modales controlados por estado local */}
+            <RegisterPurchaseOrderModal
+              open={activeModal === "order"}
+              onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
+              hideTrigger={true}
+            />
+            <RegisterDeliveryModal
+              open={activeModal === "delivery"}
+              onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
+              hideTrigger={true}
+            />
+            <RegisterInvoiceModal
+              open={activeModal === "invoice"}
+              onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
+              hideTrigger={true}
+            />
+          </div>
+        }
+      />
 
-          {/* BOTÓN COTIZACIONES */}
-          <QuoteFlowContainer
-            departmentId={+id}
-            trigger={
-              <StandardButton
-                icon={FileText}
-                label="Cotizaciones"
-                colorClass="bg-secondary hover:bg-orange-600 text-white"
-              />
-            }
-          />
-
-          {/* BOTÓN ORDEN DE COMPRA */}
-          <RegisterPurchaseOrderModal />
-          {/* BOTÓN REGISTRAR FACTURA */}
-          <StandardButton
-            icon={FileText}
-            label="Registrar Factura"
-            colorClass="bg-secondary hover:bg-orange-600 text-white"
-          />
+      {/* --- SECCIÓN 2: STATS SUPERIORES --- */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        {/* Tarjeta 1: Resumen Cotizaciones (Ahora ocupa 5 columnas - MÁS GRANDE) */}
+        <div className="xl:col-span-4 flex flex-col">
+          <QuoteSummaryCard userId={user?.sub ?? 0} />
         </div>
-      </div>
 
-      {/* Separador con mayor elegancia */}
-      <div className="h-px w-full bg-gradient-to-r from-slate-200 via-slate-100 to-transparent" />
-
-      {/* --- SECCIÓN 2: STATS SUPERIORES (EL ESQUELETO) --- */}
-      {/* 2. Rejilla de Información Superior */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <QuoteSummaryCard userId={user?.sub ?? 0} />
-        {/* <DailyActivityCard /> */}
-        {/* <VisitStatsGrid userId={user?.sub ?? 0} /> */}
-        {/* Rendimiento de Campo (Centro - Dale más espacio) */}
-        <div className="lg:col-span-5">
+        {/* Tarjeta 2: Rendimiento Visitas (Ahora ocupa 3 columnas - COMPACTO) */}
+        <div className="xl:col-span-4 flex flex-col">
           <VisitPerformancePanel userId={user?.sub ?? 0} />
         </div>
-        <OperationCards />
+
+        {/* Tarjeta 3: Panel Bento (Ocupa 4 columnas) */}
+        <div className="xl:col-span-4 flex flex-col">
+          <OperationCards departmentId={+id} />
+        </div>
       </div>
 
       {/* --- SECCIÓN 3: GRÁFICO Y CALENDARIO (ESPACIOS VACÍOS) --- */}

@@ -12,11 +12,9 @@ import {
   ContactCreateDto,
   PaginatedResponse,
   ResponseRuc,
-  UserFilters,
 } from "@/interfaces";
 import { cleanParams } from "@/lib/utils";
 
-// src/services/client.service.ts
 export const clientService = {
   getClients: async (
     filters: ClientFilters = {},
@@ -30,8 +28,7 @@ export const clientService = {
     >("/clients", {
       params,
     });
-    // console.log({ data: data.data });
-    return data.data; // Retorna solo la data paginada, no el mensaje ni el código
+    return data.data;
   },
 
   getClientDetail: async (id: number): Promise<ClientDetail> => {
@@ -51,11 +48,10 @@ export const clientService = {
   createClient: async (
     clientData: ClientCreateDto,
   ): Promise<ClientAndContactResponseCreate<ClientItem>> => {
-    // console.log({userData})
     const { data } = await concarApi.post<
       ApiResponse<ClientAndContactResponseCreate<ClientItem>>
     >("/clients", clientData);
-    return data.data; // Retornar solo el mensaje del servidor
+    return data.data;
   },
 
   findByRuc: async (ruc: string) => {

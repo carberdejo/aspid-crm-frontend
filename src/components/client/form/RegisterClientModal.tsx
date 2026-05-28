@@ -1,40 +1,41 @@
 "use client";
 
 import React from "react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ClientForm } from "./ClientForm";
-import { ClienteCreateResponseItem } from "@/interfaces/client.interface";
+import { ClienteCreateResponseItem } from "@/interfaces";
 
 interface RegisterClientModalProps {
   // Control externo del modal (ej: desde FlowContainer)
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  
+
   // Callback cuando se crea un cliente exitosamente
   onSuccess?: (client: ClienteCreateResponseItem) => void;
-  
+
   // Mostrar trigger (botón) solo si no hay control externo
   showTrigger?: boolean;
 }
 
-export function RegisterClientModal({ 
-  isOpen: externalIsOpen, 
+export function RegisterClientModal({
+  isOpen: externalIsOpen,
   onOpenChange: externalOnOpenChange,
   onSuccess,
-  showTrigger = true
+  showTrigger = true,
 }: RegisterClientModalProps) {
   // Determinar si usar control externo o interno
-  const isControlled = externalIsOpen !== undefined && externalOnOpenChange !== undefined;
-  
+  const isControlled =
+    externalIsOpen !== undefined && externalOnOpenChange !== undefined;
+
   // Si no está controlado externamente, usar estado local
   // (fallback para uso standalone como antes)
   const [localOpen, setLocalOpen] = React.useState(false);
@@ -72,7 +73,7 @@ export function RegisterClientModal({
             Gestión de cartera de clientes y facturación ACME & CIA.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="p-8 pt-0 overflow-y-auto max-h-[70vh] custom-scrollbar">
           <ClientForm onSuccess={handleSuccess} />
         </div>

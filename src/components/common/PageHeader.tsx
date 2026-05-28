@@ -83,10 +83,13 @@ export default function PageHeader({
         </div>
       )}
 
-      {/* Contenido principal */}
-      <div className="relative flex items-center justify-between gap-6">
+      {/* CAMBIO CLAVE AQUÍ: 
+        1. flex-col para móviles, sm:flex-row para pantallas más grandes.
+        2. items-start en móviles para que el botón se alinee a la izquierda, y sm:items-center para centrarlo con el texto en desktop. 
+      */}
+      <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         {/* Sección izquierda: Icon + Textos */}
-        <div className="flex items-start gap-4 flex-1 min-w-0">
+        <div className="flex items-start gap-4 flex-1 min-w-0 w-full">
           {Icon && !isCompact && (
             <div
               className={cn(
@@ -151,8 +154,15 @@ export default function PageHeader({
           </div>
         </div>
 
-        {/* Acción (derecha) */}
-        {action && <div className="flex-shrink-0">{action}</div>}
+        {/* CAMBIO EN LA ACCIÓN:
+          Aseguramos que en móvil tome todo el ancho o se posicione correctamente debajo del título,
+          y en desktop vuelva a ajustarse a la derecha.
+        */}
+        {action && (
+          <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+            {action}
+          </div>
+        )}
       </div>
 
       {/* Línea decorativa inferior */}

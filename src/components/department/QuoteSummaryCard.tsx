@@ -30,8 +30,7 @@ export function QuoteSummaryCard({ userId }: { userId: number }) {
   }
 
   return (
-    <div className="lg:col-span-4 bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-between min-h-[360px] relative w-full overflow-hidden">
-      {/* Encabezado: Título + Filtro Adaptativo */}
+    <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-50 shadow-sm h-full w-full flex flex-col justify-between">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mb-6">
         <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] text-center sm:text-left">
           Resumen de Cotizaciones

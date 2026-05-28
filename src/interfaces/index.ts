@@ -1,6 +1,7 @@
 export * from "./analytics.interface";
 export * from "./api.interface";
 export * from "./client.interface";
+export * from "./delivery.interface";
 export * from "./department.interface";
 export * from "./industry-segment.interface";
 export * from "./portfolio.interface";

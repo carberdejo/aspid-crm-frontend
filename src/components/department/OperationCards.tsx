@@ -1,145 +1,129 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
 import {
   ClipboardList,
   FileText,
   ShoppingCart,
-  ChevronRight,
-  LayoutGrid, // Un ícono extra para el encabezado del panel
+  Truck,
+  Receipt,
+  LayoutGrid,
+  ArrowUpRight,
 } from "lucide-react";
-
-export enum ColorVariant {
-  PRIMARY = "primary",
-  SECONDARY = "secondary",
-  ORANGE = "orange",
+import Link from "next/link";
+interface OperationCardsProps {
+  // Aquí podrías agregar props si necesitas pasar datos dinámicos a las tarjetas
+  departmentId: number; // Ejemplo de prop para construir URLs dinámicas
 }
-
-export function OperationCards() {
-  const params = useParams();
-  const id = params?.id;
-
-  const operations = [
-    {
-      label: "Módulo de Visitas",
-      description: "Historial técnico",
-      color: ColorVariant.PRIMARY,
-      icon: <ClipboardList size={22} />,
-      href: `/department/${id}/visit`,
-    },
-    {
-      label: "Cotizaciones",
-      description: "Presupuestos",
-      color: ColorVariant.SECONDARY,
-      icon: <FileText size={22} />,
-      href: `/department/${id}/quote`,
-    },
-    {
-      label: "Órdenes de Compra",
-      description: "Estado de ventas",
-      color: ColorVariant.ORANGE,
-      icon: <ShoppingCart size={22} />,
-      href: `/department/${id}/order`,
-    },
-  ];
-
+export function OperationCards({ departmentId }: OperationCardsProps) {
   return (
-    // 1. EL CONTENEDOR DEL PANEL: Fondo sutil y bordes para separarlo del resto del dashboard
-    <div className="lg:col-span-3 bg-slate-50/50 p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col h-full">
-      <div className="flex items-center gap-2 mb-5 px-1">
-        <LayoutGrid size={16} className="text-slate-400" />
-        <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">
-          Panel de Operaciones
-        </h3>
+    <div className="w-full bg-white rounded-[2.5rem] border border-slate-50 shadow-sm p-5 flex flex-col h-full animate-in fade-in zoom-in-95 duration-500">
+      {" "}
+      {/* Cabecera del Panel */}
+      <div className="flex items-center justify-between mb-5 px-2">
+        <div className="flex items-center gap-2">
+          <LayoutGrid size={16} className="text-slate-400" />
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+            Panel de Operaciones
+          </h3>
+        </div>
       </div>
+      {/* Grid Bento */}
+      <div className="grid grid-cols-2 gap-3 flex-1">
+        {/* 1. VISITAS (Destacado - Ocupa 2 columnas) */}
+        <OperationCard
+          title="Visitas Técnicas"
+          subtitle="Historial y reportes de campo"
+          icon={ClipboardList}
+          colorClass="text-blue-600 bg-blue-50/80 border-blue-100 hover:bg-blue-100/80"
+          href={`/department/${departmentId}/visit`} // TODO: Agrega la ruta hacia tu vista de tabla de visitas
+          isWide={true}
+        />
 
-      <div className="flex flex-col gap-3">
-        {operations.map((op) => (
-          <QuickNavItem
-            key={op.label}
-            label={op.label}
-            description={op.description}
-            color={op.color}
-            icon={op.icon}
-            href={op.href}
-          />
-        ))}
+        {/* 2. COTIZACIONES */}
+        <OperationCard
+          title="Cotizaciones"
+          subtitle="Presupuestos"
+          icon={FileText}
+          colorClass="text-orange-600 bg-orange-50/80 border-orange-100 hover:bg-orange-100/80"
+          href={`/department/${departmentId}/quote`}
+        />
+
+        {/* 3. ÓRDENES DE COMPRA */}
+        <OperationCard
+          title="Órdenes"
+          subtitle="Aprobaciones"
+          icon={ShoppingCart}
+          colorClass="text-emerald-600 bg-emerald-50/80 border-emerald-100 hover:bg-emerald-100/80"
+          href={`/department/${departmentId}/order`}
+        />
+
+        {/* 4. GUÍAS DE REMISIÓN */}
+        <OperationCard
+          title="Despachos"
+          subtitle="Guías de remisión"
+          icon={Truck}
+          colorClass="text-purple-600 bg-purple-50/80 border-purple-100 hover:bg-purple-100/80"
+          href={`/department/${departmentId}/shipment`}
+        />
+
+        {/* 5. FACTURACIÓN */}
+        <OperationCard
+          title="Facturación"
+          subtitle="Comprobantes"
+          icon={Receipt}
+          colorClass="text-rose-600 bg-rose-50/80 border-rose-100 hover:bg-rose-100/80"
+          href={`/department/${departmentId}/invoice`}
+        />
       </div>
     </div>
   );
 }
 
-type QuickNavItemProps = {
-  label: string;
-  description: string;
-  color: ColorVariant;
-  icon: React.ReactNode;
+// Sub-componente interno para mantener el código limpio (Reutilizable)
+interface OperationCardProps {
+  title: string;
+  subtitle: string;
+  icon: React.ElementType;
+  colorClass: string;
   href: string;
-};
+  isWide?: boolean;
+}
 
-function QuickNavItem({
-  label,
-  description,
-  color,
-  icon,
+function OperationCard({
+  title,
+  subtitle,
+  icon: Icon,
+  colorClass,
   href,
-}: QuickNavItemProps) {
-  // 2. MAPA DE ESTILOS MEJORADO: Separamos el fondo del ícono, el borde del hover y la línea de acento
-  const styleMap = {
-    [ColorVariant.PRIMARY]: {
-      iconBg: "bg-blue-50 text-blue-600 group-hover:bg-blue-100",
-      hoverBorder: "hover:border-blue-300",
-      accentLine: "bg-blue-500",
-    },
-    [ColorVariant.SECONDARY]: {
-      iconBg: "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100",
-      hoverBorder: "hover:border-emerald-300",
-      accentLine: "bg-emerald-500",
-    },
-    [ColorVariant.ORANGE]: {
-      iconBg: "bg-orange-50 text-orange-600 group-hover:bg-orange-100",
-      hoverBorder: "hover:border-orange-300",
-      accentLine: "bg-orange-500",
-    },
-  };
-
-  const styles = styleMap[color as keyof typeof styleMap];
-
+  isWide = false,
+}: OperationCardProps) {
   return (
-    <Link href={href} className="block outline-none">
-      <div
-        className={`group relative flex items-center gap-4 p-3 sm:p-4 rounded-xl border border-slate-200 bg-white shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md ${styles.hoverBorder} overflow-hidden`}
-      >
-        {/* LÍNEA DE ACENTO LATERAL: Aparece en hover para dar feedback visual de interactividad */}
-        <div
-          className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.accentLine} opacity-0 group-hover:opacity-100 transition-opacity`}
+    <Link
+      href={href}
+      className={`group flex flex-col justify-between p-4 rounded-[1.5rem] border transition-all duration-300 hover:shadow-md cursor-pointer ${colorClass} ${
+        isWide ? "col-span-2" : "col-span-1"
+      }`}
+    >
+      <div className="flex items-start justify-between mb-4">
+        {/* Ícono con efecto de flotación al hacer hover */}
+        <div className="p-2.5 rounded-xl bg-white/70 shadow-sm group-hover:-translate-y-1 group-hover:shadow-md transition-all duration-300">
+          <Icon size={18} strokeWidth={2.5} />
+        </div>
+
+        {/* Flecha indicadora de navegación */}
+        <ArrowUpRight
+          size={16}
+          className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 duration-300"
         />
+      </div>
 
-        <div
-          className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center transition-colors ${styles.iconBg}`}
-        >
-          {icon}
-        </div>
-
-        {/* Usamos min-w-0 y truncate para proteger el layout en pantallas estrechas */}
-        <div className="flex flex-col flex-1 min-w-0">
-          <span className="text-sm font-bold text-slate-800 truncate">
-            {label}
-          </span>
-          <span className="text-xs text-slate-400 font-medium truncate mt-0.5">
-            {description}
-          </span>
-        </div>
-
-        {/* Círculo indicador para la flecha, hace que parezca más un botón de acción */}
-        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 transition-colors shrink-0">
-          <ChevronRight
-            size={16}
-            className="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5"
-          />
-        </div>
+      <div>
+        <h4 className="font-black text-slate-800 text-xs tracking-tight">
+          {title}
+        </h4>
+        <p className="text-[9px] font-bold uppercase tracking-widest opacity-70 mt-1 truncate">
+          {subtitle}
+        </p>
       </div>
     </Link>
   );

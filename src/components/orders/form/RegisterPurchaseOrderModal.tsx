@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,53 +8,65 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ShoppingBag, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { PurchaseOrderForm } from "./PurchaseOrderForm";
 import { CreatePurchaseOrderDto, Quote } from "@/interfaces";
 import { useCreatePurchaseOrder } from "@/hooks";
 import { StandardButton } from "@/components/common/StandardButton";
 
 interface RegisterPurchaseOrderModalProps {
-  initialQuote?: Quote; // Opcional
-  trigger?: React.ReactNode; // Para personalizar el botón que lo abre
+  initialQuote?: Quote;
+  // --- Props de Control Externo ---
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  // --- Props de Botón Nativo ---
+  trigger?: React.ReactNode;
+  hideTrigger?: boolean;
 }
 
 export function RegisterPurchaseOrderModal({
   initialQuote,
+  open: externalOpen,
+  onOpenChange: externalOnOpenChange,
   trigger,
+  hideTrigger = false,
 }: RegisterPurchaseOrderModalProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
+
+  // Decide si obedece al Dashboard (externo) o a sí mismo (interno)
+  const isControlled = externalOpen !== undefined;
+  const isOpen = isControlled ? externalOpen : localOpen;
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (externalOnOpenChange) externalOnOpenChange(newOpen);
+    if (!isControlled) setLocalOpen(newOpen);
+  };
+
   const { mutate: createPurchaseOrder, isPending } = useCreatePurchaseOrder();
 
   const handleSuccess = async (data: CreatePurchaseOrderDto) => {
     createPurchaseOrder(data, {
-      onSuccess: () => {
-        setIsOpen(false);
-      },
+      onSuccess: () => handleOpenChange(false), // Cierra el modal al terminar
     });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          // <Button className="bg-accent hover:bg-accent-dark text-white font-black h-12 px-6 rounded-2xl flex gap-3 shadow-lg shadow-slate-900/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
-          //   <ShoppingCart size={18} className="text-slate-400" />
-          //   Orden de Compra
-          // </Button>
-          <StandardButton
-            icon={ShoppingCart}
-            label="Orden de Compra"
-            colorClass="bg-accent hover:bg-accent-dark text-white"
-          />
-        )}
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {/* MAGIA: Si hideTrigger es TRUE, esto desaparece totalmente */}
+      {!hideTrigger && (
+        <DialogTrigger asChild>
+          {trigger || (
+            <StandardButton
+              icon={ShoppingCart}
+              label="Orden de Compra"
+              colorClass="bg-accent hover:bg-accent-dark text-white"
+            />
+          )}
+        </DialogTrigger>
+      )}
 
       <DialogContent className="sm:max-w-[800px] rounded-[3rem] p-10 overflow-hidden border-none shadow-2xl bg-white">
         <DialogHeader className="flex flex-row items-center gap-4 space-y-0 mb-8">
-          <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600">
-            <ShoppingBag size={28} />
-          </div>
           <div>
             <DialogTitle className="text-3xl font-black uppercase tracking-tighter text-slate-800">
               REGISTRAR <span className="text-emerald-500">ORDEN</span>
@@ -65,7 +77,6 @@ export function RegisterPurchaseOrderModal({
           </div>
         </DialogHeader>
 
-        {/* El formulario ahora estará dentro del diseño estandarizado */}
         <PurchaseOrderForm
           onSubmit={handleSuccess}
           isLoading={isPending}

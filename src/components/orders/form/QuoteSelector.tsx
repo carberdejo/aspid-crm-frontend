@@ -40,7 +40,7 @@ export function QuoteSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full h-12 justify-between rounded-xl border-slate-200 bg-white px-4 font-bold text-[11px] uppercase tracking-tight text-slate-700 shadow-sm hover:bg-slate-50"
+          className="w-full h-12 justify-between rounded-xl border-slate-200 bg-white px-4 font-bold text-[14px] uppercase tracking-tight text-slate-700 shadow-sm hover:bg-slate-50"
         >
           {selectedId
             ? options.find((q) => q.id === selectedId)?.quoteNumber ||

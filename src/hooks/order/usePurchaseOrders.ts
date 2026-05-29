@@ -7,12 +7,19 @@ export const usePurchaseOrders = (
   filters: PurchaseOrderFilters,
   options?: { enabled?: boolean },
 ) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: ["purchase-orders", filters],
     queryFn: () => PurchaseOrderService.findAll(filters),
     staleTime: 60 * 1000,
     enabled: options?.enabled ?? true,
   });
+  return {
+    orders: query.data?.items || [],
+    total: query.data?.total || 0,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+  };
 };
 
 export const useCreatePurchaseOrder = () => {

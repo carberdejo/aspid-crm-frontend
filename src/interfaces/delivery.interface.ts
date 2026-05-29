@@ -2,13 +2,14 @@ export interface Delivery {
   id: string;
   client: ClientDeliveryList;
   user: UserDeliveryList;
-  deliveryDate: Date;
+  deliveryDate: string;
   deliveryItems: DeliveryItem[];
 }
 
 export interface ClientDeliveryList {
   id: string;
   businessName: string;
+  ruc: string;
 }
 
 export interface DeliveryItem {

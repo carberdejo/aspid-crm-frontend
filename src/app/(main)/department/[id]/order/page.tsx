@@ -26,7 +26,7 @@ export default function PurchaseOrdersPage({ params }: Props) {
     handleFilterChange,
   } = usePurchaseOrderFilters(+departmentId, userId);
 
-  const { data, isLoading } = usePurchaseOrders(filters, {
+  const { orders, total, isLoading } = usePurchaseOrders(filters, {
     enabled: !!userId,
   });
 
@@ -45,8 +45,8 @@ export default function PurchaseOrdersPage({ params }: Props) {
 
       <DataTable
         columns={purchaseOrderColumns}
-        data={data?.items || []}
-        total={data?.total || 0}
+        data={orders}
+        total={total}
         currentPage={page}
         onPageChange={setPage}
         isLoading={isLoading}

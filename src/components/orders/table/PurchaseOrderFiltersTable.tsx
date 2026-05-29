@@ -8,12 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Search, FilterX, Calendar, SortAsc, SortDesc } from "lucide-react";
+
+import { Search, FilterX, SortAsc, SortDesc } from "lucide-react";
 import { PurchaseOrderFilters, SortOrder } from "@/interfaces";
 import { DateRangeFilter } from "@/components";
 

@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { Receipt } from "lucide-react";
 import { StandardButton } from "@/components/common/StandardButton";
-import { CreateInvoiceFormValues } from "@/lib/schemas/invoice";
 import { InvoiceForm } from "./InvoiceForm";
-// import { useCreateInvoice } from "@/hooks/invoices/useCreateInvoice";
+import { PurchaseOrder } from "@/interfaces"; // IMPORTANTE: Agregar esto
 
 interface RegisterInvoiceModalProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
   hideTrigger?: boolean;
+  preselectedOrder?: PurchaseOrder; // NUEVA PROP
 }
 
 export function RegisterInvoiceModal({
@@ -26,6 +26,7 @@ export function RegisterInvoiceModal({
   onOpenChange: externalOnOpenChange,
   trigger,
   hideTrigger = false,
+  preselectedOrder, // RECIBIMOS LA PROP
 }: RegisterInvoiceModalProps) {
   const [localOpen, setLocalOpen] = useState(false);
 
@@ -35,24 +36,6 @@ export function RegisterInvoiceModal({
   const handleOpenChange = (newOpen: boolean) => {
     if (externalOnOpenChange) externalOnOpenChange(newOpen);
     if (!isControlled) setLocalOpen(newOpen);
-  };
-
-  // Mutación simulada (reemplaza con tu hook real)
-  const [isPending, setIsPending] = useState(false);
-  // const { mutate: createInvoice, isPending } = useCreateInvoice();
-
-  const handleSuccess = async (data: CreateInvoiceFormValues) => {
-    setIsPending(true);
-    console.log("Datos listos para NestJS:", data);
-
-    // createInvoice(data, {
-    //   onSuccess: () => handleOpenChange(false),
-    // });
-
-    setTimeout(() => {
-      setIsPending(false);
-      handleOpenChange(false);
-    }, 1000);
   };
 
   return (
@@ -81,7 +64,10 @@ export function RegisterInvoiceModal({
           </div>
         </DialogHeader>
 
-        <InvoiceForm onSubmit={handleSuccess} isLoading={isPending} />
+        <InvoiceForm
+          onSuccessCallback={() => handleOpenChange(false)}
+          preselectedOrder={preselectedOrder} // SE LA PASAMOS AL FORMULARIO
+        />
       </DialogContent>
     </Dialog>
   );

@@ -4,6 +4,7 @@ export * from "./client.service";
 export * from "./delivery.service";
 export * from "./department.service";
 export * from "./industry-segments.service";
+export * from "./invoice.service";
 export * from "./portfolios.service";
 export * from "./purchase-order.service";
 export * from "./quote.service";

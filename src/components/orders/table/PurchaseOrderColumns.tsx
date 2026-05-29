@@ -7,27 +7,32 @@ import {
   FileText,
   Calendar as CalendarIcon,
   Building2,
-  Receipt, // Añadimos este icono para facturación
+  Receipt,
+  CreditCard,
 } from "lucide-react";
 import { PurchaseOrder } from "@/interfaces";
 import { ActionsCellOrder } from "./ActionCellOrder";
 
-// Definimos los colores y etiquetas legibles para cada estado
-const BILLING_STATUS_CONFIG: Record<string, { label: string; color: string }> =
-  {
-    PENDIENTE_FACTURACION: {
-      label: "Pendiente",
-      color: "bg-orange-50 text-orange-600 border-orange-200",
-    },
-    FACTURADO_PARCIAL: {
-      label: "Parcial",
-      color: "bg-blue-50 text-blue-600 border-blue-200",
-    },
-    FACTURADO_COMPLETO: {
-      label: "Completo",
-      color: "bg-emerald-50 text-emerald-600 border-emerald-200",
-    },
-  };
+const BILLING_STATUS_CONFIG: Record<
+  string,
+  { label: string; color: string; barColor: string }
+> = {
+  PENDIENTE_FACTURACION: {
+    label: "Pendiente",
+    color: "bg-orange-50 text-orange-600 border-orange-200",
+    barColor: "bg-orange-400",
+  },
+  FACTURADO_PARCIAL: {
+    label: "Parcial",
+    color: "bg-blue-50 text-blue-600 border-blue-200",
+    barColor: "bg-blue-500",
+  },
+  FACTURADO_COMPLETO: {
+    label: "Completo",
+    color: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    barColor: "bg-emerald-500",
+  },
+};
 
 export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
   {
@@ -46,7 +51,7 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
   },
   {
     accessorKey: "quoteNumber",
-    header: "Cotización Vinculada",
+    header: "Cotización",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <FileText size={12} className="text-slate-400" />
@@ -66,7 +71,10 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5">
           <Building2 size={12} className="text-slate-400" />
-          <span className="font-bold text-slate-700 uppercase text-[11px]">
+          <span
+            className="font-bold text-slate-700 uppercase text-[11px] truncate max-w-[180px]"
+            title={row.original.clientName}
+          >
             {row.original.clientName}
           </span>
         </div>
@@ -80,13 +88,13 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
   },
   {
     accessorKey: "receivedAt",
-    header: "Fecha Recepción",
+    header: "Recepción",
     cell: ({ row }) => {
       const date = new Date(`${row.original.receivedAt}T00:00:00`);
       return (
         <div className="flex items-center gap-2 text-slate-500">
           <CalendarIcon size={12} className="opacity-40" />
-          <span className="text-[11px] font-bold uppercase tracking-tight">
+          <span className="text-[10px] font-bold uppercase tracking-tight">
             {date.toLocaleDateString("es-PE", {
               day: "2-digit",
               month: "short",
@@ -97,26 +105,82 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
       );
     },
   },
-  // --- NUEVA COLUMNA DE ESTADO DE FACTURACIÓN ---
+  // --- NUEVA COLUMNA: TOTAL DE LA ORDEN ---
   {
-    accessorKey: "billingStatus", // Asegúrate de que el key coincida con tu interfaz (puede ser billingStatus)
-    header: "Estado Facturación",
+    accessorKey: "amount",
+    header: () => <div className="text-right">Monto Total</div>,
     cell: ({ row }) => {
-      const status = row.original.billingStatus; // Ajustar a camelCase si tu interfaz usa billingStatus
-
-      const config = BILLING_STATUS_CONFIG[status as string] || {
-        label: status || "Desconocido",
+      const { amount, currency } = row.original;
+      return (
+        <div className="flex items-center justify-end gap-1.5">
+          <CreditCard size={12} className="text-slate-300" />
+          <span className="text-xs font-black text-slate-800 font-mono tracking-tighter">
+            {new Intl.NumberFormat("es-PE", {
+              style: "currency",
+              currency: currency || "USD",
+              minimumFractionDigits: 2,
+            }).format(Number(amount))}
+          </span>
+        </div>
+      );
+    },
+  },
+  // --- COLUMNA MEJORADA: PROGRESO DE FACTURACIÓN ---
+  {
+    accessorKey: "billingStatus",
+    header: "Facturación",
+    cell: ({ row }) => {
+      const {
+        billingStatus,
+        billingPercentage = 0,
+        remainingAmount = 0,
+        currency,
+      } = row.original;
+      const status = billingStatus || "PENDIENTE_FACTURACION";
+      const config = BILLING_STATUS_CONFIG[status] || {
+        label: status,
         color: "bg-slate-50 text-slate-400 border-slate-200",
+        barColor: "bg-slate-300",
       };
 
       return (
-        <Badge
-          variant="outline"
-          className={`flex items-center gap-1.5 w-max px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.15em] ${config.color}`}
-        >
-          <Receipt size={10} strokeWidth={3} />
-          {config.label}
-        </Badge>
+        <div className="flex flex-col gap-1.5 min-w-[140px]">
+          <div className="flex items-center justify-between gap-2">
+            <Badge
+              variant="outline"
+              className={`flex items-center gap-1 w-max px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ${config.color}`}
+            >
+              <Receipt size={10} strokeWidth={3} />
+              {config.label}
+            </Badge>
+            <span className="text-[10px] font-black text-slate-400">
+              {billingPercentage}%
+            </span>
+          </div>
+
+          {/* Barra de Progreso Dinámica */}
+          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-1000 ${config.barColor}`}
+              style={{ width: `${billingPercentage}%` }}
+            />
+          </div>
+
+          {/* Saldo Pendiente Condicional */}
+          {remainingAmount > 0 ? (
+            <span className="text-[8px] font-bold text-slate-500 tracking-widest uppercase">
+              Falta:{" "}
+              {new Intl.NumberFormat("es-PE", {
+                style: "currency",
+                currency: currency || "USD",
+              }).format(Number(remainingAmount))}
+            </span>
+          ) : (
+            <span className="text-[8px] font-bold text-emerald-500 tracking-widest uppercase">
+              Completado
+            </span>
+          )}
+        </div>
       );
     },
   },

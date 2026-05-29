@@ -121,7 +121,7 @@ export function CreateOperationMenu({ onAction }: CreateOperationMenuProps) {
             </div>
             <div className="flex flex-col">
               <span className="text-[11px] font-bold text-slate-700 uppercase">
-                Guía de Remisión
+                Entregas
               </span>
               <span className="text-[9px] font-medium text-slate-400">
                 Registro de entrega

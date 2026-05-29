@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { useQuoteDetail, useQuotes } from "@/hooks/quote/useQuotes";
 import { useState } from "react";
@@ -22,11 +24,11 @@ import {
 import { QuoteForm } from "../form/QuoteForm";
 import {
   Eye,
-  FileText,
   Edit3,
   Trash2,
   Loader2,
   ShoppingCart,
+  FileX, // Opcional: Para cambiar el icono de rechazar si lo prefieres
 } from "lucide-react";
 import { Quote, QuoteCreateDto, QuoteStatus } from "@/interfaces";
 import { useRouter } from "next/navigation";
@@ -35,7 +37,6 @@ import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPur
 
 export const ActionsCell = ({ quote }: { quote: Quote }) => {
   const router = useRouter();
-  // Estados para modales
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -46,9 +47,7 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
 
   const { updateQuote, isUpdating, rejectQuote, isRejecting } = useQuotes();
 
-  // Handler para Actualizar
   const handleUpdate = async (values: Partial<QuoteFormValues>) => {
-    console.log("Datos enviados al actualizar:", values); // Paso 1: Ver si la función se dispara
     try {
       updateQuote({
         id: quote.id,
@@ -66,7 +65,6 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
     }
   };
 
-  // Handler para Rechazar
   const handleReject = async () => {
     try {
       await rejectQuote({
@@ -77,58 +75,54 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
     } catch (error) {}
   };
 
-  // Función para navegar al detalle dinámico
   const handleGoToDetail = () => {
     router.push(`/department/${quote.departmentId}/quote/${quote.id}`);
   };
 
+  const isPending = quote.status === QuoteStatus.PENDIENTE;
+
   return (
+    // justify-end y pr-2 para alinear todo a la derecha como en las otras tablas
     <div className="flex items-center justify-center gap-1">
-      {quote.status === QuoteStatus.PENDIENTE && (
-        <RegisterPurchaseOrderModal
-          initialQuote={quote}
-          trigger={
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-full transition-all group"
-              title="Generar Orden de Compra"
-            >
-              <ShoppingCart
-                size={16}
-                className="group-hover:scale-110 transition-transform"
-              />
-            </Button>
-          }
-        />
-      )}
-      {/* 1. VER DETALLE (Icono directo) */}
+      {/* 1. ACCIÓN PRINCIPAL DESTACADA: Generar Orden de Compra */}
+      {/* Usamos un contenedor de ancho fijo para que no mueva los iconos al desaparecer */}
+      <div className="w-[115px] flex justify-end mr-1">
+        {isPending && (
+          <RegisterPurchaseOrderModal
+            initialQuote={quote}
+            trigger={
+              <Button
+                variant="default"
+                size="sm"
+                className="h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 font-black px-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center gap-1.5 border border-emerald-100 transition-colors shadow-none"
+                title="Generar Orden de Compra"
+              >
+                <ShoppingCart size={14} strokeWidth={2.5} />
+                Aprobar
+              </Button>
+            }
+          />
+        )}
+      </div>
+
+      {/* 2. VER DETALLE */}
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-slate-400 hover:text-primary rounded-full"
+        className="h-8 w-8 text-slate-400 hover:text-primary rounded-full shrink-0"
         onClick={handleGoToDetail}
         title="Ver Detalle"
       >
         <Eye size={16} />
       </Button>
 
-      {/* 2. DESCARGAR PDF */}
-      {/* <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-slate-400 hover:text-secondary rounded-full"
-      >
-        <FileText size={16} />
-      </Button> */}
-
-      {/* 3. EDITAR (Dialog con Formulario) */}
+      {/* 3. EDITAR */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-slate-400 hover:text-blue-600"
+            className="h-8 w-8 text-slate-400 hover:text-blue-600 rounded-full shrink-0"
             title="Editar Cotización"
           >
             <Edit3 size={16} />
@@ -141,7 +135,6 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
             </DialogTitle>
           </DialogHeader>
 
-          {/* 2. Mostramos un Loader mientras traemos los datos completos del servidor */}
           {isLoadingDetail ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3">
               <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
@@ -151,12 +144,10 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
             </div>
           ) : (
             <QuoteForm
-              key={fullQuote?.id} // Clave para resetear el formulario al cambiar de cotización
+              key={fullQuote?.id}
               departmentId={fullQuote?.departmentId || 0}
-              //   userId={quote.userId}
               isLoading={isUpdating}
               onSubmit={handleUpdate}
-              // 3. Pasamos el 'fullQuote' que tiene todos los campos de la BD
               defaultValues={{
                 ...fullQuote,
                 quoteNumber: fullQuote?.quoteNumber ?? "",
@@ -175,49 +166,58 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
         </DialogContent>
       </Dialog>
 
-      {/* 4. RECHAZAR (AlertDialog con Motivo) */}
-      <AlertDialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
-        <AlertDialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-slate-400 hover:text-rose-600 rounded-full"
-            title="Rechazar Cotización"
-          >
-            <Trash2 size={16} />
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="rounded-[2rem] p-8">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-black text-primary uppercase">
-              Rechazar Cotización
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Indique el motivo del rechazo para el registro.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <Textarea
-            placeholder="Motivo..."
-            value={rejectReason}
-            onChange={(e) => setRejectReason(e.target.value)}
-          />
-          <AlertDialogFooter className="mt-4">
-            <AlertDialogCancel className="rounded-xl font-bold uppercase text-[10px]">
-              Cancelar
-            </AlertDialogCancel>
+      {/* 4. RECHAZAR / ANULAR (Mismo estilo que en facturas) */}
+      {isPending && (
+        <AlertDialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
+          <AlertDialogTrigger asChild>
             <Button
-              onClick={handleReject}
-              disabled={isRejecting || !rejectReason.trim()}
-              className="bg-rose-600 hover:bg-rose-700 rounded-xl font-black text-white uppercase text-[10px]"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full shrink-0 transition-colors"
+              title="Rechazar Cotización"
             >
-              {isRejecting && (
-                <Loader2 className="animate-spin mr-2" size={14} />
-              )}
-              Confirmar
+              <Trash2 size={16} />
             </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-[2.5rem] p-8 sm:max-w-[400px]">
+            <AlertDialogHeader className="text-center">
+              <AlertDialogTitle className="font-black text-slate-800 uppercase text-center text-xl">
+                ¿Rechazar <span className="text-rose-600">Cotización</span>?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-center mt-2 text-xs font-bold text-slate-500">
+                Esta acción cancelará la propuesta y no podrá ser aprobada
+                posteriormente. Indique el motivo del rechazo.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <div className="py-2">
+              <Textarea
+                placeholder="Ej: Presupuesto excedido, cliente desistió..."
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                className="rounded-xl border-slate-200 focus-visible:ring-rose-500 min-h-[100px] text-sm font-medium"
+              />
+            </div>
+
+            <AlertDialogFooter className="mt-4 flex sm:justify-center gap-3">
+              <AlertDialogCancel className="rounded-xl font-bold uppercase text-[10px] w-full mt-0">
+                Cancelar
+              </AlertDialogCancel>
+              <Button
+                onClick={handleReject}
+                disabled={isRejecting || !rejectReason.trim()}
+                className="bg-rose-600 hover:bg-rose-700 rounded-xl font-black text-white uppercase text-[10px] w-full"
+              >
+                {isRejecting ? (
+                  <Loader2 className="animate-spin mr-2" size={14} />
+                ) : (
+                  "Confirmar Rechazo"
+                )}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 };

@@ -4,10 +4,15 @@ export interface PurchaseOrder {
   id: number;
   poNumber: string;
   receivedAt: string;
-  quoteNumber: string; // Para la lista simplificada
-  clientName: string; // Para la lista simplificada
+  quoteNumber: string;
+  clientName: string;
   ruc?: string;
   billingStatus: BillingStatus;
+  amount: number;
+  currency: string;
+  remainingAmount: number; // Para mostrar cuánto falta por facturar
+  billingPercentage?: number; // Porcentaje de la orden que ha sido facturado
+  invoicedAmount: number; // Monto que ya ha sido facturado
 
   // Estos campos vienen en el findOne (detalle)
   quote?: {
@@ -27,6 +32,10 @@ export interface PurchaseOrder {
 export interface PurchaseOrderFilters
   extends GenericFilters, Record<string, unknown> {
   term?: string;
+  userId?: number;
+  departmentId?: number;
+  clientId?: number;
+  billingStatus?: string;
 }
 
 export interface CreatePurchaseOrderDto {

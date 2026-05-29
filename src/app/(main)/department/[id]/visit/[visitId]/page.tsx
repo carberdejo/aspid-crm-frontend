@@ -40,7 +40,10 @@ export default function VisitDetailPage({ params }: Props) {
 
   if (isLoading) return <LoadingSkeleton />;
   if (isError || !visit) return <ErrorState />;
+  const dateValue = visit.date;
+  const date = new Date(`${dateValue}T00:00:00`);
 
+  const formattedDate = dateFormatter.format(date);
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-12">
       {/* HEADER DE ACCIÓN */}
@@ -145,7 +148,8 @@ export default function VisitDetailPage({ params }: Props) {
                 Fecha del Evento
               </p>
               <p className="text-2xl font-black text-primary capitalize">
-                {dateFormatter.format(new Date(visit.date))}
+                {/* {dateFormatter.format(new Date(visit.date))} */}
+                {formattedDate.replace(",", "")}
               </p>
             </div>
           </div>

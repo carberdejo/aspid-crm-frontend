@@ -31,8 +31,8 @@ export function OperationCards({ departmentId }: OperationCardsProps) {
       <div className="grid grid-cols-2 gap-3 flex-1">
         {/* 1. VISITAS (Destacado - Ocupa 2 columnas) */}
         <OperationCard
-          title="Visitas Técnicas"
-          subtitle="Historial y reportes de campo"
+          title="Visitas"
+          subtitle="Historial de visitas"
           icon={ClipboardList}
           colorClass="text-blue-600 bg-blue-50/80 border-blue-100 hover:bg-blue-100/80"
           href={`/department/${departmentId}/visit`} // TODO: Agrega la ruta hacia tu vista de tabla de visitas
@@ -59,11 +59,11 @@ export function OperationCards({ departmentId }: OperationCardsProps) {
 
         {/* 4. GUÍAS DE REMISIÓN */}
         <OperationCard
-          title="Despachos"
-          subtitle="Guías de remisión"
+          title="Entregas"
+          subtitle="Registro de entregas"
           icon={Truck}
           colorClass="text-purple-600 bg-purple-50/80 border-purple-100 hover:bg-purple-100/80"
-          href={`/department/${departmentId}/shipment`}
+          href={`/department/${departmentId}/delivery`}
         />
 
         {/* 5. FACTURACIÓN */}

@@ -4,6 +4,7 @@ export * from "./client.interface";
 export * from "./delivery.interface";
 export * from "./department.interface";
 export * from "./industry-segment.interface";
+export * from "./invoice.interface";
 export * from "./portfolio.interface";
 export * from "./purchase-order.interface";
 export * from "./quote.interface";

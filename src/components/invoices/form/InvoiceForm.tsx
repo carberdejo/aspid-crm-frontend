@@ -6,32 +6,43 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Building2,
-  DollarSign,
-  Calendar,
-  Hash,
-  Receipt,
-  CreditCard,
-} from "lucide-react";
+import { Building2, Calendar, Hash, Receipt, CreditCard } from "lucide-react";
 import {
   createInvoiceFormSchema,
   CreateInvoiceFormValues,
 } from "@/lib/schemas/invoice";
-// import { OrderSelector } from "./OrderSelector"; // Asegúrate de tener este componente creado
+
+// IMPORTACIONES DE HOOKS Y COMPONENTES
+import { OrderSelector } from "./OrderSelector";
+import { BillingStatus, PurchaseOrder } from "@/interfaces"; // Ajusta la ruta
+import { useCreateInvoice, usePurchaseOrders } from "@/hooks";
+import { useAuthStore } from "@/store";
 
 interface InvoiceFormProps {
-  onSubmit: (data: CreateInvoiceFormValues) => void;
-  isLoading: boolean;
+  onSuccessCallback?: () => void; // Solo avisa al padre si terminó con éxito para que cierre el modal
+  preselectedOrder?: PurchaseOrder;
 }
 
-export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
+export function InvoiceForm({
+  onSuccessCallback,
+  preselectedOrder,
+}: InvoiceFormProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(
+    preselectedOrder ?? null,
+  );
+  const userId = useAuthStore((state) => state.user?.sub); // Para filtrar las órdenes del usuario, si es necesario
+  // 1. Hook para buscar órdenes (GET)
+  const { orders, isLoading: isOrdersLoading } = usePurchaseOrders({
+    term: searchTerm,
+    userId: userId,
+    billingStatus: `${BillingStatus.PENDIENTE_FACTURACION},
+      ${BillingStatus.FACTURADO_PARCIAL}`,
+    // Recomendado filtrar por las no facturadas
+  });
 
-  // TODO: Reemplazar con tu hook real para listar órdenes pendientes
-  // const { orders } = useOrders({ term: searchTerm, status: 'PENDIENTE_FACTURACION' });
-  const mockOrders: any[] = [];
+  // 2. Hook para crear la factura (POST) - ¡AHORA VIVE AQUÍ!
+  const { createInvoice, isCreating } = useCreateInvoice();
 
   const {
     register,
@@ -41,21 +52,36 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
   } = useForm<CreateInvoiceFormValues>({
     resolver: zodResolver(createInvoiceFormSchema),
     defaultValues: {
-      orderId: undefined,
+      orderId: preselectedOrder?.id ?? 0,
       invoiceNumber: "",
-      amount: 0,
+      amount: preselectedOrder ? Number(preselectedOrder.remainingAmount) : 0,
       issueDate: new Date().toISOString().split("T")[0],
+      currency: preselectedOrder?.currency ?? "USD",
     },
   });
 
-  const handleSelectOrder = (order: any) => {
+  const handleSelectOrder = (order: PurchaseOrder) => {
     setSelectedOrder(order);
     setValue("orderId", order.id, { shouldValidate: true });
-    setValue("amount", Number(order.amount), { shouldValidate: true });
+    setValue("amount", Number(order.remainingAmount), { shouldValidate: true });
+    setValue("currency", order.currency, { shouldValidate: true });
+  };
+
+  // 3. Función de Envío
+  const onSubmit = (data: CreateInvoiceFormValues) => {
+    createInvoice(data, {
+      onSuccess: () => {
+        // Si todo salió bien en NestJS, le avisamos al componente padre (el Modal)
+        if (onSuccessCallback) {
+          onSuccessCallback();
+        }
+      },
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <input type="hidden" {...register("currency")} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* COLUMNA 1: INPUTS */}
         <div className="space-y-5">
@@ -64,10 +90,13 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
               Seleccionar Orden de Compra
             </Label>
 
-            {/* Reemplazar con <OrderSelector /> cuando lo tengas */}
-            <div className="h-12 w-full rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400">
-              [Selector de Órdenes Pendiente]
-            </div>
+            <OrderSelector
+              options={orders}
+              onSearch={setSearchTerm}
+              onSelect={handleSelectOrder}
+              selectedId={selectedOrder?.id}
+              isLoading={isOrdersLoading}
+            />
 
             {errors.orderId && (
               <p className="text-[9px] text-rose-500 font-bold uppercase animate-in fade-in">
@@ -141,7 +170,7 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
         {/* COLUMNA 2: DETALLE PREMIUM INMUTABLE */}
         <div className="flex flex-col h-full">
           <div
-            className={`flex-1 rounded-[2rem] p-7 border transition-all duration-500 flex flex-col ${
+            className={`flex-1 rounded-4xl p-7 border transition-all duration-500 flex flex-col ${
               selectedOrder
                 ? "bg-slate-50/50 border-slate-200 shadow-sm"
                 : "bg-slate-50 border-slate-100 border-dashed opacity-70"
@@ -179,7 +208,9 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
                 />
                 <SummaryItem
                   label="RUC"
-                  value={selectedOrder.ruc || "---"}
+                  value={
+                    selectedOrder.ruc || selectedOrder.client?.ruc || "---"
+                  }
                   icon={<CreditCard size={14} />}
                 />
                 <SummaryItem
@@ -188,19 +219,67 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
                   icon={<Hash size={14} />}
                 />
 
-                <div className="col-span-2 mt-4 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center justify-between">
+                <div className="col-span-2 mt-2 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center justify-between">
                   <div className="flex items-center gap-2 text-slate-500">
-                    <DollarSign size={16} className="text-rose-500" />
+                    <CreditCard size={16} className="text-slate-400" />
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                      Monto en OC
+                      Total de la Orden
                     </span>
                   </div>
                   <span className="text-lg font-black text-slate-800 font-mono tracking-tighter">
-                    {selectedOrder.currency}{" "}
-                    {new Intl.NumberFormat("es-PE").format(
-                      Number(selectedOrder.amount),
-                    )}
+                    {new Intl.NumberFormat("es-PE", {
+                      style: "currency",
+                      currency: selectedOrder.currency,
+                    }).format(Number(selectedOrder.amount))}
                   </span>
+                </div>
+                {/* 2. NUEVO: Barra de Progreso de Facturación */}
+                <div className="col-span-2 bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-5 flex flex-col gap-3">
+                  {/* Cabecera de la barra */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                      Avance de Facturación
+                    </span>
+                    <span className="text-xs font-black text-rose-600 bg-rose-100 px-2 py-0.5 rounded-md">
+                      {selectedOrder.billingPercentage || 0}%
+                    </span>
+                  </div>
+
+                  {/* La Barra Visual */}
+                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-rose-500 rounded-full transition-all duration-1000 ease-out"
+                      style={{
+                        width: `${selectedOrder.billingPercentage || 0}%`,
+                      }}
+                    />
+                  </div>
+
+                  {/* Desglose de montos */}
+                  <div className="flex justify-between items-center mt-1">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                        Ya Facturado
+                      </span>
+                      <span className="text-xs font-bold text-slate-600 font-mono">
+                        {new Intl.NumberFormat("es-PE", {
+                          style: "currency",
+                          currency: selectedOrder.currency,
+                        }).format(Number(selectedOrder.invoicedAmount || 0))}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                        Saldo Pendiente
+                      </span>
+                      <span className="text-sm font-black text-rose-600 font-mono tracking-tighter">
+                        {new Intl.NumberFormat("es-PE", {
+                          style: "currency",
+                          currency: selectedOrder.currency,
+                        }).format(Number(selectedOrder.remainingAmount || 0))}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -211,7 +290,7 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
                 <p className="text-xs font-bold text-slate-500 mb-1">
                   Ninguna orden seleccionada
                 </p>
-                <p className="text-[10px] font-medium text-slate-400 max-w-[200px] leading-relaxed">
+                <p className="text-[10px] font-medium text-slate-400 max-w-50 leading-relaxed">
                   Asigne un documento comercial para visualizar el balance de
                   facturación.
                 </p>
@@ -224,10 +303,10 @@ export function InvoiceForm({ onSubmit, isLoading }: InvoiceFormProps) {
       <div className="flex justify-end pt-4 border-t border-slate-100">
         <Button
           type="submit"
-          disabled={isLoading || !selectedOrder}
+          disabled={isCreating || !selectedOrder} // Se desactiva si está creando
           className="h-12 px-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black uppercase text-[10px] tracking-widest shadow-xl transition-all active:scale-95 disabled:bg-slate-200"
         >
-          {isLoading ? "Procesando..." : "Emitir Factura"}
+          {isCreating ? "Procesando..." : "Emitir Factura"}
         </Button>
       </div>
     </form>

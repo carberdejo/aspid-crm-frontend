@@ -120,8 +120,17 @@ export const generateNavSections = (
 ): NavSection[] => {
   const sections: NavSection[] = [];
 
+  if (userRole === UserRole.ADMIN) {
+    sections.push(getPrincipalSection());
+    const analiticaSection = getAnaliticaSection(departments);
+    if (analiticaSection) {
+      sections.push(analiticaSection);
+    }
+
+    sections.push(getAdministracionSection());
+  }
   // 1. Agregamos las secciones que TODO el mundo debe ver
-  sections.push(getPrincipalSection());
+
   sections.push(getDirectorioSection());
 
   // 2. Agregamos las áreas de trabajo (Depende de qué departamentos tenga asignados)
@@ -131,14 +140,6 @@ export const generateNavSections = (
   }
 
   // 3. Agregamos las secciones bloqueadas (Solo para el Admin)
-  if (userRole === UserRole.ADMIN) {
-    const analiticaSection = getAnaliticaSection(departments);
-    if (analiticaSection) {
-      sections.push(analiticaSection);
-    }
-
-    sections.push(getAdministracionSection());
-  }
 
   return sections;
 };

@@ -38,6 +38,13 @@ export function OperationCards({ departmentId }: OperationCardsProps) {
           href={`/department/${departmentId}/visit`} // TODO: Agrega la ruta hacia tu vista de tabla de visitas
           isWide={true}
         />
+        <OperationCard
+          title="Entregas"
+          subtitle="Registro de entregas"
+          icon={Truck}
+          colorClass="text-purple-600 bg-purple-50/80 border-purple-100 hover:bg-purple-100/80"
+          href={`/department/${departmentId}/delivery`}
+        />
 
         {/* 2. COTIZACIONES */}
         <OperationCard
@@ -57,14 +64,7 @@ export function OperationCards({ departmentId }: OperationCardsProps) {
           href={`/department/${departmentId}/order`}
         />
 
-        {/* 4. GUÍAS DE REMISIÓN */}
-        <OperationCard
-          title="Entregas"
-          subtitle="Registro de entregas"
-          icon={Truck}
-          colorClass="text-purple-600 bg-purple-50/80 border-purple-100 hover:bg-purple-100/80"
-          href={`/department/${departmentId}/delivery`}
-        />
+        {/* 4. ENTREGAS */}
 
         {/* 5. FACTURACIÓN */}
         <OperationCard

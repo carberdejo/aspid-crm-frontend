@@ -65,7 +65,7 @@ export function RegisterDeliveryModal({
             REGISTRO DE ENTREGA
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-500 pt-1 font-medium">
-            Gestión de despachos y logística para ACME & CIA.
+            Gestión de actividades de ACME & CIA
           </DialogDescription>
         </DialogHeader>
 

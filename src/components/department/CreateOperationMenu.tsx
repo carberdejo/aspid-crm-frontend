@@ -43,9 +43,9 @@ export function CreateOperationMenu({ onAction }: CreateOperationMenuProps) {
       >
         {/* GRUPO 1: ACTIVIDAD EN CAMPO */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5">
+          {/* <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5">
             Actividad en Campo
-          </DropdownMenuLabel>
+          </DropdownMenuLabel> */}
           <DropdownMenuItem
             onClick={() => onAction("visit")}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 group transition-colors"
@@ -62,15 +62,31 @@ export function CreateOperationMenu({ onAction }: CreateOperationMenuProps) {
               </span>
             </div>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => onAction("delivery")}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 group transition-colors"
+          >
+            <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 group-hover:text-purple-700 transition-colors">
+              <Truck size={16} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-slate-700 uppercase">
+                Entregas
+              </span>
+              <span className="text-[9px] font-medium text-slate-400">
+                Registro de entrega
+              </span>
+            </div>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="bg-slate-50 my-1" />
 
         {/* GRUPO 2: GESTIÓN COMERCIAL */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5 mt-1">
+          {/* <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5 mt-1">
             Gestión Comercial
-          </DropdownMenuLabel>
+          </DropdownMenuLabel> */}
           <DropdownMenuItem
             onClick={() => onAction("quote")}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 group transition-colors"
@@ -109,25 +125,10 @@ export function CreateOperationMenu({ onAction }: CreateOperationMenuProps) {
 
         {/* GRUPO 3: DESPACHO Y CIERRE */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5 mt-1">
+          {/* <DropdownMenuLabel className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] px-2 py-1.5 mt-1">
             Despacho y Cierre
-          </DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => onAction("delivery")}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 group transition-colors"
-          >
-            <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100 group-hover:text-purple-700 transition-colors">
-              <Truck size={16} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-bold text-slate-700 uppercase">
-                Entregas
-              </span>
-              <span className="text-[9px] font-medium text-slate-400">
-                Registro de entrega
-              </span>
-            </div>
-          </DropdownMenuItem>
+          </DropdownMenuLabel> */}
+
           <DropdownMenuItem
             onClick={() => onAction("invoice")}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-slate-50 focus:bg-slate-50 group transition-colors"

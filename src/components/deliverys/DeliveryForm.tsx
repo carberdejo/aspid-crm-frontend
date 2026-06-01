@@ -69,7 +69,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
         <div className="bg-muted/30 p-5 rounded-xl border border-dashed border-gray-300">
           <FormLabel className="text-[10px] font-black text-secondary tracking-widest uppercase flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
-            Paso 1: Datos de la Entrega
+            Datos de la Entrega
           </FormLabel>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -124,7 +124,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
           <div className="flex justify-between items-center mb-4">
             <FormLabel className="text-[10px] font-black text-secondary tracking-widest uppercase flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
-              Paso 2: Productos (Opcional)
+              Productos (Opcional)
             </FormLabel>
             <Button
               type="button"

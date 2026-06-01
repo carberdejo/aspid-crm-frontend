@@ -48,10 +48,10 @@ export default function NotFound() {
           </button> */}
 
           {/* Dashboard link */}
-          <Link href="/dashboard" className="w-full">
+          <Link href="/" className="w-full">
             <Button className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold py-3">
               <Home className="h-5 w-5" />
-              Ir al Dashboard
+              Ir al Inicio
             </Button>
           </Link>
         </div>

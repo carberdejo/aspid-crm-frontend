@@ -40,13 +40,7 @@ export default function PageHeader({
   const isCompact = variant === "compact";
 
   return (
-    <div
-      className={cn(
-        "relative overflow-hidden",
-        isCompact ? "mb-6" : "mb-8",
-        className,
-      )}
-    >
+    <div className={cn("relative ", isCompact ? "mb-6" : "mb-8", className)}>
       {/* Fondo decorativo sutil con gradiente */}
       {!isCompact && (
         <div className="absolute inset-0 opacity-[0.02]">

@@ -63,7 +63,7 @@ export default function QuotesPage({
             </div>
             <div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                Valor Total Filtrado (Mark-to-Market)
+                Valor Total
               </p>
               <p className="text-sm font-medium text-slate-500 mt-0.5">
                 Consolidado en dólares a la tasa de hoy

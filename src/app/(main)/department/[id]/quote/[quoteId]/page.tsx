@@ -79,7 +79,7 @@ export default function QuoteDetailPage({ params }: PageProps) {
             title="Cotización"
             subtitle={`Ref. ${quote.quoteNumber}`}
             icon={FileText}
-            iconColor="accent"
+            themeColor="corporate"
             variant="compact"
           />
         </div>

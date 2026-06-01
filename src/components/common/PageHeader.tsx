@@ -4,11 +4,21 @@ import React from "react";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// Añadimos "corporate" para mantener tus colores base en el resto del sistema
+type ThemeColor =
+  | "corporate"
+  | "emerald"
+  | "orange"
+  | "rose"
+  | "indigo"
+  | "sky"
+  | "slate";
+
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
   icon?: LucideIcon;
-  iconColor?: "primary" | "secondary" | "accent";
+  themeColor?: ThemeColor;
   count?: number;
   countLabel?: string;
   action?: React.ReactNode;
@@ -16,117 +26,137 @@ interface PageHeaderProps {
   className?: string;
 }
 
-/**
- * Componente profesional para encabezados de página
- * Proporciona una interfaz consistente y moderna para las páginas de CRM
- */
 export default function PageHeader({
   title,
   subtitle,
   icon: Icon,
-  iconColor = "primary",
+  themeColor = "corporate", // Por defecto usará tus colores corporativos
   count,
-  countLabel = "elementos",
+  countLabel = "registros",
   action,
   variant = "default",
   className,
 }: PageHeaderProps) {
-  const colorMap = {
-    primary: "bg-[#1a2a53] text-white",
-    secondary: "bg-[#ea6839] text-white",
-    accent: "bg-[#f8aa19] text-[#1a2a53]",
-  };
-
   const isCompact = variant === "compact";
 
+  // Mapeo de estilos basados en el tema elegido
+  // Mantenemos tu paleta corporativa y añadimos las de los módulos operativos
+  const themeStyles = {
+    corporate: {
+      iconBg: "border-[#1a2a53]/20 text-[#1a2a53]",
+      badge: "bg-[#f8aa19] text-[#1a2a53] shadow-sm border border-[#f8aa19]/50",
+      highlight: "text-[#ea6839]",
+      bgSolid: "bg-[#ea6839]",
+      gradientLine: "from-[#1a2a53] via-[#ea6839] to-transparent",
+    },
+    emerald: {
+      iconBg: "border-emerald-200 text-emerald-600",
+      badge: "bg-emerald-100 text-emerald-800",
+      highlight: "text-emerald-500",
+      bgSolid: "bg-emerald-500",
+      gradientLine: "from-emerald-700 via-emerald-400 to-transparent",
+    },
+    orange: {
+      iconBg: "border-orange-200 text-orange-600",
+      badge: "bg-orange-100 text-orange-800",
+      highlight: "text-orange-500",
+      bgSolid: "bg-orange-500",
+      gradientLine: "from-orange-700 via-orange-400 to-transparent",
+    },
+    rose: {
+      iconBg: "border-rose-200 text-rose-600",
+      badge: "bg-rose-100 text-rose-800",
+      highlight: "text-rose-500",
+      bgSolid: "bg-rose-500",
+      gradientLine: "from-rose-700 via-rose-400 to-transparent",
+    },
+    indigo: {
+      iconBg: "border-indigo-200 text-indigo-600",
+      badge: "bg-indigo-100 text-indigo-800",
+      highlight: "text-indigo-500",
+      bgSolid: "bg-indigo-500",
+      gradientLine: "from-indigo-700 via-indigo-400 to-transparent",
+    },
+    sky: {
+      iconBg: "border-sky-200 text-sky-600",
+      badge: "bg-sky-100 text-sky-800",
+      highlight: "text-sky-500",
+      bgSolid: "bg-sky-500",
+      gradientLine: "from-sky-700 via-sky-400 to-transparent",
+    },
+    slate: {
+      iconBg: "border-slate-200 text-slate-600",
+      badge: "bg-slate-100 text-slate-800",
+      highlight: "text-slate-500",
+      bgSolid: "bg-slate-500",
+      gradientLine: "from-slate-700 via-slate-400 to-transparent",
+    },
+  };
+
+  const currentTheme = themeStyles[themeColor];
+
   return (
-    <div className={cn("relative ", isCompact ? "mb-6" : "mb-8", className)}>
-      {/* Fondo decorativo sutil con gradiente */}
-      {!isCompact && (
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1a2a53] via-[#ea6839] to-[#f8aa19]" />
-          <svg
-            className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-1/4 opacity-10"
-            width="400"
-            height="400"
-            viewBox="0 0 400 400"
-            fill="none"
-          >
-            <circle
-              cx="200"
-              cy="200"
-              r="150"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-            <circle
-              cx="200"
-              cy="200"
-              r="100"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-            <circle
-              cx="200"
-              cy="200"
-              r="50"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
-        </div>
+    <div
+      className={cn(
+        "relative w-full flex flex-col",
+        isCompact ? "mb-6" : "mb-8",
+        className,
       )}
-
-      {/* CAMBIO CLAVE AQUÍ: 
-        1. flex-col para móviles, sm:flex-row para pantallas más grandes.
-        2. items-start en móviles para que el botón se alinee a la izquierda, y sm:items-center para centrarlo con el texto en desktop. 
-      */}
-      <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-        {/* Sección izquierda: Icon + Textos */}
-        <div className="flex items-start gap-4 flex-1 min-w-0 w-full">
-          {Icon && !isCompact && (
-            <div
-              className={cn(
-                "flex-shrink-0 p-3 rounded-xl shadow-lg",
-                "ring-1 ring-offset-2 ring-offset-white transition-all duration-300 hover:shadow-xl hover:ring-offset-4",
-                colorMap[iconColor],
-              )}
-            >
-              <Icon size={24} className="flex-shrink-0" />
-            </div>
-          )}
-
-          {Icon && isCompact && (
-            <div
-              className={cn(
-                "p-2 rounded-lg flex-shrink-0",
-                colorMap[iconColor],
-              )}
-            >
-              <Icon size={18} />
-            </div>
-          )}
-
-          {/* Textos */}
-          <div className="flex-1 min-w-0">
-            {/* Título */}
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <h1
+    >
+      {/* Contenedor Flex adaptativo para Móviles y Desktop */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 w-full">
+        {/* Lado Izquierdo: Icono + Textos */}
+        <div className="flex items-start sm:items-center gap-4 w-full sm:w-auto">
+          {Icon && (
+            <div className="relative flex-shrink-0 group cursor-default mt-1 sm:mt-0">
+              {/* NUEVO DISEÑO DE ICONO: Sombra dura desplazada (Brutalismo moderno) */}
+              <div
                 className={cn(
-                  "font-black text-primary uppercase tracking-tight leading-tight",
-                  isCompact ? "text-2xl" : "text-4xl",
+                  "absolute inset-0 rounded-[1.25rem_0.5rem_1.25rem_0.5rem] opacity-20 translate-x-1.5 translate-y-1.5 transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2",
+                  currentTheme.bgSolid,
+                )}
+              />
+
+              {/* Contenedor principal con geometría asimétrica */}
+              <div
+                className={cn(
+                  "relative flex items-center justify-center bg-white border shadow-sm rounded-[1rem_0.25rem_1rem_0.25rem] md:rounded-[1.25rem_0.5rem_1.25rem_0.5rem] transition-all duration-300 z-10",
+                  isCompact ? "w-10 h-10" : "w-12 h-12 md:w-14 md:h-14",
+                  currentTheme.iconBg,
                 )}
               >
-                {title}
+                <Icon size={isCompact ? 20 : 26} strokeWidth={2.5} />
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col justify-center min-w-0 pt-1 sm:pt-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1
+                className={cn(
+                  "font-black text-slate-800 uppercase tracking-tighter truncate leading-none",
+                  isCompact
+                    ? "text-xl md:text-2xl"
+                    : "text-2xl md:text-3xl lg:text-4xl",
+                )}
+              >
+                {!isCompact && title.length > 0 ? (
+                  <>
+                    <span className={currentTheme.highlight}>
+                      {title.charAt(0)}
+                    </span>
+                    {title.slice(1)}
+                  </>
+                ) : (
+                  title
+                )}
               </h1>
 
-              {/* Badge de conteo */}
               {count !== undefined && (
                 <span
                   className={cn(
-                    "inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold",
-                    "bg-[#f8aa19] text-[#1a2a53] ring-1 ring-offset-1 ring-[#f8aa19]",
-                    isCompact && "px-2 py-0.5 text-xs",
+                    "inline-flex items-center px-2 py-0.5 rounded-md text-[9px] md:text-[10px] font-black uppercase tracking-widest ml-1 md:ml-2",
+                    currentTheme.badge,
                   )}
                 >
                   {count} {countLabel}
@@ -134,12 +164,11 @@ export default function PageHeader({
               )}
             </div>
 
-            {/* Subtítulo */}
             {subtitle && (
               <p
                 className={cn(
-                  "text-muted-foreground font-semibold uppercase tracking-wider",
-                  isCompact ? "text-xs mt-1" : "text-sm mt-2",
+                  "text-slate-400 font-bold uppercase tracking-widest mt-1 md:mt-1.5 truncate max-w-[280px] sm:max-w-full",
+                  isCompact ? "text-[9px]" : "text-[10px] md:text-xs",
                 )}
               >
                 {subtitle}
@@ -148,10 +177,7 @@ export default function PageHeader({
           </div>
         </div>
 
-        {/* CAMBIO EN LA ACCIÓN:
-          Aseguramos que en móvil tome todo el ancho o se posicione correctamente debajo del título,
-          y en desktop vuelva a ajustarse a la derecha.
-        */}
+        {/* Lado Derecho: Acciones */}
         {action && (
           <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
             {action}
@@ -159,8 +185,16 @@ export default function PageHeader({
         )}
       </div>
 
-      {/* Línea decorativa inferior */}
-      <div className="h-1 bg-gradient-to-r from-[#1a2a53] via-[#ea6839] to-transparent mt-4 rounded-full" />
+      {/* RECUPERAMOS LA LÍNEA ANTIGUA: 
+          Utiliza el gradiente corporativo para el tema 'corporate', 
+          o los colores del módulo respectivo adaptándose a la misma estética de barra gruesa. 
+      */}
+      <div
+        className={cn(
+          "h-1.5 mt-5 md:mt-6 rounded-full w-full bg-gradient-to-r",
+          currentTheme.gradientLine,
+        )}
+      />
     </div>
   );
 }

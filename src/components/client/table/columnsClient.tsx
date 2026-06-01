@@ -103,7 +103,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
         </div>
         <div className="flex flex-col min-w-0">
           <Link
-            href={`/client/${row.original.id}/contacts`}
+            href={`/client/${row.original.id}`}
             className="font-black text-primary text-[13px] leading-tight hover:text-secondary transition-colors uppercase tracking-tight"
           >
             {row.original.businessName}

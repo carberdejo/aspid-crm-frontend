@@ -98,10 +98,10 @@ export default function ProfilePage() {
         title={`${profile?.firstName} ${profile?.lastName}`}
         subtitle={profile?.role}
         icon={User}
-        iconColor="primary"
+        themeColor="corporate"
         count={profile?.codUser ? 1 : 0}
         countLabel={`COD: ${profile?.codUser}`}
-        variant="compact"
+        // variant="compact"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

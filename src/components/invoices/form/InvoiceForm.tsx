@@ -16,29 +16,32 @@ import {
 import { OrderSelector } from "./OrderSelector";
 import { BillingStatus, PurchaseOrder } from "@/interfaces"; // Ajusta la ruta
 import { useCreateInvoice, usePurchaseOrders } from "@/hooks";
-import { useAuthStore } from "@/store";
+import { useAuthStore, useDepartmentStore } from "@/store";
 
 interface InvoiceFormProps {
   onSuccessCallback?: () => void; // Solo avisa al padre si terminó con éxito para que cierre el modal
   preselectedOrder?: PurchaseOrder;
+  departmentId?: number; // Opcional, por si quieres filtrar las órdenes por departamento desde el inicio
 }
 
 export function InvoiceForm({
   onSuccessCallback,
   preselectedOrder,
+  departmentId,
 }: InvoiceFormProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(
     preselectedOrder ?? null,
   );
   const userId = useAuthStore((state) => state.user?.sub); // Para filtrar las órdenes del usuario, si es necesario
-  // 1. Hook para buscar órdenes (GET)
+
   const { orders, isLoading: isOrdersLoading } = usePurchaseOrders({
     term: searchTerm,
     userId: userId,
     billingStatus: `${BillingStatus.PENDIENTE_FACTURACION},
       ${BillingStatus.FACTURADO_PARCIAL}`,
     // Recomendado filtrar por las no facturadas
+    departmentId,
   });
 
   // 2. Hook para crear la factura (POST) - ¡AHORA VIVE AQUÍ!

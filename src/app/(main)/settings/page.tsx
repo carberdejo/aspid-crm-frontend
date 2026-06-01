@@ -10,9 +10,9 @@ export default function SettingsPage() {
         title="Configuración"
         subtitle="Personaliza tus preferencias de sistema"
         icon={Settings}
-        iconColor="primary"
+        themeColor="corporate"
       />
-      
+
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
         <p className="text-slate-400 font-medium text-center">
           Las opciones de configuración estarán disponibles pronto

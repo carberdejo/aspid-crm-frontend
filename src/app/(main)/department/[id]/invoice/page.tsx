@@ -1,9 +1,11 @@
 "use client";
 
 import { DataTable, invoiceColumns } from "@/components";
+import PageHeader from "@/components/common/PageHeader";
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { useInvoices, usePurchaseOrderFilters } from "@/hooks";
 import { useAuthStore } from "@/store";
+import { FileText, Receipt } from "lucide-react";
 import { use } from "react";
 
 interface Props {
@@ -30,16 +32,14 @@ export default function InvoicePage({ params }: Props) {
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">
-      <header className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-black text-primary uppercase tracking-tighter">
-            Facturas de <span className="text-rose-500">Compra</span>
-          </h2>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-            Registro y seguimiento de documentos aprobados
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="Facturas"
+        subtitle="Gestión de Facturas y Documentos Fiscales"
+        icon={Receipt}
+        themeColor="rose"
+        count={total}
+        countLabel="facturas"
+      />
 
       <DataTable
         columns={invoiceColumns}

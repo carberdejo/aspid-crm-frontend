@@ -27,7 +27,7 @@ export default function AnalyticsPage() {
         title="Analítica General"
         subtitle="Visión consolidada de rendimiento por departamento"
         icon={BarChart3}
-        iconColor="accent"
+        themeColor="corporate"
       />
 
       {/* Renderizado dinámico de secciones con ScrollSpy nativo */}

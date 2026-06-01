@@ -49,7 +49,7 @@ export default function QuotesPage({
         title="Cotizaciones"
         subtitle="Control de presupuestos y ofertas comerciales"
         icon={FileText}
-        iconColor="accent"
+        themeColor="orange"
         count={total}
         countLabel="cotizaciones"
       />

@@ -22,6 +22,7 @@ interface RegisterPurchaseOrderModalProps {
   // --- Props de Botón Nativo ---
   trigger?: React.ReactNode;
   hideTrigger?: boolean;
+  departmentId?: number; // NUEVA PROP PARA FILTRAR COTIZACIONES POR DEPARTAMENTO
 }
 
 export function RegisterPurchaseOrderModal({
@@ -30,6 +31,7 @@ export function RegisterPurchaseOrderModal({
   onOpenChange: externalOnOpenChange,
   trigger,
   hideTrigger = false,
+  departmentId,
 }: RegisterPurchaseOrderModalProps) {
   const [localOpen, setLocalOpen] = useState(false);
 
@@ -81,6 +83,7 @@ export function RegisterPurchaseOrderModal({
           onSubmit={handleSuccess}
           isLoading={isPending}
           defaultQuote={initialQuote}
+          departmentId={departmentId} // PASAMOS EL ID DEL DEPARTAMENTO PARA FILTRAR LAS COTIZACIONES
         />
       </DialogContent>
     </Dialog>

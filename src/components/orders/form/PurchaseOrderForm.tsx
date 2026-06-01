@@ -34,15 +34,19 @@ import {
 } from "@/lib/schemas/order";
 import { useAuthStore } from "@/store";
 
+interface PurchaseOrderFormProps {
+  onSubmit: (data: PurchaseOrderFormValues) => void;
+  isLoading: boolean;
+  defaultQuote?: Quote;
+  departmentId?: number; // NUEVA PROP PARA FILTRAR COTIZACIONES POR DEPARTAMENTO
+}
+
 export function PurchaseOrderForm({
   onSubmit,
   isLoading,
   defaultQuote,
-}: {
-  onSubmit: (data: PurchaseOrderFormValues) => void;
-  isLoading: boolean;
-  defaultQuote?: Quote;
-}) {
+  departmentId,
+}: PurchaseOrderFormProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(
     defaultQuote || null,
@@ -58,6 +62,7 @@ export function PurchaseOrderForm({
     status: QuoteStatus.PENDIENTE,
     limit: 5,
     userId,
+    departmentId,
   });
 
   const {

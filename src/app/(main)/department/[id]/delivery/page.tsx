@@ -5,6 +5,7 @@ import PageHeader from "@/components/common/PageHeader";
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { useDelivery, usePurchaseOrderFilters } from "@/hooks";
 import { useAuthStore } from "@/store";
+import { Truck } from "lucide-react";
 import { use } from "react";
 
 interface Props {
@@ -35,6 +36,10 @@ export default function DeliveryPage({ params }: Props) {
       <PageHeader
         title={"Entregas"}
         subtitle="Registro y seguimiento de entregas realizadas"
+        icon={Truck}
+        themeColor="indigo"
+        count={total}
+        countLabel="entregas"
       />
 
       <DataTable

@@ -10,9 +10,11 @@ export default function InvoicePage() {
         title="Facturas"
         subtitle="Gestión de Facturas y Documentos Fiscales"
         icon={FileText}
-        iconColor="accent"
+        themeColor="rose"
+        // count={total}
+        countLabel="entregas"
       />
-      
+
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
         <p className="text-slate-400 font-medium text-center">
           Módulo de facturación en desarrollo

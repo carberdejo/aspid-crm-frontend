@@ -40,7 +40,7 @@ export default function UserPage() {
         title="Usuarios"
         subtitle="Gestión de Personal"
         icon={Users}
-        iconColor="primary"
+        themeColor="corporate"
         count={total}
         countLabel="usuarios"
         action={<RegisterModal />}

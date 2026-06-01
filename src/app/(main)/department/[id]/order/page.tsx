@@ -1,11 +1,13 @@
 "use client";
 
 import { DataTable } from "@/components";
+import PageHeader from "@/components/common/PageHeader";
 import { purchaseOrderColumns } from "@/components/orders/table/PurchaseOrderColumns";
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { usePurchaseOrderFilters } from "@/hooks";
 import { usePurchaseOrders } from "@/hooks/order/usePurchaseOrders";
 import { useAuthStore } from "@/store";
+import { ShoppingCart } from "lucide-react";
 import { use } from "react";
 
 interface Props {
@@ -32,16 +34,14 @@ export default function PurchaseOrdersPage({ params }: Props) {
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">
-      <header className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-black text-primary uppercase tracking-tighter">
-            Órdenes de <span className="text-emerald-500">Compra</span>
-          </h2>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-            Registro y seguimiento de documentos aprobados
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="Órdenes de Compra"
+        subtitle="Gestión de órdenes generadas a partir de cotizaciones aprobadas"
+        icon={ShoppingCart}
+        themeColor="emerald"
+        count={total}
+        countLabel="órdenes"
+      />
 
       <DataTable
         columns={purchaseOrderColumns}

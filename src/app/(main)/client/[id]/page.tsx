@@ -52,7 +52,7 @@ export default function ClientContactsPage() {
           title={client?.commercialName || "Cliente"}
           subtitle={`${client?.businessName || ""} • ${client?.address || ""}`}
           icon={Building2}
-          iconColor="secondary"
+          themeColor="corporate"
           count={contacts.length}
           countLabel="contactos registrados"
           action={<RegisterContactModal clientId={+clientId} />}

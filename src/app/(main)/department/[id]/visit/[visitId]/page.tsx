@@ -60,7 +60,7 @@ export default function VisitDetailPage({ params }: Props) {
             title="Visita Técnica"
             subtitle={`ID: ${visit.id}`}
             icon={MapPin}
-            iconColor="secondary"
+            themeColor="corporate"
             variant="compact"
           />
         </div>

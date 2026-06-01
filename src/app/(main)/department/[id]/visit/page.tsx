@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { MapPin } from "lucide-react";
+import { ClipboardList, MapPin } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
 import { useVisits } from "@/hooks/visit/useVisits";
 import { useVisitFilters } from "@/hooks/visit/useVisitFilters"; // Nuevo Hook
@@ -44,11 +44,11 @@ export default function VisitasPage({ params }: VisitasPageProps) {
       {/* Header */}
       <PageHeader
         title="Visitas"
-        subtitle={`Gestión técnica y comercial de ${departmentExists?.name || ""}`}
-        icon={MapPin}
-        iconColor="secondary"
+        subtitle={`Gestión técnica y comercial en terreno`}
+        icon={ClipboardList}
+        themeColor="sky" // <-- MAGIA AQUÍ: Esto pintará el icono y badge de celeste
         count={total}
-        countLabel="visitas"
+        countLabel="registradas"
       />
 
       {/* Tabla con Toolbar integrado */}

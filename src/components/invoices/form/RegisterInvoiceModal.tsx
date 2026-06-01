@@ -18,7 +18,8 @@ interface RegisterInvoiceModalProps {
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
   hideTrigger?: boolean;
-  preselectedOrder?: PurchaseOrder; // NUEVA PROP
+  preselectedOrder?: PurchaseOrder;
+  departmentId?: number; // NUEVA PROP PARA FILTRAR ORDENES POR DEPARTAMENTO
 }
 
 export function RegisterInvoiceModal({
@@ -27,6 +28,7 @@ export function RegisterInvoiceModal({
   trigger,
   hideTrigger = false,
   preselectedOrder, // RECIBIMOS LA PROP
+  departmentId, // RECIBIMOS LA PROP
 }: RegisterInvoiceModalProps) {
   const [localOpen, setLocalOpen] = useState(false);
 
@@ -67,6 +69,7 @@ export function RegisterInvoiceModal({
         <InvoiceForm
           onSuccessCallback={() => handleOpenChange(false)}
           preselectedOrder={preselectedOrder} // SE LA PASAMOS AL FORMULARIO
+          departmentId={departmentId} // PASAMOS EL ID DEL DEPARTAMENTO
         />
       </DialogContent>
     </Dialog>

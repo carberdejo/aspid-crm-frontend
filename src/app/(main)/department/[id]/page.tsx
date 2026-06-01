@@ -69,7 +69,7 @@ export default function DepartmentPage() {
         title={department.name}
         subtitle="Gestión de Operaciones"
         icon={Briefcase}
-        iconColor="primary"
+        themeColor="corporate"
         variant="compact"
         // PASAMOS EL MENÚ Y LOS MODALES INVISIBLES COMO UN SOLO BLOQUE DE ACCIÓN
         action={
@@ -87,6 +87,7 @@ export default function DepartmentPage() {
               open={activeModal === "order"}
               onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
               hideTrigger={true}
+              departmentId={department.id}
             />
             <RegisterDeliveryModal
               open={activeModal === "delivery"}
@@ -97,6 +98,7 @@ export default function DepartmentPage() {
               open={activeModal === "invoice"}
               onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
               hideTrigger={true}
+              departmentId={department.id}
             />
           </div>
         }

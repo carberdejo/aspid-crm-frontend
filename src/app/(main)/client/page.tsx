@@ -53,7 +53,7 @@ export default function ClientsPage() {
         title="Empresas"
         subtitle="Gestión de Cartera"
         icon={Building2}
-        iconColor="secondary"
+        themeColor="corporate"
         count={total}
         countLabel="empresas"
         action={

@@ -6,7 +6,7 @@ import { purchaseOrderColumns } from "@/components/orders/table/PurchaseOrderCol
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { usePurchaseOrderFilters } from "@/hooks";
 import { usePurchaseOrders } from "@/hooks/order/usePurchaseOrders";
-import { useAuthStore } from "@/store";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 import { ShoppingCart } from "lucide-react";
 import { use } from "react";
 
@@ -16,7 +16,8 @@ interface Props {
 export default function PurchaseOrdersPage({ params }: Props) {
   const departmentId = use(params).id;
   // const departmentId = Number(resolvedParams);
-  const userId = useAuthStore((state) => state.user?.sub);
+  // Empleado: sin userId (el backend aplica su alcance); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
 
   const {
     page,
@@ -26,10 +27,10 @@ export default function PurchaseOrdersPage({ params }: Props) {
     filters,
     handleReset,
     handleFilterChange,
-  } = usePurchaseOrderFilters(+departmentId, userId);
+  } = usePurchaseOrderFilters(+departmentId, ownerId);
 
   const { orders, total, isLoading } = usePurchaseOrders(filters, {
-    enabled: !!userId,
+    enabled: isReady,
   });
 
   return (

@@ -7,12 +7,16 @@ import { deliveryService } from "@/services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useDelivery = (filters: Partial<PurchaseOrderFilters> = {}) => {
+export const useDelivery = (
+  filters: Partial<PurchaseOrderFilters> = {},
+  options?: { enabled?: boolean },
+) => {
   const query = useQuery({
     // Los filtros forman parte de la clave: cambiar de página o de área vuelve a consultar
     queryKey: ["deliverys", filters],
     queryFn: () => deliveryService.getDeliverys(filters),
     staleTime: 1000 * 60, // 1 minuto
+    enabled: options?.enabled ?? true,
   });
   return {
     deliverys: query.data?.items || [],

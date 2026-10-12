@@ -3,6 +3,7 @@ export * from "./useVisitHelpers";
 export * from "./analitycs/useVisitStats";
 export * from "./auth/useAuth";
 export * from "./auth/useLogout";
+export * from "./auth/useOwnerFilter";
 export * from "./auth/useProfile";
 export * from "./client/useClient";
 export * from "./client/useClientDetail";

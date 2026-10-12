@@ -4,7 +4,7 @@ import { DataTable, deliveryColumns } from "@/components";
 import PageHeader from "@/components/common/PageHeader";
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { useDelivery, usePurchaseOrderFilters } from "@/hooks";
-import { useAuthStore } from "@/store";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 import { Truck } from "lucide-react";
 import { use } from "react";
 
@@ -14,7 +14,8 @@ interface Props {
 export default function DeliveryPage({ params }: Props) {
   const departmentId = use(params).id;
   // const departmentId = Number(resolvedParams);
-  const userId = useAuthStore((state) => state.user?.sub);
+  // Empleado: sin userId (el backend aplica su alcance); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
 
   const {
     page,
@@ -24,9 +25,11 @@ export default function DeliveryPage({ params }: Props) {
     filters,
     handleReset,
     handleFilterChange,
-  } = usePurchaseOrderFilters(+departmentId, userId);
+  } = usePurchaseOrderFilters(+departmentId, ownerId);
 
-  const { deliverys, total, isLoading } = useDelivery(filters);
+  const { deliverys, total, isLoading } = useDelivery(filters, {
+    enabled: isReady,
+  });
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">

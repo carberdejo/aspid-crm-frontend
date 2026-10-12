@@ -8,7 +8,7 @@ import { quoteColumns } from "@/components/quote/table/QuoteColumns";
 import { useQuotes } from "@/hooks/quote/useQuotes";
 import { useQuoteFilters } from "@/hooks/quote/useQuoteFilters";
 import { QuoteFiltersTable } from "@/components/quote/table/QuoteFiltersTable";
-import { useAuthStore } from "@/store";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 
 // Formateador de moneda profesional
 const formatUSD = (amount: number) => {
@@ -27,7 +27,8 @@ export default function QuotesPage({
   const resolvedParams = use(params);
   const departmentId = Number(resolvedParams.id);
 
-  const userId = useAuthStore((state) => state.user?.sub);
+  // Empleado: sin userId (el backend aplica su alcance); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
 
   const {
     page,
@@ -36,11 +37,11 @@ export default function QuotesPage({
     filters,
     handleFilterChange,
     handleReset,
-  } = useQuoteFilters(departmentId, userId);
+  } = useQuoteFilters(departmentId, ownerId);
 
   // Asegúrate de que useQuotes retorne el nuevo campo totalAmountUSD
   const { quotes, total, totalAmountUSD, isLoading } = useQuotes(filters, {
-    enabled: !!userId,
+    enabled: isReady,
   });
 
   return (

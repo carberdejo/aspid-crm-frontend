@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { analyticsService } from "@/services/analytics.service";
 import { DateFilterSelect } from "./DateFilterSelect"; // Importamos el nuevo componente
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 
 // Formateador Helper de Dinero
 const formatCurrency = (value: number) => {
@@ -17,12 +18,16 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
-export function QuoteSummaryCard({ userId }: { userId: number }) {
+export function QuoteSummaryCard({ departmentId }: { departmentId: number }) {
   const [filter, setFilter] = useState<DateFilterType>("this-week");
+  // Empleado: sin userId (el backend limita a lo suyo); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
+  const filters = { userId: ownerId, departmentId };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["quotes-summary", userId, filter],
-    queryFn: () => analyticsService.getQuotesSummary(userId, filter),
+    queryKey: ["quotes-summary", filters, filter],
+    queryFn: () => analyticsService.getQuotesSummary(filters, filter),
+    enabled: isReady,
   });
 
   if (isLoading) {

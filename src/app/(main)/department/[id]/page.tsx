@@ -11,7 +11,7 @@ import { OperationCards } from "@/components/department/OperationCards";
 import { DailyActivityCard } from "@/components/department/DailyActivityCard";
 import { QuoteSummaryCard } from "@/components/department/QuoteSummaryCard";
 import { QuoteFlowContainer } from "@/components/quote/form/QuoteFlowContainer";
-import { useAuthStore, useVisitFlowStore } from "@/store";
+import { useVisitFlowStore } from "@/store";
 import { VisitPerformancePanel } from "@/components/department/VisitPerformancePanel";
 import { RegisterPurchaseOrderModal } from "@/components/orders/form/RegisterPurchaseOrderModal";
 import { RegisterDeliveryModal } from "@/components/deliverys/RegisterDeliveryModal";
@@ -26,7 +26,6 @@ export default function DepartmentPage() {
 
   const { getDepartmentById } = useDepartmentStore();
   const { setHeaderTitle } = useHeaderStore();
-  const { user } = useAuthStore();
 
   const openMainFlow = useVisitFlowStore((state) => state.openMain);
   const [activeModal, setActiveModal] = useState<OperationModalType>(null);
@@ -109,12 +108,12 @@ export default function DepartmentPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Tarjeta 1: Resumen Cotizaciones (Ahora ocupa 5 columnas - MÁS GRANDE) */}
         <div className="xl:col-span-4 flex flex-col">
-          <QuoteSummaryCard userId={user?.sub ?? 0} />
+          <QuoteSummaryCard departmentId={department.id} />
         </div>
 
         {/* Tarjeta 2: Rendimiento Visitas (Ahora ocupa 3 columnas - COMPACTO) */}
         <div className="xl:col-span-4 flex flex-col">
-          <VisitPerformancePanel userId={user?.sub ?? 0} />
+          <VisitPerformancePanel departmentId={department.id} />
         </div>
 
         {/* Tarjeta 3: Panel Bento (Ocupa 4 columnas) */}

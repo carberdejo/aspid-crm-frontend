@@ -30,32 +30,44 @@ export type DateFilterType =
 
 export const getDateRange = (type: DateFilterType) => {
   const now = new Date();
-  let start = new Date();
-  let end = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  // new Date(año, mes, día) normaliza desbordes: el día 0 o el 33 cruzan de mes correctamente
+  const sunday = now.getDate() - now.getDay();
+
+  let start: Date;
+  let end: Date;
 
   switch (type) {
     case "this-week":
-      // Domingo a Domingo
-      start.setDate(now.getDate() - now.getDay());
-      end.setDate(start.getDate() + 6);
+      // Domingo a sábado
+      start = new Date(year, month, sunday);
+      end = new Date(year, month, sunday + 6);
       break;
     case "last-week":
-      start.setDate(now.getDate() - now.getDay() - 7);
-      end.setDate(start.getDate() + 6);
+      start = new Date(year, month, sunday - 7);
+      end = new Date(year, month, sunday - 1);
       break;
     case "this-month":
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-      end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      start = new Date(year, month, 1);
+      end = new Date(year, month + 1, 0);
       break;
     case "last-month":
-      start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      end = new Date(now.getFullYear(), now.getMonth(), 0);
+      start = new Date(year, month - 1, 1);
+      end = new Date(year, month, 0);
       break;
   }
 
-  // Formatear a YYYY-MM-DD para la API
+  // YYYY-MM-DD en hora local (toISOString usa UTC y adelanta un día por la noche)
   return {
-    startDate: start.toISOString().split("T")[0],
-    endDate: end.toISOString().split("T")[0],
+    startDate: toLocalDateString(start),
+    endDate: toLocalDateString(end),
   };
 };
+
+const toLocalDateString = (date: Date) =>
+  [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");

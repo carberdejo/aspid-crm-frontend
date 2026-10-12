@@ -30,7 +30,7 @@ export function VisitStatsGrid({ userId }: { userId: number }) {
   //   const { startDate, endDate } = getDateRange(filterType);
 
   // Llamada al hook integrada
-  const { stats, isLoading } = useVisitStats(userId, filterType);
+  const { stats, isLoading } = useVisitStats({ userId }, filterType);
 
   if (isLoading) {
     return (

@@ -1,7 +1,7 @@
 export interface Delivery {
   id: string;
   departmentId: string | null; // NULL solo en entregas antiguas
-  client: ClientDeliveryList;
+  client: ClientDeliveryList | null; // El cliente es opcional al registrar una entrega
   user: UserDeliveryList;
   deliveryDate: string;
   deliveryItems: DeliveryItem[];

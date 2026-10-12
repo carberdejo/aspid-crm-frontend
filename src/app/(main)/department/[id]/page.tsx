@@ -93,6 +93,7 @@ export default function DepartmentPage() {
               open={activeModal === "delivery"}
               onOpenChange={(isOpen) => !isOpen && setActiveModal(null)}
               hideTrigger={true}
+              departmentId={department.id}
             />
             <RegisterInvoiceModal
               open={activeModal === "invoice"}

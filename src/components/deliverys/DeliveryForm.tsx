@@ -25,9 +25,10 @@ import { DeliveryCreateDto } from "@/interfaces";
 
 interface DeliveryFormProps {
   onSuccess: () => void;
+  departmentId: number; // Área en la que se registra la entrega
 }
 
-export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
+export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
   const userId = useAuthStore((state) => state.user?.sub);
   const { createDelivery, isCreating } = useCreateDelivery();
 
@@ -52,6 +53,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
       ...data,
       clientId: data.clientId ? Number(data.clientId) : 0,
       userId: userId ? Number(userId) : 0,
+      departmentId,
     };
 
     createDelivery(payload, {

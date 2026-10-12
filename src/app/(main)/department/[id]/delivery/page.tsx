@@ -26,10 +26,7 @@ export default function DeliveryPage({ params }: Props) {
     handleFilterChange,
   } = usePurchaseOrderFilters(+departmentId, userId);
 
-  const { deliverys, total, isLoading } = useDelivery();
-  //   filters, {
-  //   enabled: !!userId,
-  // }
+  const { deliverys, total, isLoading } = useDelivery(filters);
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">

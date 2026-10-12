@@ -15,6 +15,7 @@ import { DeliveryForm } from "./DeliveryForm";
 
 interface RegisterDeliveryModalProps {
   onSuccess?: () => void;
+  departmentId: number; // Área en la que se registra la entrega
   // --- Props de Control Externo ---
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -25,6 +26,7 @@ interface RegisterDeliveryModalProps {
 
 export function RegisterDeliveryModal({
   onSuccess,
+  departmentId,
   open: externalOpen,
   onOpenChange: externalOnOpenChange,
   trigger,
@@ -70,7 +72,7 @@ export function RegisterDeliveryModal({
         </DialogHeader>
 
         <div className="p-8 pt-0 overflow-y-auto max-h-[70vh] custom-scrollbar">
-          <DeliveryForm onSuccess={handleSuccess} />
+          <DeliveryForm onSuccess={handleSuccess} departmentId={departmentId} />
         </div>
       </DialogContent>
     </Dialog>

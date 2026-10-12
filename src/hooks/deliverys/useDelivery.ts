@@ -1,13 +1,18 @@
-import { ApiErrorResponse, DeliveryCreateDto } from "@/interfaces";
+import {
+  ApiErrorResponse,
+  DeliveryCreateDto,
+  PurchaseOrderFilters,
+} from "@/interfaces";
 import { deliveryService } from "@/services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useDelivery = () => {
+export const useDelivery = (filters: Partial<PurchaseOrderFilters> = {}) => {
   const query = useQuery({
-    queryKey: ["deliverys"],
-    queryFn: deliveryService.getDeliverys,
-    staleTime: 1000 * 60, // 5 minutos
+    // Los filtros forman parte de la clave: cambiar de página o de área vuelve a consultar
+    queryKey: ["deliverys", filters],
+    queryFn: () => deliveryService.getDeliverys(filters),
+    staleTime: 1000 * 60, // 1 minuto
   });
   return {
     deliverys: query.data?.items || [],

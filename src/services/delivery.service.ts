@@ -4,30 +4,22 @@ import {
   Delivery,
   DeliveryCreateDto,
   PaginatedResponse,
+  PurchaseOrderFilters,
   ResponseOperation,
 } from "@/interfaces";
 import { cleanParams } from "@/lib/utils";
 
 export const deliveryService = {
-  getDeliverys: async () // filters: ClientFilters = {},
-  : Promise<PaginatedResponse<Delivery>> => {
-    // Limpiamos dinámicamente: si agregas 'sector' o 'ciudad' a ClientFilters,
-    // cleanParams lo manejará automáticamente.
-    // const params = cleanParams(filters as Record<string, unknown>);
+  // Usa los mismos filtros que la tabla de OC (área, página, orden, fechas, búsqueda)
+  getDeliverys: async (
+    filters: Partial<PurchaseOrderFilters> = {},
+  ): Promise<PaginatedResponse<Delivery>> => {
+    const params = cleanParams(filters as Record<string, unknown>);
     const { data } = await concarApi.get<
       ApiResponse<PaginatedResponse<Delivery>>
-    >("/deliverys", {
-      //   params,
-    });
+    >("/deliverys", { params });
     return data.data;
   },
-
-  //   getClientDetail: async (id: number): Promise<ClientDetail> => {
-  //     const { data } = await concarApi.get<ApiResponse<ClientDetail>>(
-  //       `/clients/${id}`,
-  //     );
-  //     return data.data;
-  //   },
 
   createDelivery: async (
     clientData: DeliveryCreateDto,

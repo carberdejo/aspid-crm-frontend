@@ -3,6 +3,8 @@ import * as z from "zod";
 export const visitSchema = z.object({
     clientId: z.string().min(1, "Selecciona un cliente"),
     contactId: z.string().min(1, "Selecciona un contacto"),
+    // Responsable: solo lo elige el admin (vacío = el usuario conectado)
+    userId: z.string().optional(),
     departmentId: z.number().int().min(1, "Selecciona un área"),
     date: z.string().refine((date) => !isNaN(Date.parse(date)), {
         message: "Ingresa una fecha válida",

@@ -12,6 +12,7 @@ import {
   Info,
   Phone,
   User,
+  Users,
   Wallet,
   Tag,
   Briefcase,
@@ -223,9 +224,18 @@ export default function QuoteDetailPage({ params }: PageProps) {
               icon={<Briefcase size={12} />}
             />
             <DataField
-              label="Creado por"
+              label="Responsable"
               value={`${quote.user.firstName} ${quote.user.lastName}`}
               icon={<User size={12} />}
+            />
+            <DataField
+              label="Colaborador"
+              value={
+                quote.collaborator
+                  ? `${quote.collaborator.firstName} ${quote.collaborator.lastName}`
+                  : "Sin colaborador"
+              }
+              icon={<Users size={12} />}
             />
 
             <div className="pt-4 border-t border-slate-50 space-y-4">

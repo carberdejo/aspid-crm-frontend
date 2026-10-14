@@ -10,7 +10,8 @@ const deliveryItemSchema = z.object({
 export const createDeliverySchema = z.object({
   // El ClientSearchSelector maneja strings, luego en el submit lo pasamos a number
   clientId: z.coerce.number().optional(),
-  //   userId: z.coerce.number().positive("Selecciona un usuario del sistema"),
+  // Responsable: solo lo elige el admin (vacío = el usuario conectado)
+  userId: z.string().optional(),
   deliveryDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Ingresa una fecha válida",
   }),

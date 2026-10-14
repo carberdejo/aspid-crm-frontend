@@ -37,7 +37,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { QuoteFormValues, quoteSchema } from "@/lib/schemas/quote";
 import { ClientSearchSelector } from "@/components/shared/ClientSearchSelector";
 import { ContactSearchSelector } from "@/components/shared/ContactSearchSelector";
+import { UserSelect } from "@/components/shared/UserSelect";
 import { useVisitFlowStore } from "@/store";
+import { useRecordOwner } from "@/hooks";
 import { QuoteCurrency } from "@/interfaces";
 
 const QUOTE_TYPES = ["PRODUCTO", "SERVICIO", "PROYECTO"];
@@ -66,9 +68,17 @@ export function QuoteForm({
 
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  // Con defaultValues el formulario edita una cotización existente:
+  // el responsable no se cambia aquí, solo el colaborador
+  const isEditing = !!defaultValues;
+  const { isAdmin, currentUserId, members, isLoadingMembers } =
+    useRecordOwner(departmentId);
+
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: defaultValues || {
+      userId: currentUserId,
+      collaboratorId: "",
       quoteNumber: "",
       clientId: "",
       contactId: "",
@@ -87,6 +97,22 @@ export function QuoteForm({
     control: form.control,
     name: "currency",
   });
+
+  const ownerId = useWatch({ control: form.control, name: "userId" });
+  const collaboratorId = useWatch({
+    control: form.control,
+    name: "collaboratorId",
+  });
+
+  // El cliente debe ser de las carteras del responsable: al cambiarlo se limpia la selección.
+  // El responsable no puede ser también el colaborador
+  const handleOwnerChange = (value: string) => {
+    form.setValue("userId", value);
+    form.setValue("clientId", "");
+    form.setValue("contactId", "");
+    setSelectedClientId(undefined);
+    if (collaboratorId === value) form.setValue("collaboratorId", "");
+  };
 
   const selectedClientId = useWatch({
     control: form.control,
@@ -116,6 +142,55 @@ export function QuoteForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* SECCIÓN 0: EQUIPO (responsable solo para el admin al crear; colaborador para todos) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          {isAdmin && !isEditing && (
+            <FormField
+              control={form.control}
+              name="userId"
+              render={({ field }) => (
+                <FormItem className="space-y-2 text-left min-w-0">
+                  <FormLabel className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Responsable
+                  </FormLabel>
+                  <FormControl>
+                    <UserSelect
+                      members={members}
+                      value={field.value}
+                      onChange={handleOwnerChange}
+                      isLoading={isLoadingMembers}
+                      placeholder="Seleccione el responsable"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          <FormField
+            control={form.control}
+            name="collaboratorId"
+            render={({ field }) => (
+              <FormItem className="space-y-2 text-left min-w-0">
+                <FormLabel className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Colaborador (Opcional)
+                </FormLabel>
+                <FormControl>
+                  <UserSelect
+                    members={members}
+                    value={field.value}
+                    onChange={field.onChange}
+                    isLoading={isLoadingMembers}
+                    excludeId={ownerId || currentUserId}
+                    noneLabel="Sin colaborador"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         {/* SECCIÓN 1: DATOS DE CABECERA */}
         <div className="bg-slate-50/50 p-6 rounded-[2.5rem] border border-slate-100 space-y-6 shadow-sm">
           <div className="flex flex-col md:flex-row items-end gap-4 w-full">
@@ -151,6 +226,7 @@ export function QuoteForm({
                       value={field.value}
                       onChange={field.onChange}
                       onClientChange={setSelectedClientId}
+                      userId={isAdmin && ownerId ? Number(ownerId) : undefined}
                     />
                   </FormControl>
                   <FormMessage />

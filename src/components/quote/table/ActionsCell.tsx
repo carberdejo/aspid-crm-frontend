@@ -56,6 +56,10 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
           clientId: Number(values.clientId),
           contactId: Number(values.contactId),
           userId: Number(quote.userId),
+          // null quita el colaborador; el backend revalida el nuevo
+          collaboratorId: values.collaboratorId
+            ? Number(values.collaboratorId)
+            : null,
           createdAt: values.createdAt ? new Date(values.createdAt) : undefined,
         } as QuoteCreateDto,
       });
@@ -150,6 +154,10 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
               onSubmit={handleUpdate}
               defaultValues={{
                 ...fullQuote,
+                userId: fullQuote?.userId ? String(fullQuote.userId) : "",
+                collaboratorId: fullQuote?.collaboratorId
+                  ? String(fullQuote.collaboratorId)
+                  : "",
                 quoteNumber: fullQuote?.quoteNumber ?? "",
                 description: fullQuote?.description ?? "",
                 amount: fullQuote?.amount ?? 0,

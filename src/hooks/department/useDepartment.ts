@@ -30,3 +30,15 @@ export const useDepartments = () => {
     error,
   };
 };
+
+/** Usuarios activos del área, para elegir responsable o colaborador */
+export const useDepartmentMembers = (departmentId: number) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["departments", departmentId, "members"],
+    queryFn: () => DepartmentService.getMembers(departmentId),
+    enabled: departmentId > 0,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return { members: data ?? [], isLoading };
+};

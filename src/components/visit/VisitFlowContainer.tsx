@@ -68,7 +68,8 @@ export function VisitFlowContainer({
     (formData: VisitFormValues) => {
       if (!user) return;
       const visitData: VisitCreateDto = {
-        userId: user.sub,
+        // Responsable elegido por el admin; si no, el usuario conectado
+        userId: formData.userId ? Number(formData.userId) : user.sub,
         clientId: +formData.clientId,
         contactId: +formData.contactId,
         departmentId: departmentId,

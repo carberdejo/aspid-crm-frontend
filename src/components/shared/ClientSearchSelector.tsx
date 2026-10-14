@@ -24,6 +24,11 @@ interface Props {
   onChange: (value: string) => void;
   onClientChange?: (clientId: string) => void;
   disabled?: boolean;
+  /**
+   * Solo admin: muestra los clientes que puede usar ese usuario (el responsable elegido).
+   * Para un empleado el backend lo ignora y aplica su propio alcance
+   */
+  userId?: number;
 }
 
 export function ClientSearchSelector({
@@ -31,6 +36,7 @@ export function ClientSearchSelector({
   onChange,
   onClientChange,
   disabled,
+  userId,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,6 +57,7 @@ export function ClientSearchSelector({
   const { clients, isLoading } = useClients({
     term: debouncedSearch,
     limit: 10,
+    userId,
   });
 
   // 2. Efecto para sincronizar la UI cuando el 'value' cambia desde react-hook-form

@@ -1,6 +1,11 @@
 "use client";
 
-import { useForm, useFieldArray, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  useWatch,
+  type Resolver,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
@@ -14,13 +19,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateDelivery } from "@/hooks";
+import { useCreateDelivery, useRecordOwner } from "@/hooks";
 import {
   createDeliverySchema,
   CreateDeliveryValues,
 } from "@/lib/schemas/delivery.schema";
 import { ClientSearchSelector } from "..";
-import { useAuthStore } from "@/store";
+import { UserSelect } from "@/components/shared/UserSelect";
 import { DeliveryCreateDto } from "@/interfaces";
 
 interface DeliveryFormProps {
@@ -29,7 +34,8 @@ interface DeliveryFormProps {
 }
 
 export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
-  const userId = useAuthStore((state) => state.user?.sub);
+  const { isAdmin, currentUserId, members, isLoadingMembers } =
+    useRecordOwner(departmentId);
   const { createDelivery, isCreating } = useCreateDelivery();
 
   const form = useForm<CreateDeliveryValues>({
@@ -37,6 +43,7 @@ export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
       createDeliverySchema,
     ) as Resolver<CreateDeliveryValues>,
     defaultValues: {
+      userId: currentUserId,
       clientId: undefined,
       deliveryDate: new Date().toISOString().split("T")[0],
       deliveryItems: [],
@@ -48,11 +55,20 @@ export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
     name: "deliveryItems",
   });
 
+  const ownerId = useWatch({ control: form.control, name: "userId" });
+
+  // El cliente debe ser de las carteras del responsable: al cambiarlo se limpia la selección
+  const handleOwnerChange = (value: string) => {
+    form.setValue("userId", value);
+    form.setValue("clientId", undefined);
+  };
+
   const onSubmit = (data: CreateDeliveryValues) => {
     const payload: DeliveryCreateDto = {
       ...data,
       clientId: data.clientId ? Number(data.clientId) : 0,
-      userId: userId ? Number(userId) : 0,
+      // Responsable elegido por el admin; si no, el usuario conectado
+      userId: Number(data.userId || currentUserId),
       departmentId,
     };
 
@@ -75,6 +91,31 @@ export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
           </FormLabel>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {isAdmin && (
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                      Responsable
+                    </FormLabel>
+                    <FormControl>
+                      <UserSelect
+                        members={members}
+                        value={field.value}
+                        onChange={handleOwnerChange}
+                        isLoading={isLoadingMembers}
+                        disabled={isCreating}
+                        placeholder="Seleccione el responsable"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="clientId"
@@ -91,6 +132,7 @@ export function DeliveryForm({ onSuccess, departmentId }: DeliveryFormProps) {
                         field.onChange(val ? Number(val) : undefined)
                       }
                       disabled={isCreating}
+                      userId={isAdmin && ownerId ? Number(ownerId) : undefined}
                     />
                   </FormControl>
                   <FormMessage />

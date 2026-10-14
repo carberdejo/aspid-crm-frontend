@@ -40,6 +40,8 @@ export interface ClientFilters extends GenericFilters {
   term?: string;
   segmentId?: number;
   portfolioId?: number;
+  // Solo admin: clientes que puede usar ese usuario (al registrar a su nombre)
+  userId?: number;
 }
 
 export interface ResponseRuc {

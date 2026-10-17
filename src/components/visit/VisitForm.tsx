@@ -26,9 +26,20 @@ interface Props {
   departmentId: number;
   onSubmit: (values: VisitFormValues) => void;
   isLoading: boolean;
+  /** Con valores iniciales el formulario edita una visita existente */
+  defaultValues?: Partial<VisitFormValues>;
+  /** Nombre del cliente guardado, para mostrarlo al editar */
+  clientLabel?: string;
 }
 
-export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
+export function VisitForm({
+  departmentId,
+  onSubmit,
+  isLoading,
+  defaultValues,
+  clientLabel,
+}: Props) {
+  const isEditing = !!defaultValues;
   const openClient = useVisitFlowStore((state) => state.openClient);
   const openContact = useVisitFlowStore((state) => state.openContact);
   const setSelectedClientId = useVisitFlowStore(
@@ -48,6 +59,7 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
       date: new Date().toISOString().split("T")[0],
       visitTopics: "",
       outcomeSummary: "",
+      ...defaultValues,
     },
   });
 
@@ -108,6 +120,7 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
                     onChange={field.onChange}
                     onClientChange={setSelectedClientId}
                     userId={isAdmin && ownerId ? Number(ownerId) : undefined}
+                    selectedLabel={clientLabel}
                   />
                 </FormControl>
                 <FormMessage className="text-[10px] uppercase font-bold text-red-500" />
@@ -146,7 +159,8 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
                     </FormControl>
                   </div>
 
-                  {selectedClientId && (
+                  {/* Crear contacto usa el flujo del registro: solo al crear */}
+                  {selectedClientId && !isEditing && (
                     <Button
                       type="button"
                       onClick={openContact}
@@ -248,7 +262,7 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
             ) : (
               <Save size={18} />
             )}
-            Guardar Registro
+            {isEditing ? "Guardar Cambios" : "Guardar Registro"}
           </Button>
         </div>
       </form>

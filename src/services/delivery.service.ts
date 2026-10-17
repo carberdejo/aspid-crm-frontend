@@ -30,4 +30,23 @@ export const deliveryService = {
     );
     return data.data;
   },
+
+  updateDelivery: async (
+    id: number,
+    update: Partial<DeliveryCreateDto>,
+  ): Promise<ResponseOperation> => {
+    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+      `/deliverys/${id}`,
+      update,
+    );
+    return data.data;
+  },
+
+  // Eliminado lógico en el backend: la entrega deja de aparecer en los listados
+  removeDelivery: async (id: number): Promise<ResponseOperation> => {
+    const { data } = await concarApi.delete<ApiResponse<ResponseOperation>>(
+      `/deliverys/${id}`,
+    );
+    return data.data;
+  },
 };

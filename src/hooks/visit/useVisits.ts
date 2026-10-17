@@ -78,6 +78,58 @@ export const useVisitDetail = (id?: number) => {
   });
 };
 
+const getErrorMessage = (error: ApiErrorResponse) =>
+  Array.isArray(error.errors) && error.errors.length
+    ? error.errors.join(", ")
+    : error.message || "Error inesperado en el servidor";
+
+// Tras editar o eliminar se refrescan el listado, el detalle y las métricas de visitas
+const invalidateVisitQueries = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  id: number,
+) => {
+  queryClient.invalidateQueries({ queryKey: ["visits"] });
+  queryClient.invalidateQueries({ queryKey: ["visit-detail", id] });
+  queryClient.invalidateQueries({ queryKey: ["visit-stats"] });
+};
+
+export const useUpdateVisit = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<VisitCreateDto> }) =>
+      VisitService.update(id, data),
+    onSuccess: (response, { id }) => {
+      invalidateVisitQueries(queryClient, id);
+      toast.success("Visita actualizada", { description: response.message });
+    },
+    onError: (error: ApiErrorResponse) => {
+      toast.error("Error al actualizar visita", {
+        description: getErrorMessage(error),
+        duration: 5000,
+      });
+    },
+  });
+};
+
+export const useDeleteVisit = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => VisitService.remove(id),
+    onSuccess: (response, id) => {
+      invalidateVisitQueries(queryClient, id);
+      toast.success("Visita eliminada", { description: response.message });
+    },
+    onError: (error: ApiErrorResponse) => {
+      toast.error("Error al eliminar visita", {
+        description: getErrorMessage(error),
+        duration: 5000,
+      });
+    },
+  });
+};
+
 export const useCreateVisit = () => {
   const queryClient = useQueryClient();
 

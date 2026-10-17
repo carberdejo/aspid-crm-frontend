@@ -29,6 +29,11 @@ interface Props {
    * Para un empleado el backend lo ignora y aplica su propio alcance
    */
   userId?: number;
+  /**
+   * Nombre del cliente ya guardado (al editar). Se muestra mientras ese cliente no
+   * aparezca en la primera página de resultados de la búsqueda
+   */
+  selectedLabel?: string;
 }
 
 export function ClientSearchSelector({
@@ -37,6 +42,7 @@ export function ClientSearchSelector({
   onClientChange,
   disabled,
   userId,
+  selectedLabel,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,7 +104,9 @@ export function ClientSearchSelector({
           <span className="text-left flex-1 block">
             {selectedClientData
               ? formatDisplayValue(selectedClientData.commercialName)
-              : "Buscar cliente..."}
+              : value && selectedLabel
+                ? formatDisplayValue(selectedLabel)
+                : "Buscar cliente..."}
           </span>
           {isLoading ? (
             <Loader2 className="ml-2 h-4 w-4 shrink-0 opacity-50 animate-spin" />

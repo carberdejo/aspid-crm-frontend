@@ -50,6 +50,8 @@ interface QuoteFormProps {
   onSubmit: (values: QuoteFormValues) => void;
   isLoading: boolean;
   defaultValues?: Partial<QuoteFormValues>;
+  /** Nombre del cliente guardado, para mostrarlo al editar */
+  clientLabel?: string;
 }
 
 export function QuoteForm({
@@ -57,6 +59,7 @@ export function QuoteForm({
   onSubmit,
   isLoading,
   defaultValues,
+  clientLabel,
 }: QuoteFormProps) {
   // const openClient = useVisitFlowStore((state) => state.openClient);
   const openContact = useVisitFlowStore((state) => state.openContact);
@@ -68,9 +71,6 @@ export function QuoteForm({
 
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Con defaultValues el formulario edita una cotización existente:
-  // el responsable no se cambia aquí, solo el colaborador
-  const isEditing = !!defaultValues;
   const { isAdmin, currentUserId, members, isLoadingMembers } =
     useRecordOwner(departmentId);
 
@@ -142,9 +142,9 @@ export function QuoteForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* SECCIÓN 0: EQUIPO (responsable solo para el admin al crear; colaborador para todos) */}
+        {/* SECCIÓN 0: EQUIPO (responsable solo para el admin, al crear y al editar; colaborador para todos) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-          {isAdmin && !isEditing && (
+          {isAdmin && (
             <FormField
               control={form.control}
               name="userId"
@@ -227,6 +227,7 @@ export function QuoteForm({
                       onChange={field.onChange}
                       onClientChange={setSelectedClientId}
                       userId={isAdmin && ownerId ? Number(ownerId) : undefined}
+                      selectedLabel={clientLabel}
                     />
                   </FormControl>
                   <FormMessage />

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useQuoteDetail, useQuotes } from "@/hooks/quote/useQuotes";
+import { useCanModify } from "@/hooks/auth/useCanModify";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -55,7 +56,8 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
           ...values,
           clientId: Number(values.clientId),
           contactId: Number(values.contactId),
-          userId: Number(quote.userId),
+          // Responsable: el admin puede cambiarlo; el backend revalida cliente y colaborador
+          userId: Number(values.userId || quote.userId),
           // null quita el colaborador; el backend revalida el nuevo
           collaboratorId: values.collaboratorId
             ? Number(values.collaboratorId)
@@ -84,6 +86,9 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
   };
 
   const isPending = quote.status === QuoteStatus.PENDIENTE;
+  // Editar y rechazar: solo el dueño o un admin (el colaborador solo ve), y solo si está pendiente
+  const canModify = useCanModify(quote.userId);
+  const canEdit = isPending && canModify;
 
   return (
     // justify-end y pr-2 para alinear todo a la derecha como en las otras tablas
@@ -121,61 +126,66 @@ export const ActionsCell = ({ quote }: { quote: Quote }) => {
       </Button>
 
       {/* 3. EDITAR */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-slate-400 hover:text-blue-600 rounded-full shrink-0"
-            title="Editar Cotización"
-          >
-            <Edit3 size={16} />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[800px] rounded-[2.5rem] p-8">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-primary uppercase">
-              Editar <span className="text-blue-600">Cotización</span>
-            </DialogTitle>
-          </DialogHeader>
+      {canEdit && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-slate-400 hover:text-blue-600 rounded-full shrink-0"
+              title="Editar Cotización"
+            >
+              <Edit3 size={16} />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[800px] rounded-[2.5rem] p-8">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black text-primary uppercase">
+                Editar <span className="text-blue-600">Cotización</span>
+              </DialogTitle>
+            </DialogHeader>
 
-          {isLoadingDetail ? (
-            <div className="h-64 flex flex-col items-center justify-center gap-3">
-              <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-              <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                Cargando información completa...
-              </span>
-            </div>
-          ) : (
-            <QuoteForm
-              key={fullQuote?.id}
-              departmentId={fullQuote?.departmentId || 0}
-              isLoading={isUpdating}
-              onSubmit={handleUpdate}
-              defaultValues={{
-                ...fullQuote,
-                userId: fullQuote?.userId ? String(fullQuote.userId) : "",
-                collaboratorId: fullQuote?.collaboratorId
-                  ? String(fullQuote.collaboratorId)
-                  : "",
-                quoteNumber: fullQuote?.quoteNumber ?? "",
-                description: fullQuote?.description ?? "",
-                amount: fullQuote?.amount ?? 0,
-                clientId: fullQuote?.clientId ? String(fullQuote.clientId) : "",
-                contactId: fullQuote?.contactId
-                  ? String(fullQuote.contactId)
-                  : "",
-                createdAt: fullQuote?.createdAt
-                  ? new Date(fullQuote.createdAt).toISOString().split("T")[0]
-                  : "",
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+            {isLoadingDetail ? (
+              <div className="h-64 flex flex-col items-center justify-center gap-3">
+                <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                  Cargando información completa...
+                </span>
+              </div>
+            ) : (
+              <QuoteForm
+                key={fullQuote?.id}
+                departmentId={fullQuote?.departmentId || 0}
+                isLoading={isUpdating}
+                onSubmit={handleUpdate}
+                clientLabel={fullQuote?.client?.commercialName}
+                defaultValues={{
+                  ...fullQuote,
+                  userId: fullQuote?.userId ? String(fullQuote.userId) : "",
+                  collaboratorId: fullQuote?.collaboratorId
+                    ? String(fullQuote.collaboratorId)
+                    : "",
+                  quoteNumber: fullQuote?.quoteNumber ?? "",
+                  description: fullQuote?.description ?? "",
+                  amount: fullQuote?.amount ?? 0,
+                  clientId: fullQuote?.clientId
+                    ? String(fullQuote.clientId)
+                    : "",
+                  contactId: fullQuote?.contactId
+                    ? String(fullQuote.contactId)
+                    : "",
+                  createdAt: fullQuote?.createdAt
+                    ? new Date(fullQuote.createdAt).toISOString().split("T")[0]
+                    : "",
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* 4. RECHAZAR / ANULAR (Mismo estilo que en facturas) */}
-      {isPending && (
+      {canEdit && (
         <AlertDialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
           <AlertDialogTrigger asChild>
             <Button

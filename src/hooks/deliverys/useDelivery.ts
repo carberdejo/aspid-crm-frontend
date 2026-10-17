@@ -56,3 +56,56 @@ export const useCreateDelivery = () => {
     isCreating: mutation.isPending,
   };
 };
+
+const getErrorMessage = (error: ApiErrorResponse) =>
+  Array.isArray(error.errors) && error.errors.length
+    ? error.errors.join(", ")
+    : error.message || "Error inesperado en el servidor";
+
+export const useUpdateDelivery = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: Partial<DeliveryCreateDto>;
+    }) => deliveryService.updateDelivery(id, data),
+    onSuccess: (response) => {
+      toast.success("Entrega actualizada", { description: response.message });
+      queryClient.invalidateQueries({ queryKey: ["deliverys"] });
+    },
+    onError: (error: ApiErrorResponse) => {
+      toast.error("Error al actualizar entrega", {
+        description: getErrorMessage(error),
+        duration: 5000,
+      });
+    },
+  });
+  return {
+    updateDelivery: mutation.mutate,
+    isUpdating: mutation.isPending,
+  };
+};
+
+export const useDeleteDelivery = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (id: number) => deliveryService.removeDelivery(id),
+    onSuccess: (response) => {
+      toast.success("Entrega eliminada", { description: response.message });
+      queryClient.invalidateQueries({ queryKey: ["deliverys"] });
+    },
+    onError: (error: ApiErrorResponse) => {
+      toast.error("Error al eliminar entrega", {
+        description: getErrorMessage(error),
+        duration: 5000,
+      });
+    },
+  });
+  return {
+    deleteDelivery: mutation.mutate,
+    isDeleting: mutation.isPending,
+  };
+};

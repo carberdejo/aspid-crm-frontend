@@ -1,6 +1,7 @@
 export interface Delivery {
   id: string;
-  client: ClientDeliveryList;
+  departmentId: string | null; // NULL solo en entregas antiguas
+  client: ClientDeliveryList | null; // El cliente es opcional al registrar una entrega
   user: UserDeliveryList;
   deliveryDate: string;
   deliveryItems: DeliveryItem[];
@@ -26,6 +27,7 @@ export interface UserDeliveryList {
 export interface DeliveryCreateDto {
   clientId: number;
   userId: number;
+  departmentId: number; // Área en la que se registra la entrega
   deliveryDate: string; //
   deliveryItems: DeliveryItem[];
 }

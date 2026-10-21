@@ -5,6 +5,15 @@ export interface QuotesSummary {
   totalAmount: number;
 }
 
+/**
+ * Filtros de las métricas. userId solo lo respeta el backend si es admin:
+ * un empleado siempre recibe sus propias métricas.
+ */
+export interface MetricsFilters {
+  userId?: number;
+  departmentId?: number;
+}
+
 export interface VisitMetricsQueryDto {
   userId?: number;
   startDate?: string;

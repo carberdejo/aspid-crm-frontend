@@ -10,7 +10,7 @@ import {
   Building2,
   CreditCard,
 } from "lucide-react";
-import { Invoice } from "@/interfaces";
+import { DocumentStatus, Invoice } from "@/interfaces";
 import { ActionsCellInvoice } from "./ActionsCellInvoice";
 
 export const invoiceColumns: ColumnDef<Invoice>[] = [
@@ -23,9 +23,20 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
         <div className="p-1.5 bg-rose-50 rounded-lg border border-rose-100">
           <Receipt size={14} className="text-rose-600" />
         </div>
-        <span className="font-black text-slate-800 uppercase tracking-tighter">
+        <span
+          className={`font-black uppercase tracking-tighter ${row.original.status === DocumentStatus.ANULADA ? "text-slate-400 line-through" : "text-slate-800"}`}
+        >
           {row.original.invoiceNumber}
         </span>
+        {row.original.status === DocumentStatus.ANULADA && (
+          <Badge
+            variant="outline"
+            title={row.original.annulReason ?? undefined}
+            className="px-1.5 py-0 text-[8px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 border-slate-300"
+          >
+            Anulada
+          </Badge>
+        )}
       </div>
     ),
   },
@@ -102,11 +113,15 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
     accessorKey: "amount",
     header: () => <div className="text-right">Monto Facturado</div>,
     cell: ({ row }) => {
-      const { amount, currency } = row.original;
+      const { amount, currency, status } = row.original;
+      // Una factura anulada no cuenta en lo facturado: su monto se muestra tachado
+      const isAnnulled = status === DocumentStatus.ANULADA;
       return (
         <div className="flex items-center justify-end gap-1.5">
           <CreditCard size={12} className="text-slate-300" />
-          <span className="text-xs font-black text-slate-800 font-mono tracking-tighter">
+          <span
+            className={`text-xs font-black font-mono tracking-tighter ${isAnnulled ? "text-slate-400 line-through" : "text-slate-800"}`}
+          >
             {new Intl.NumberFormat("es-PE", {
               style: "currency",
               currency: currency || "USD",

@@ -107,14 +107,17 @@ export function QuoteFlowContainer({
         orderType: formData.orderType,
         description: formData.description,
         currency: (formData.currency as QuoteCurrency) || QuoteCurrency.USD, // Valor por defecto si no se selecciona ninguno
-        // collaboratorId: formData.collaboratorId,
+        // Colaborador opcional: el backend valida que sea del área y distinto del responsable
+        collaboratorId: formData.collaboratorId
+          ? Number(formData.collaboratorId)
+          : undefined,
         departmentId: departmentId, // Ahora el hook "escuchará" cuando este valor cambie
         clientId: +formData.clientId,
         contactId: +formData.contactId,
-        userId: user.sub,
+        // Responsable elegido por el admin; si no, el usuario conectado
+        userId: formData.userId ? Number(formData.userId) : user.sub,
         createdAt: new Date(formData.createdAt), // Convertir a Date (asegura el tipo correcto)
       };
-      console.log("data de quote: ", { quoteData });
       try {
         await createQuote(quoteData);
         closeAll();

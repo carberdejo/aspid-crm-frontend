@@ -12,12 +12,23 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { DateFilterType } from "@/lib/utils";
 import { useVisitStats } from "@/hooks/analitycs/useVisitStats";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 import { Skeleton } from "../ui/skeleton";
 import { DateFilterSelect } from "./DateFilterSelect";
 
-export function VisitPerformancePanel({ userId }: { userId: number }) {
+export function VisitPerformancePanel({
+  departmentId,
+}: {
+  departmentId: number;
+}) {
   const [filterType, setFilterType] = useState<DateFilterType>("this-week");
-  const { stats, isLoading } = useVisitStats(userId, filterType);
+  // Empleado: sin userId (el backend limita a lo suyo); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
+  const { stats, isLoading } = useVisitStats(
+    { userId: ownerId, departmentId },
+    filterType,
+    { enabled: isReady },
+  );
 
   if (isLoading)
     return <Skeleton className="h-full min-h-[350px] rounded-[2.5rem]" />;

@@ -30,10 +30,22 @@ export const deliveryColumns: ColumnDef<Delivery>[] = [
     ),
   },
   {
-    accessorKey: "client.businessName",
+    // accessorFn y no "client.businessName": el cliente puede ser null
+    id: "client",
+    accessorFn: (row) => row.client?.businessName ?? "",
     header: "Cliente / Razón Social",
     cell: ({ row }) => {
       const client = row.original.client;
+      if (!client) {
+        return (
+          <div className="flex items-center gap-1.5">
+            <Building2 size={12} className="text-slate-300 shrink-0" />
+            <span className="text-[11px] italic text-slate-400">
+              Sin cliente
+            </span>
+          </div>
+        );
+      }
       return (
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">

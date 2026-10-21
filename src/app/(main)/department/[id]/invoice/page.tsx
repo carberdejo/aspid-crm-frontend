@@ -4,7 +4,7 @@ import { DataTable, invoiceColumns } from "@/components";
 import PageHeader from "@/components/common/PageHeader";
 import { PurchaseOrderFiltersTable } from "@/components/orders/table/PurchaseOrderFiltersTable";
 import { useInvoices, usePurchaseOrderFilters } from "@/hooks";
-import { useAuthStore } from "@/store";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 import { FileText, Receipt } from "lucide-react";
 import { use } from "react";
 
@@ -14,7 +14,8 @@ interface Props {
 export default function InvoicePage({ params }: Props) {
   const departmentId = use(params).id;
   // const departmentId = Number(resolvedParams);
-  const userId = useAuthStore((state) => state.user?.sub);
+  // Empleado: sin userId (el backend aplica su alcance); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
 
   const {
     page,
@@ -24,10 +25,10 @@ export default function InvoicePage({ params }: Props) {
     filters,
     handleReset,
     handleFilterChange,
-  } = usePurchaseOrderFilters(+departmentId, userId);
+  } = usePurchaseOrderFilters(+departmentId, ownerId);
 
   const { invoices, total, isLoading } = useInvoices(filters, {
-    enabled: !!userId,
+    enabled: isReady,
   });
 
   return (

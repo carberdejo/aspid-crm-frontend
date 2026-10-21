@@ -1,6 +1,11 @@
 "use client";
 
-import { useForm, useFieldArray, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  useWatch,
+  type Resolver,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
@@ -14,32 +19,51 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateDelivery } from "@/hooks";
+import { useCreateDelivery, useRecordOwner, useUpdateDelivery } from "@/hooks";
 import {
   createDeliverySchema,
   CreateDeliveryValues,
 } from "@/lib/schemas/delivery.schema";
 import { ClientSearchSelector } from "..";
-import { useAuthStore } from "@/store";
-import { DeliveryCreateDto } from "@/interfaces";
+import { UserSelect } from "@/components/shared/UserSelect";
+import { Delivery, DeliveryCreateDto } from "@/interfaces";
 
 interface DeliveryFormProps {
   onSuccess: () => void;
+  departmentId: number; // Área en la que se registra la entrega
+  /** Con una entrega el formulario la edita en lugar de crear una nueva */
+  delivery?: Delivery;
 }
 
-export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
-  const userId = useAuthStore((state) => state.user?.sub);
+export function DeliveryForm({
+  onSuccess,
+  departmentId,
+  delivery,
+}: DeliveryFormProps) {
+  const isEditing = !!delivery;
+  const { isAdmin, currentUserId, members, isLoadingMembers } =
+    useRecordOwner(departmentId);
   const { createDelivery, isCreating } = useCreateDelivery();
+  const { updateDelivery, isUpdating } = useUpdateDelivery();
+  const isSaving = isCreating || isUpdating;
 
   const form = useForm<CreateDeliveryValues>({
     resolver: zodResolver(
       createDeliverySchema,
     ) as Resolver<CreateDeliveryValues>,
-    defaultValues: {
-      clientId: undefined,
-      deliveryDate: new Date().toISOString().split("T")[0],
-      deliveryItems: [],
-    },
+    defaultValues: delivery
+      ? {
+          userId: String(delivery.user.id),
+          clientId: delivery.client ? Number(delivery.client.id) : undefined,
+          deliveryDate: delivery.deliveryDate.slice(0, 10),
+          deliveryItems: delivery.deliveryItems ?? [],
+        }
+      : {
+          userId: currentUserId,
+          clientId: undefined,
+          deliveryDate: new Date().toISOString().split("T")[0],
+          deliveryItems: [],
+        },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -47,12 +71,35 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
     name: "deliveryItems",
   });
 
+  const ownerId = useWatch({ control: form.control, name: "userId" });
+
+  // El cliente debe ser de las carteras del responsable: al cambiarlo se limpia la selección
+  const handleOwnerChange = (value: string) => {
+    form.setValue("userId", value);
+    form.setValue("clientId", undefined);
+  };
+
   const onSubmit = (data: CreateDeliveryValues) => {
     const payload: DeliveryCreateDto = {
       ...data,
       clientId: data.clientId ? Number(data.clientId) : 0,
-      userId: userId ? Number(userId) : 0,
+      // Responsable elegido por el admin; si no, el usuario conectado
+      userId: Number(data.userId || currentUserId),
+      departmentId,
     };
+
+    if (delivery) {
+      // Al editar no se cambia el área; el responsable solo lo cambia el admin
+      // (clientId 0 quita el cliente)
+      const changes: Partial<DeliveryCreateDto> = {
+        clientId: payload.clientId,
+        deliveryDate: payload.deliveryDate,
+        deliveryItems: payload.deliveryItems,
+        ...(isAdmin && { userId: payload.userId }),
+      };
+      updateDelivery({ id: Number(delivery.id), data: changes }, { onSuccess });
+      return;
+    }
 
     createDelivery(payload, {
       onSuccess: () => {
@@ -73,6 +120,31 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
           </FormLabel>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {isAdmin && (
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="text-xs font-bold text-gray-700 uppercase">
+                      Responsable
+                    </FormLabel>
+                    <FormControl>
+                      <UserSelect
+                        members={members}
+                        value={field.value}
+                        onChange={handleOwnerChange}
+                        isLoading={isLoadingMembers}
+                        disabled={isSaving}
+                        placeholder="Seleccione el responsable"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="clientId"
@@ -88,7 +160,9 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
                       onChange={(val) =>
                         field.onChange(val ? Number(val) : undefined)
                       }
-                      disabled={isCreating}
+                      disabled={isSaving}
+                      userId={isAdmin && ownerId ? Number(ownerId) : undefined}
+                      selectedLabel={delivery?.client?.businessName}
                     />
                   </FormControl>
                   <FormMessage />
@@ -109,7 +183,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
                       type="date"
                       {...field}
                       className="h-11 border-gray-200"
-                      disabled={isCreating}
+                      disabled={isSaving}
                     />
                   </FormControl>
                   <FormMessage />
@@ -132,7 +206,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
               size="sm"
               onClick={() => append({ producto: "", cantidad: 1 })}
               className="h-8 text-xs font-bold text-gray-600 border-gray-200"
-              disabled={isCreating}
+              disabled={isSaving}
             >
               <Plus size={14} className="mr-1" /> Añadir
             </Button>
@@ -162,7 +236,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
                           {...field}
                           placeholder="Descripción..."
                           className="h-10 border-gray-200"
-                          disabled={isCreating}
+                          disabled={isSaving}
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -180,7 +254,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
                           min="1"
                           {...field}
                           className="h-10 border-gray-200 font-mono text-center"
-                          disabled={isCreating}
+                          disabled={isSaving}
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -192,7 +266,7 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
                   variant="ghost"
                   onClick={() => remove(index)}
                   className="h-10 w-10 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0"
-                  disabled={isCreating}
+                  disabled={isSaving}
                 >
                   <Trash2 size={18} />
                 </Button>
@@ -208,20 +282,22 @@ export function DeliveryForm({ onSuccess }: DeliveryFormProps) {
             variant="ghost"
             onClick={() => onSuccess()} // Gatillamos el cierre manual al cancelar
             className="font-bold text-gray-500 h-12 px-6"
-            disabled={isCreating}
+            disabled={isSaving}
           >
             CANCELAR
           </Button>
           <Button
             type="submit"
-            disabled={isCreating}
+            disabled={isSaving}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
           >
-            {isCreating ? (
+            {isSaving ? (
               <>
                 <Loader2 className="animate-spin mr-2" size={18} />
                 PROCESANDO...
               </>
+            ) : isEditing ? (
+              "GUARDAR CAMBIOS"
             ) : (
               "REGISTRAR ENTREGA"
             )}

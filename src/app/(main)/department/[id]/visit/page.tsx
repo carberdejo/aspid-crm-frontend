@@ -9,7 +9,8 @@ import { DataTable } from "@/components";
 import { visitColumns } from "@/components/visit/table/VisitColumns";
 import { VisitRowDetails } from "@/components/visit/table/VisitRowDetails";
 import { VisitToolbar } from "@/components/visit/table/VisitToolbar";
-import { useAuthStore, useDepartmentStore } from "@/store";
+import { useDepartmentStore } from "@/store";
+import { useOwnerFilter } from "@/hooks/auth/useOwnerFilter";
 
 interface VisitasPageProps {
   params: Promise<{ id: string }>;
@@ -19,7 +20,8 @@ export default function VisitasPage({ params }: VisitasPageProps) {
   const resolvedParams = use(params);
   const departmentId = Number(resolvedParams.id);
   const { departments } = useDepartmentStore(); // Para validar que el departamento existe (middleware ya lo hizo, pero por seguridad)
-  const userId = useAuthStore((state) => state.user?.sub);
+  // Empleado: sin userId (el backend aplica su alcance); admin: el suyo
+  const { ownerId, isReady } = useOwnerFilter();
   const departmentExists = departments.find((dept) => dept.id === departmentId);
 
   // 1. Lógica delegada al Hook personalizado
@@ -32,11 +34,11 @@ export default function VisitasPage({ params }: VisitasPageProps) {
     handleReset,
     hasFilters,
     handleDateChange,
-  } = useVisitFilters(departmentId, userId);
+  } = useVisitFilters(departmentId, ownerId);
 
   // 2. Fetch de datos
   const { visits, total, isLoading } = useVisits(filters, {
-    enabled: !!userId,
+    enabled: isReady,
   }); // Solo habilitar si el departamento existe
 
   return (

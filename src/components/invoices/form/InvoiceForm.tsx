@@ -14,7 +14,7 @@ import {
 
 // IMPORTACIONES DE HOOKS Y COMPONENTES
 import { OrderSelector } from "./OrderSelector";
-import { BillingStatus, PurchaseOrder } from "@/interfaces"; // Ajusta la ruta
+import { BillingStatus, DocumentStatus, PurchaseOrder } from "@/interfaces"; // Ajusta la ruta
 import { useCreateInvoice, usePurchaseOrders } from "@/hooks";
 import { useAuthStore, useDepartmentStore } from "@/store";
 
@@ -41,6 +41,8 @@ export function InvoiceForm({
     billingStatus: `${BillingStatus.PENDIENTE_FACTURACION},
       ${BillingStatus.FACTURADO_PARCIAL}`,
     // Recomendado filtrar por las no facturadas
+    // Una OC anulada no se factura (sigue en PENDIENTE_FACTURACION)
+    status: DocumentStatus.VIGENTE,
     departmentId,
   });
 

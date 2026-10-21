@@ -34,9 +34,10 @@ export const useAuthStore = create<AuthState>()(
         cookieUtils.setToken(accessToken);
       },
       updateToken: (accessToken) => {
-        // const decoded = jwtDecode<Payload>(accessToken);
-        // Al refrescar, el user sigue siendo el mismo pero el token cambia
-        set({ token: accessToken });
+        // El backend firma el nuevo token leyendo la BD: si el admin cambió las
+        // áreas o el rol del usuario, se reflejan aquí (sidebar y acceso a rutas)
+        const decoded = jwtDecode<Payload>(accessToken);
+        set({ token: accessToken, user: { ...decoded, sub: +decoded.sub } });
         // Guardar también en cookies para el middleware
         cookieUtils.setToken(accessToken);
       },

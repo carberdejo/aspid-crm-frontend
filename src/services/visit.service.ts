@@ -37,4 +37,21 @@ export const VisitService = {
     );
     return data.data;
   },
+  update: async (
+    id: number,
+    update: Partial<VisitCreateDto>,
+  ): Promise<ResponseOperation> => {
+    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+      `/visits/${id}`,
+      update,
+    );
+    return data.data;
+  },
+  // Eliminado lógico en el backend: la visita deja de aparecer en listados y métricas
+  remove: async (id: number): Promise<ResponseOperation> => {
+    const { data } = await concarApi.delete<ApiResponse<ResponseOperation>>(
+      `/visits/${id}`,
+    );
+    return data.data;
+  },
 };

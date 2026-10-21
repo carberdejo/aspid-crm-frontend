@@ -18,30 +18,48 @@ import { Textarea } from "@/components/ui/textarea";
 import { VisitFormValues, visitSchema } from "@/lib/schemas/visit";
 import { ClientSearchSelector } from "../shared/ClientSearchSelector";
 import { ContactSearchSelector } from "../shared/ContactSearchSelector";
+import { UserSelect } from "../shared/UserSelect";
 import { useVisitFlowStore } from "@/store";
+import { useRecordOwner } from "@/hooks";
 
 interface Props {
   departmentId: number;
   onSubmit: (values: VisitFormValues) => void;
   isLoading: boolean;
+  /** Con valores iniciales el formulario edita una visita existente */
+  defaultValues?: Partial<VisitFormValues>;
+  /** Nombre del cliente guardado, para mostrarlo al editar */
+  clientLabel?: string;
 }
 
-export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
+export function VisitForm({
+  departmentId,
+  onSubmit,
+  isLoading,
+  defaultValues,
+  clientLabel,
+}: Props) {
+  const isEditing = !!defaultValues;
   const openClient = useVisitFlowStore((state) => state.openClient);
   const openContact = useVisitFlowStore((state) => state.openContact);
   const setSelectedClientId = useVisitFlowStore(
     (state) => state.setSelectedClientId,
   );
 
+  const { isAdmin, currentUserId, members, isLoadingMembers } =
+    useRecordOwner(departmentId);
+
   const form = useForm<VisitFormValues>({
     resolver: zodResolver(visitSchema),
     defaultValues: {
+      userId: currentUserId,
       clientId: "",
       contactId: "",
       departmentId: departmentId,
       date: new Date().toISOString().split("T")[0],
       visitTopics: "",
       outcomeSummary: "",
+      ...defaultValues,
     },
   });
 
@@ -50,9 +68,43 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
     name: "clientId",
   });
 
+  const ownerId = useWatch({ control: form.control, name: "userId" });
+
+  // El cliente debe ser de las carteras del responsable: al cambiarlo se limpia la selección
+  const handleOwnerChange = (value: string) => {
+    form.setValue("userId", value);
+    form.setValue("clientId", "");
+    form.setValue("contactId", "");
+    setSelectedClientId(undefined);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {isAdmin && (
+          <FormField
+            control={form.control}
+            name="userId"
+            render={({ field }) => (
+              <FormItem className="space-y-2 text-left">
+                <FormLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                  Responsable
+                </FormLabel>
+                <FormControl>
+                  <UserSelect
+                    members={members}
+                    value={field.value}
+                    onChange={handleOwnerChange}
+                    isLoading={isLoadingMembers}
+                    placeholder="Seleccione el responsable"
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px] uppercase font-bold text-red-500" />
+              </FormItem>
+            )}
+          />
+        )}
+
         <div className="flex flex-col md:flex-row items-end gap-4 w-full">
           <FormField
             control={form.control}
@@ -67,6 +119,8 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
                     value={field.value}
                     onChange={field.onChange}
                     onClientChange={setSelectedClientId}
+                    userId={isAdmin && ownerId ? Number(ownerId) : undefined}
+                    selectedLabel={clientLabel}
                   />
                 </FormControl>
                 <FormMessage className="text-[10px] uppercase font-bold text-red-500" />
@@ -105,7 +159,8 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
                     </FormControl>
                   </div>
 
-                  {selectedClientId && (
+                  {/* Crear contacto usa el flujo del registro: solo al crear */}
+                  {selectedClientId && !isEditing && (
                     <Button
                       type="button"
                       onClick={openContact}
@@ -207,7 +262,7 @@ export function VisitForm({ departmentId, onSubmit, isLoading }: Props) {
             ) : (
               <Save size={18} />
             )}
-            Guardar Registro
+            {isEditing ? "Guardar Cambios" : "Guardar Registro"}
           </Button>
         </div>
       </form>

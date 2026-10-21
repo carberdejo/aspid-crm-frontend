@@ -10,7 +10,7 @@ import {
   Receipt,
   CreditCard,
 } from "lucide-react";
-import { PurchaseOrder } from "@/interfaces";
+import { DocumentStatus, PurchaseOrder } from "@/interfaces";
 import { ActionsCellOrder } from "./ActionCellOrder";
 
 const BILLING_STATUS_CONFIG: Record<
@@ -43,9 +43,20 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
         <div className="p-1.5 bg-emerald-50 rounded-lg border border-emerald-100">
           <ShoppingCart size={14} className="text-emerald-600" />
         </div>
-        <span className="font-black text-primary uppercase tracking-tighter">
+        <span
+          className={`font-black uppercase tracking-tighter ${row.original.status === DocumentStatus.ANULADA ? "text-slate-400 line-through" : "text-primary"}`}
+        >
           {row.original.poNumber}
         </span>
+        {row.original.status === DocumentStatus.ANULADA && (
+          <Badge
+            variant="outline"
+            title={row.original.annulReason ?? undefined}
+            className="px-1.5 py-0 text-[8px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 border-slate-300"
+          >
+            Anulada
+          </Badge>
+        )}
       </div>
     ),
   },
@@ -135,7 +146,32 @@ export const purchaseOrderColumns: ColumnDef<PurchaseOrder>[] = [
         billingPercentage = 0,
         remainingAmount = 0,
         currency,
+        status: documentStatus,
+        annulReason,
       } = row.original;
+
+      // Una OC anulada no se factura: en lugar del avance se muestra el motivo
+      if (documentStatus === DocumentStatus.ANULADA) {
+        return (
+          <div className="flex flex-col gap-1 min-w-[140px]">
+            <Badge
+              variant="outline"
+              className="w-max px-2 py-0.5 text-[9px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 border-slate-300"
+            >
+              Anulada
+            </Badge>
+            {annulReason && (
+              <span
+                className="text-[9px] font-medium text-slate-400 truncate max-w-[180px]"
+                title={annulReason}
+              >
+                {annulReason}
+              </span>
+            )}
+          </div>
+        );
+      }
+
       const status = billingStatus || "PENDIENTE_FACTURACION";
       const config = BILLING_STATUS_CONFIG[status] || {
         label: status,

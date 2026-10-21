@@ -52,7 +52,7 @@ export function RegisterDeliveryModal({
       {!hideTrigger && (
         <DialogTrigger asChild>
           {trigger || (
-            <Button className="gap-2 bg-secondary hover:bg-secondary/90 text-white px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95">
+            <Button className="gap-2 bg-secondary hover:bg-secondary/90 text-primary px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95">
               <Truck size={18} />
               Registrar Entrega
             </Button>
@@ -62,12 +62,12 @@ export function RegisterDeliveryModal({
 
       <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden rounded-xl border-none shadow-2xl bg-white flex flex-col">
         <DialogHeader className="p-8 pb-4">
-          <DialogTitle className="text-2xl font-bold text-secondary flex items-center gap-2">
+          <DialogTitle className="text-2xl font-bold text-secondary-text flex items-center gap-2">
             <div className="w-1 h-6 bg-gray-200 rounded-full" />
             REGISTRO DE ENTREGA
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-500 pt-1 font-medium">
-            Gestión de actividades de ACME & CIA
+            Gestión de actividades en ASPID CRM
           </DialogDescription>
         </DialogHeader>
 

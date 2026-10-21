@@ -38,7 +38,7 @@ export default function QuoteDetailPage({ params }: PageProps) {
   if (isLoading) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
-        <Loader2 className="h-12 w-12 animate-spin text-secondary" />
+        <Loader2 className="h-12 w-12 animate-spin text-secondary-text" />
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
           Cargando expediente técnico...
         </p>
@@ -92,7 +92,7 @@ export default function QuoteDetailPage({ params }: PageProps) {
           >
             {quote.status}
           </Badge>
-          <Button className="h-12 px-8 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-900/10">
+          <Button className="h-12 px-8 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-xl shadow-primary/10">
             Descargar PDF
           </Button>
         </div>
@@ -174,7 +174,7 @@ export default function QuoteDetailPage({ params }: PageProps) {
 
           {/* ALCANCE / DESCRIPCIÓN */}
           <section className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-2xl space-y-4">
-            <div className="flex items-center gap-2 text-secondary">
+            <div className="flex items-center gap-2 text-accent">
               <FileText size={18} />
               <span className="text-[10px] font-black uppercase tracking-[0.2em]">
                 Descripción del Alcance
@@ -189,7 +189,7 @@ export default function QuoteDetailPage({ params }: PageProps) {
         {/* COLUMNA 2: DATOS TÉCNICOS Y MONTOS */}
         <div className="space-y-8">
           {/* TARJETA ECONOMICA */}
-          <section className="bg-secondary p-8 rounded-[2.5rem] text-white shadow-xl shadow-orange-500/20">
+          <section className="bg-secondary p-8 rounded-[2.5rem] text-primary shadow-xl shadow-secondary/20">
             <div className="space-y-6">
               <div className="flex items-center gap-2 opacity-80">
                 <Wallet size={18} />

@@ -108,10 +108,10 @@ export function ContactSearchSelector({ value, onChange, clientId, disabled }: P
                   className="cursor-pointer py-3"
                 >
                   <Check
-                    className={`mr-2 h-4 w-4 ${value === String(c.id) ? "opacity-100 text-secondary" : "opacity-0"}`}
+                    className={`mr-2 h-4 w-4 ${value === String(c.id) ? "opacity-100 text-secondary-text" : "opacity-0"}`}
                   />
                   <div className="flex flex-col">
-                    <span className="font-bold text-[#1a2a53] text-xs uppercase">{c.firstName} {c.lastName}</span>
+                    <span className="font-bold text-primary text-xs uppercase">{c.firstName} {c.lastName}</span>
                     <span className="text-[9px] text-slate-400">{c.position || "Sin cargo definido"}</span>
                   </div>
                 </CommandItem>

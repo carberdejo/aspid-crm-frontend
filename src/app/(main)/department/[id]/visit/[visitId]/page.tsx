@@ -65,7 +65,7 @@ export default function VisitDetailPage({ params }: Props) {
           />
         </div>
         <div className="flex gap-3">
-          <Badge className="bg-secondary text-white border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
+          <Badge className="bg-secondary text-primary border-none py-1.5 px-4 rounded-full font-black text-[10px] uppercase">
             Completada
           </Badge>
         </div>
@@ -104,7 +104,7 @@ export default function VisitDetailPage({ params }: Props) {
             <p className="text-md font-extrabold text-slate-800 uppercase">
               {visit.contact.firstName} {visit.contact.lastName}
             </p>
-            <p className="text-[10px] font-black text-secondary uppercase tracking-widest mb-4">
+            <p className="text-[10px] font-black text-secondary-text uppercase tracking-widest mb-4">
               {visit.contact.position}
             </p>
             <div className="space-y-3 pt-4 border-t border-slate-50">
@@ -117,7 +117,7 @@ export default function VisitDetailPage({ params }: Props) {
           </InfoCard>
 
           {/* CARD REGISTRO */}
-          <div className="p-6 bg-[#1a2a53] rounded-[2rem] text-white shadow-xl shadow-blue-900/20">
+          <div className="p-6 bg-primary rounded-[2rem] text-white shadow-xl shadow-primary/20">
             <h4 className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-4 flex items-center gap-2">
               <Briefcase size={12} /> Responsable
             </h4>
@@ -158,7 +158,7 @@ export default function VisitDetailPage({ params }: Props) {
           <div className="bg-white rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
             <div className="p-8 space-y-10">
               <div className="space-y-4">
-                <h4 className="text-xs font-black text-secondary uppercase tracking-[0.3em] flex items-center gap-3">
+                <h4 className="text-xs font-black text-secondary-text uppercase tracking-[0.3em] flex items-center gap-3">
                   <ClipboardList size={18} /> Temas Tratados
                 </h4>
                 <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 italic text-slate-600 leading-relaxed">
@@ -188,7 +188,7 @@ function InfoCard({ title, icon, children, variant = "primary" }: any) {
   return (
     <div className="bg-white rounded-[2rem] p-6 border border-slate-50 shadow-sm">
       <h4
-        className={`text-[9px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 ${variant === "primary" ? "text-primary" : "text-secondary"}`}
+        className={`text-[9px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 ${variant === "primary" ? "text-primary" : "text-secondary-text"}`}
       >
         {icon} {title}
       </h4>

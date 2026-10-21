@@ -61,7 +61,7 @@ export function VisitStatsGrid({ userId }: { userId: number }) {
       value: stats?.mostVisitedClient?.name || "N/A",
       label: `${stats?.mostVisitedClient?.count || 0} visitas`,
       icon: MapPin,
-      color: "text-secondary",
+      color: "text-secondary-text",
       bg: "bg-secondary/5",
     },
     {
@@ -102,7 +102,7 @@ export function VisitStatsGrid({ userId }: { userId: number }) {
                 size="sm"
                 className="h-8 rounded-xl border-slate-100 text-[9px] font-black uppercase tracking-widest gap-2"
               >
-                <Calendar size={12} className="text-secondary" />
+                <Calendar size={12} className="text-secondary-text" />
                 {filterType.replace("-", " ")}
                 <ChevronDown size={12} className="text-slate-300" />
               </Button>

@@ -83,7 +83,7 @@ export const ActionsCellDelivery = ({ delivery }: ActionsCellDeliveryProps) => {
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden rounded-xl border-none shadow-2xl bg-white flex flex-col">
           <DialogHeader className="p-8 pb-4">
-            <DialogTitle className="text-2xl font-bold text-secondary flex items-center gap-2">
+            <DialogTitle className="text-2xl font-bold text-secondary-text flex items-center gap-2">
               <div className="w-1 h-6 bg-gray-200 rounded-full" />
               EDITAR ENTREGA
             </DialogTitle>

@@ -104,7 +104,7 @@ export default function DepartmentReportsPage() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-black text-primary uppercase tracking-tighter">
             Reporte Semanal{" "}
-            <span className="text-secondary">/ {month} 2026</span>
+            <span className="text-secondary-text">/ {month} 2026</span>
           </h1>
 
           <div className="flex gap-2">
@@ -204,7 +204,7 @@ export default function DepartmentReportsPage() {
                   })}
                 </TableRow>
                 <TableRow className="divide-x divide-slate-100 bg-secondary/5">
-                  <TableCell className="text-[10px] font-black text-secondary pl-6 uppercase">
+                  <TableCell className="text-[10px] font-black text-secondary-text pl-6 uppercase">
                     Cumplimiento Meta
                   </TableCell>
                   {currentData.map((u) => {
@@ -267,7 +267,7 @@ export default function DepartmentReportsPage() {
                 <Bar
                   dataKey="facturado"
                   name="Venta Real"
-                  fill="#1a2a53"
+                  fill="#2d1c42"
                   radius={[6, 6, 0, 0]}
                   barSize={40}
                 />
@@ -275,7 +275,7 @@ export default function DepartmentReportsPage() {
                   type="monotone"
                   dataKey="meta"
                   name="Meta Sugerida"
-                  stroke="#ea6839"
+                  stroke="#c88b00"
                   strokeWidth={3}
                   dot={{ r: 6 }}
                 />

@@ -78,7 +78,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
   });
 
   const generatePassword = () => {
-    const pass = Math.random().toString(36).slice(-10) + "ACME!";
+    const pass = Math.random().toString(36).slice(-10) + "ASPID!";
     form.setValue("password", pass, { shouldValidate: true });
   };
 
@@ -153,7 +153,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="usuario@concar.com"
+                    placeholder="usuario@empresa.com"
                     {...field}
                     className="h-11 border-gray-200"
                   />
@@ -333,7 +333,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
                                       {country.name}
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-black text-secondary">
+                                  <span className="text-[10px] font-black text-secondary-text">
                                     +{country.code}
                                   </span>
                                 </CommandItem>
@@ -485,7 +485,7 @@ export function PersonalForm({ onSuccess }: { onSuccess: () => void }) {
           <Button
             type="submit"
             disabled={isCreating}
-            className="bg-secondary hover:bg-secondary-dark text-white px-8 h-12 rounded-lg font-bold tracking-wide transition-all shadow-lg active:scale-95"
+            className="bg-secondary hover:bg-secondary-dark text-primary px-8 h-12 rounded-lg font-bold tracking-wide transition-all shadow-lg active:scale-95"
           >
             {isCreating ? "REGISTRANDO..." : "REGISTRAR PERSONAL"}
           </Button>

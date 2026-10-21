@@ -47,8 +47,8 @@ export default function DepartmentLayout({
   if (isClient && user && userDepartments.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-center">
-        <ShieldAlert className="h-10 w-10 text-[#ea6839]" />
-        <p className="font-semibold text-[#1a2a53]">
+        <ShieldAlert className="h-10 w-10 text-secondary-text" />
+        <p className="font-semibold text-primary">
           No tienes áreas asignadas
         </p>
         <p className="text-sm text-gray-500">
@@ -61,7 +61,7 @@ export default function DepartmentLayout({
   if (!isClient || !hasAccess) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1a2a53]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }

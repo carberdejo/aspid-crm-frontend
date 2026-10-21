@@ -69,8 +69,8 @@ export default function UserProfile() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors group">
-            <Avatar className="h-10 w-10 border-2 border-[#1a2a53]/20">
-              <AvatarFallback className="bg-[#1a2a53] text-white font-bold">
+            <Avatar className="h-10 w-10 border-2 border-primary/20">
+              <AvatarFallback className="bg-primary text-white font-bold">
                 {getInitials(user.email)}
               </AvatarFallback>
             </Avatar>
@@ -98,7 +98,7 @@ export default function UserProfile() {
                 {user.depts.map((dept) => (
                   <span
                     key={dept}
-                    className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#f8aa19]/10 text-[#f8aa19] border border-[#f8aa19]/20"
+                    className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-secondary/10 text-secondary-text border border-secondary/20"
                   >
                     {dept}
                   </span>
@@ -136,7 +136,7 @@ export default function UserProfile() {
         isOpen={showLogoutModal}
         onOpenChange={setShowLogoutModal}
         title="¿Cerrar sesión?"
-        description="Tu sesión actual será finalizada y tendrás que volver a ingresar tus credenciales para acceder a ACME & CIA."
+        description="Tu sesión actual será finalizada y tendrás que volver a ingresar tus credenciales para acceder a ASPID CRM."
         onConfirm={handleLogoutClick}
         variant="destructive"
       />

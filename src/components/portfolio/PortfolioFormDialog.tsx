@@ -256,7 +256,7 @@ export function PortfolioFormDialog({
             {/* SECCIÓN DINÁMICA: EQUIPO DE TRABAJO */}
             <div className="space-y-4 border-t pt-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-black text-secondary uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-sm font-black text-secondary-text uppercase tracking-wider flex items-center gap-2">
                   <UserPlus size={18} /> Equipo Asignado
                 </h3>
                 <Button
@@ -365,7 +365,7 @@ export function PortfolioFormDialog({
               <Button
                 type="submit"
                 disabled={isProcessing}
-                className="bg-secondary hover:bg-secondary/90 text-white font-black px-8 h-11"
+                className="bg-secondary hover:bg-secondary/90 text-primary font-black px-8 h-11"
               >
                 {isProcessing
                   ? "PROCESANDO..."

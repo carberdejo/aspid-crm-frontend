@@ -56,7 +56,7 @@ export function RegisterClientModal({
       {/* Solo mostrar trigger si showTrigger es true y no está controlado externamente */}
       {showTrigger && !isControlled && (
         <DialogTrigger asChild>
-          <Button className="gap-2 bg-secondary hover:bg-secondary-dark text-white px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95">
+          <Button className="gap-2 bg-secondary hover:bg-secondary-dark text-primary px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95">
             <Plus size={18} />
             Registrar Empresa
           </Button>
@@ -65,12 +65,12 @@ export function RegisterClientModal({
 
       <DialogContent className="sm:max-w-[620px] p-0 overflow-hidden rounded-xl border-none shadow-2xl bg-white flex flex-col">
         <DialogHeader className="p-8 pb-4">
-          <DialogTitle className="text-2xl font-bold text-secondary flex items-center gap-2">
+          <DialogTitle className="text-2xl font-bold text-secondary-text flex items-center gap-2">
             <div className="w-1 h-6 bg-gray-200 rounded-full" />
             REGISTRO DE EMPRESA
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-500 pt-1 font-medium">
-            Gestión de cartera de clientes y facturación ACME & CIA.
+            Gestión de cartera de clientes y facturación en ASPID CRM.
           </DialogDescription>
         </DialogHeader>
 

@@ -403,7 +403,7 @@ export function QuoteForm({
                       <SelectItem
                         key={type}
                         value={type}
-                        className="font-bold text-[11px] uppercase py-3 focus:bg-secondary/10 focus:text-secondary cursor-pointer"
+                        className="font-bold text-[11px] uppercase py-3 focus:bg-secondary/10 focus:text-secondary-text cursor-pointer"
                       >
                         {type}
                       </SelectItem>
@@ -436,7 +436,7 @@ export function QuoteForm({
                       <SelectItem
                         key={order}
                         value={order}
-                        className="font-bold text-[11px] uppercase py-3 focus:bg-secondary/10 focus:text-secondary cursor-pointer"
+                        className="font-bold text-[11px] uppercase py-3 focus:bg-secondary/10 focus:text-secondary-text cursor-pointer"
                       >
                         {order.replace("_", " ")}
                       </SelectItem>
@@ -505,7 +505,7 @@ export function QuoteForm({
           <Button
             type="submit"
             disabled={isLoading}
-            className="h-14 px-12 rounded-2xl bg-secondary hover:bg-orange-600 text-white font-black uppercase tracking-widest text-[11px] flex gap-3 shadow-xl shadow-orange-500/20 transition-all active:scale-95"
+            className="h-14 px-12 rounded-2xl bg-secondary hover:bg-secondary-dark text-primary font-black uppercase tracking-widest text-[11px] flex gap-3 shadow-xl shadow-secondary/20 transition-all active:scale-95"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" />

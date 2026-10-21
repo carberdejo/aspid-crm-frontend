@@ -83,7 +83,7 @@ export function PortfoliosTab() {
       </div>
       <Button
         onClick={handleCreate}
-        className="gap-2 bg-secondary hover:bg-secondary-dark text-white px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95"
+        className="gap-2 bg-secondary hover:bg-secondary-dark text-primary px-4 h-10 rounded-lg font-semibold flex items-center transition-all shadow-md active:scale-95"
       >
         <Plus size={18} />
         Registrar Cartera

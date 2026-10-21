@@ -43,7 +43,7 @@ export function ActionCellClient({ client }: ActionCellClientProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-slate-400 hover:text-secondary hover:bg-secondary/5 transition-colors"
+        className="h-8 w-8 text-slate-400 hover:text-secondary-text hover:bg-secondary/5 transition-colors"
         onClick={() => console.log("Editar", client.id)}
         title="Editar"
       >
@@ -72,7 +72,7 @@ export function ActionCellClient({ client }: ActionCellClientProps) {
           className="w-48 rounded-xl p-2 shadow-xl border-slate-100"
         >
           <DropdownMenuLabel className="text-[10px] font-black uppercase text-slate-400 px-2 py-1.5">
-            Operaciones ACME
+            Operaciones ASPID
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-slate-50" />
 

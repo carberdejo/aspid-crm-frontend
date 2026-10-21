@@ -27,7 +27,7 @@ export default function Header({ currentSection = 'Dashboard' }: HeaderProps) {
         </button>
 
         {/* Current Section Title */}
-        <h1 className="text-xl font-semibold text-[#1a2a53] hidden sm:block">
+        <h1 className="text-xl font-semibold text-primary hidden sm:block">
           {headerTitle}
         </h1>
       </div>
@@ -35,7 +35,7 @@ export default function Header({ currentSection = 'Dashboard' }: HeaderProps) {
       {/* Right Side - Notifications + User Profile */}
       <div className="flex items-center gap-4 lg:gap-6">
         {/* Export Button (Optional - commented out) 
-        <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-[#1a2a53] hover:bg-[#111c38] text-white rounded-lg transition-colors">
+        <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">
           <Download className="h-4 w-4" />
           <span className="text-sm font-medium">Exportar PDF</span>
         </button>
@@ -46,7 +46,7 @@ export default function Header({ currentSection = 'Dashboard' }: HeaderProps) {
           {/* Notification Bell */}
           <button className="relative hover:opacity-80 transition-opacity p-2 hover:bg-gray-100 rounded-lg">
             <Bell className="h-5 w-5 text-gray-600" />
-            <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-[#ea6839] rounded-full">
+            <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-primary bg-secondary rounded-full">
               3
             </span>
           </button>
@@ -54,7 +54,7 @@ export default function Header({ currentSection = 'Dashboard' }: HeaderProps) {
           {/* Messages */}
           <button className="relative hover:opacity-80 transition-opacity p-2 hover:bg-gray-100 rounded-lg">
             <MessageSquare className="h-5 w-5 text-gray-600" />
-            <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-[#ea6839] rounded-full">
+            <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-primary bg-secondary rounded-full">
               10
             </span>
           </button>

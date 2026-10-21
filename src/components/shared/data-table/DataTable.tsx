@@ -93,7 +93,7 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td colSpan={columns.length} className="h-48 text-center">
                     <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                      <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+                      <Loader2 className="h-8 w-8 animate-spin text-secondary-text" />
                       <span className="text-xs font-medium uppercase tracking-tighter">
                         Sincronizando datos...
                       </span>
@@ -166,7 +166,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-border hover:text-secondary hover:border-secondary transition-all"
+                className="h-8 w-8 border-border hover:text-secondary-text hover:border-secondary transition-all"
                 onClick={() => onPageChange?.(1)}
                 disabled={currentPage === 1 || isLoading}
               >
@@ -176,7 +176,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-border hover:text-secondary hover:border-secondary transition-all"
+                className="h-8 w-8 border-border hover:text-secondary-text hover:border-secondary transition-all"
                 onClick={() => onPageChange?.(currentPage - 1)}
                 disabled={currentPage === 1 || isLoading}
               >
@@ -186,7 +186,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-border hover:text-secondary hover:border-secondary transition-all"
+                className="h-8 w-8 border-border hover:text-secondary-text hover:border-secondary transition-all"
                 onClick={() => onPageChange?.(currentPage + 1)}
                 disabled={currentPage >= totalPages || isLoading}
               >
@@ -196,7 +196,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-border hover:text-secondary hover:border-secondary transition-all"
+                className="h-8 w-8 border-border hover:text-secondary-text hover:border-secondary transition-all"
                 onClick={() => onPageChange?.(totalPages)}
                 disabled={currentPage >= totalPages || isLoading}
               >

@@ -53,7 +53,7 @@ export function VisitToolbar({
           <Button
             variant="ghost"
             onClick={onReset}
-            className="h-10 text-slate-400 hover:text-secondary font-black text-[10px] uppercase"
+            className="h-10 text-slate-400 hover:text-secondary-text font-black text-[10px] uppercase"
           >
             <FilterX size={16} className="mr-2" />
             Limpiar

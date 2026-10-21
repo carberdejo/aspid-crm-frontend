@@ -33,7 +33,7 @@ export function RegisterQuoteModal({
       <DialogContent className="sm:max-w-[800px] rounded-[2.5rem] p-8 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="border-b border-slate-100 pb-4">
           <DialogTitle className="text-3xl font-black text-primary uppercase tracking-tighter">
-            Generar <span className="text-secondary">Cotización</span>
+            Generar <span className="text-secondary-text">Cotización</span>
           </DialogTitle>
         </DialogHeader>
 

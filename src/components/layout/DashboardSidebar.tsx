@@ -27,7 +27,6 @@ import {
   SidebarMenu,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import logoAcme from "@/assets/logo_icono_orange.png";
 
 function getSectionIcon(title: string): LucideIcon {
   switch (title) {
@@ -51,11 +50,11 @@ function buildAvatarDataUri(name: string) {
       .filter(Boolean)
       .slice(0, 2)
       .map((part) => part[0]?.toUpperCase() ?? "")
-      .join("") || "AC";
+      .join("") || "AS";
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-      <rect width="96" height="96" rx="20" fill="#1a2a53"/>
+      <rect width="96" height="96" rx="20" fill="#4d2f70"/>
       <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="34" font-weight="700">${initials}</text>
     </svg>
   `;
@@ -118,14 +117,15 @@ export function DashboardSidebar() {
       className="border-r border-primary-dark bg-primary text-primary-foreground"
       style={
         {
-          "--sidebar": "222 52% 21%",
-          "--sidebar-foreground": "210 40% 98%",
-          "--sidebar-primary": "40 95% 53%",
-          "--sidebar-primary-foreground": "222 52% 21%",
-          "--sidebar-accent": "222 52% 27%",
-          "--sidebar-accent-foreground": "210 40% 98%",
-          "--sidebar-border": "222 52% 26%",
-          "--sidebar-ring": "16 82% 57%",
+          // Paleta ASPID: Violet Night de fondo, Ciruela al pasar el mouse, Dorado de acento
+          "--sidebar": "267 40% 18%",
+          "--sidebar-foreground": "0 0% 100%",
+          "--sidebar-primary": "42 100% 39%",
+          "--sidebar-primary-foreground": "267 40% 18%",
+          "--sidebar-accent": "268 41% 31%",
+          "--sidebar-accent-foreground": "0 0% 100%",
+          "--sidebar-border": "267 40% 26%",
+          "--sidebar-ring": "274 29% 46%",
         } as React.CSSProperties
       }
     >
@@ -133,17 +133,17 @@ export function DashboardSidebar() {
         <TeamSwitcher
           teams={[
             {
-              name: "ACME & CIA",
+              name: "ASPID",
               logo: (
                 <Image
-                  src={logoAcme}
-                  alt="ACME & CIA"
+                  src="/brand/isotipo-on-dark.png"
+                  alt="ASPID CRM"
                   width={24}
                   height={24}
                   className="h-6 w-6 object-contain"
                 />
               ),
-              plan: "Dashboard",
+              plan: "CRM",
             },
           ]}
         />

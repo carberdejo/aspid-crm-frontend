@@ -222,12 +222,12 @@ export function ContactForm({ clientId, onSuccess }: ContactFormProps) {
                                 <span className="text-[11px] font-bold uppercase">
                                   {country.name}
                                 </span>
-                                <span className="text-[10px] font-black text-secondary">
+                                <span className="text-[10px] font-black text-secondary-text">
                                   +{country.code}
                                 </span>
                                 <Check
                                   className={cn(
-                                    "h-4 w-4 text-secondary",
+                                    "h-4 w-4 text-secondary-text",
                                     field.value === country.iso
                                       ? "opacity-100"
                                       : "opacity-0",
@@ -280,7 +280,7 @@ export function ContactForm({ clientId, onSuccess }: ContactFormProps) {
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-secondary hover:bg-orange-600 text-white px-8 h-12 rounded-lg font-black shadow-lg active:scale-95 gap-2 transition-all"
+            className="bg-secondary hover:bg-secondary-dark text-primary px-8 h-12 rounded-lg font-black shadow-lg active:scale-95 gap-2 transition-all"
           >
             {isPending ? (
               <Loader2 className="animate-spin" size={18} />

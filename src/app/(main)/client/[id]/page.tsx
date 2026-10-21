@@ -25,7 +25,7 @@ export default function ClientContactsPage() {
   if (isLoading) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-secondary" />
+        <Loader2 className="h-10 w-10 animate-spin text-secondary-text" />
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
           Cargando directorio...
         </p>
@@ -73,7 +73,7 @@ export default function ClientContactsPage() {
               >
                 {/* HEADER COMPACTO: Avatar y Nombre en la misma fila para ahorrar espacio */}
                 <div className="flex items-center gap-4">
-                  <div className="h-11 w-11 shrink-0 rounded-xl bg-primary flex items-center justify-center text-white text-sm font-black group-hover:bg-secondary transition-colors italic">
+                  <div className="h-11 w-11 shrink-0 rounded-xl bg-primary flex items-center justify-center text-white text-sm font-black group-hover:bg-secondary group-hover:text-primary transition-colors italic">
                     {c.firstName[0]}
                     {c.lastName[0]}
                   </div>
@@ -81,7 +81,7 @@ export default function ClientContactsPage() {
                     <h2 className="text-sm font-black text-primary  uppercase italic tracking-tight">
                       {c.firstName} {c.lastName}
                     </h2>
-                    <p className="text-[8px] font-black text-secondary uppercase tracking-[0.15em] opacity-70">
+                    <p className="text-[8px] font-black text-secondary-text uppercase tracking-[0.15em] opacity-70">
                       {c.position}
                     </p>
                   </div>

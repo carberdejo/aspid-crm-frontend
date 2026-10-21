@@ -35,11 +35,11 @@
 //       <AlertDialogContent className="sm:max-w-md">
 //         <AlertDialogHeader>
 //           <div className="flex items-center gap-3">
-//             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#1a2a53]/10">
-//               <LogOut className="h-6 w-6 text-[#1a2a53]" />
+//             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10">
+//               <LogOut className="h-6 w-6 text-primary" />
 //             </div>
 //             <div>
-//               <AlertDialogTitle className="text-[#1a2a53]">
+//               <AlertDialogTitle className="text-primary">
 //                 ¿Cerrar Sesión?
 //               </AlertDialogTitle>
 //             </div>
@@ -62,7 +62,7 @@
 //           <AlertDialogAction
 //             onClick={handleLogout}
 //             disabled={isLoggingOut}
-//             className="bg-[#1a2a53] hover:bg-[#111c38] focus:ring-[#1a2a53]"
+//             className="bg-primary hover:bg-primary-dark focus:ring-primary"
 //           >
 //             {isLoggingOut ? (
 //               <>

@@ -114,7 +114,7 @@ export function DeliveryForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-4">
         {/* Bloque de Datos Generales */}
         <div className="bg-muted/30 p-5 rounded-xl border border-dashed border-gray-300">
-          <FormLabel className="text-[10px] font-black text-secondary tracking-widest uppercase flex items-center gap-2 mb-4">
+          <FormLabel className="text-[10px] font-black text-secondary-text tracking-widest uppercase flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
             Datos de la Entrega
           </FormLabel>
@@ -196,7 +196,7 @@ export function DeliveryForm({
         {/* Bloque de Ítems (JSONB) */}
         <div className="bg-muted/30 p-5 rounded-xl border border-dashed border-gray-300">
           <div className="flex justify-between items-center mb-4">
-            <FormLabel className="text-[10px] font-black text-secondary tracking-widest uppercase flex items-center gap-2">
+            <FormLabel className="text-[10px] font-black text-secondary-text tracking-widest uppercase flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
               Productos (Opcional)
             </FormLabel>
@@ -289,7 +289,7 @@ export function DeliveryForm({
           <Button
             type="submit"
             disabled={isSaving}
-            className="bg-secondary hover:bg-secondary/90 text-white px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
+            className="bg-secondary hover:bg-secondary/90 text-primary px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
           >
             {isSaving ? (
               <>

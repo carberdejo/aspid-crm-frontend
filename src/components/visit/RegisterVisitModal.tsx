@@ -23,7 +23,7 @@ export function RegisterVisitModal({
       <DialogContent className="sm:max-w-[700px] rounded-[2.5rem] p-8">
         <DialogHeader className="border-b border-slate-100 pb-4">
           <DialogTitle className="text-3xl font-black text-primary uppercase tracking-tighter">
-            Registrar <span className="text-secondary">Visita</span>
+            Registrar <span className="text-secondary-text">Visita</span>
           </DialogTitle>
         </DialogHeader>
         

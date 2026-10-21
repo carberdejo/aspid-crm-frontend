@@ -17,7 +17,7 @@ export function DailyActivityCard() {
         <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
           Resumen Diario
         </h3>
-        <Circle className="text-secondary fill-secondary" size={8} />
+        <Circle className="text-secondary-text fill-secondary" size={8} />
       </div>
 
       <div className="space-y-3 flex-1">
@@ -27,11 +27,11 @@ export function DailyActivityCard() {
             className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50/50 border border-transparent hover:border-slate-200 hover:bg-white transition-all group cursor-pointer"
           >
             {/* Indicador lateral de color según tipo */}
-            <div className={`w-1 h-10 rounded-full ${activity.type === 'VISIT' ? 'bg-[#1a2a53]' : 'bg-secondary'}`} />
+            <div className={`w-1 h-10 rounded-full ${activity.type === 'VISIT' ? 'bg-primary' : 'bg-secondary'}`} />
             
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className={`text-[9px] font-black uppercase tracking-tighter ${activity.type === 'VISIT' ? 'text-[#1a2a53]' : 'text-secondary'}`}>
+                <span className={`text-[9px] font-black uppercase tracking-tighter ${activity.type === 'VISIT' ? 'text-primary' : 'text-secondary-text'}`}>
                   {activity.type === 'VISIT' ? 'Visita Técnica' : 'Cotización'}
                 </span>
                 <span className="text-[9px] text-slate-300">•</span>
@@ -51,7 +51,7 @@ export function DailyActivityCard() {
 
       <Button 
         variant="link" 
-        className="text-[10px] font-black uppercase text-secondary mt-4 self-start p-0 h-auto group"
+        className="text-[10px] font-black uppercase text-secondary-text mt-4 self-start p-0 h-auto group"
       >
         Ver historial completo 
         <ArrowRight size={12} className="ml-1 transition-transform group-hover:translate-x-1" />

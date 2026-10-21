@@ -7,74 +7,154 @@ html {
 }
 @custom-variant dark (&:is(.dark *));
 
+/* Tipografía ASPID: Sora (cargada con next/font en src/config/fonts.ts) */
+@theme inline {
+  --font-sans:
+    var(--font-sora), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
 @theme {
-  /* --- ACME Corporate Colors --- */
-  --color-primary: #1a2a53;
-  --color-primary-dark: #111c38;
-  --color-primary-light: #2a3a63;
+  /* --- Paleta corporativa ASPID (resources/ASPID_paleta_corporativa.xlsx) --- */
+  /* Principal: Violet Night. Estructura: menú, encabezados, texto, botones sólidos */
+  --color-primary: #2d1c42;
+  --color-primary-dark: #160d26; /* Tinta */
+  --color-primary-light: #4d2f70; /* Ciruela */
 
-  --color-secondary: #ea6839;
-  --color-secondary-dark: #d45529;
-  --color-secondary-light: #f07849;
+  /* Secundario: Dorado. Acento: CTA, ícono activo, enlaces destacados.
+     Sobre fondo claro el dorado no alcanza contraste para texto (2.9:1):
+     para texto dorado sobre blanco usar text-secondary-text (#8A5E00, 5.7:1) */
+  --color-secondary: #c88b00;
+  --color-secondary-dark: #a87400;
+  --color-secondary-light: #e1b983; /* Crema */
+  --color-secondary-text: #8a5e00;
 
-  --color-accent: #f8aa19;
-  --color-accent-dark: #e89a09;
-  --color-accent-light: #faba29;
+  /* Terciario: Crema. Texto y marca sobre fondo oscuro, detalles suaves */
+  --color-accent: #e1b983;
+  --color-accent-dark: #c88b00;
+  --color-accent-light: #f0dcc0;
+
+  /* Apoyo: hover, gráficos, etiquetas, bordes al enfocar */
+  --color-support-1: #4d2f70; /* Ciruela */
+  --color-support-2: #7a5498; /* Lavanda */
+  --color-ink: #160d26; /* Tinta */
+  --color-on-dark-muted: #b79ad0; /* Lavanda clara: texto secundario sobre oscuro */
+  --color-surface: #f5f1fa; /* Fondo de página */
 
   /* --- Base colors --- */
   --color-background: #ffffff;
-  --color-foreground: #171717;
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #737373;
-  --color-border: #e5e5e5;
-  --color-input: #e5e5e5;
+  --color-foreground: #2d1c42;
+  --color-muted: #f5f1fa;
+  --color-muted-foreground: #6e6280;
+  --color-border: #e6dfef;
+  --color-input: #e6dfef;
 
-  /* Color del resplandor de los inputs (Naranja ACME) */
-  --color-ring: #ea6839;
+  /* Anillo de enfoque: Lavanda */
+  --color-ring: #7a5498;
 
-  /* Radius */
+  /* Radius (los actuales; los de la marca están abajo con nombre propio) */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
+
+  /* --- Tokens ASPID listos para adoptar pantalla por pantalla --- */
+  /* Escala tipográfica: text-display, text-h1, text-title, text-stat... */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.12;
+  --text-h1: 2rem;
+  --text-h1--line-height: 1.2;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.2;
+  --text-stat: 1.875rem;
+  --text-stat--line-height: 1.1;
+  --text-h2: 1rem;
+  --text-h2--line-height: 1.3;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.3;
+  --text-overline--letter-spacing: 0.24em;
+  --text-wordmark: 3.5rem;
+  --text-wordmark--line-height: 1;
+  --text-wordmark--letter-spacing: 0.06em;
+  --text-tagline: 0.8125rem;
+  --text-tagline--line-height: 1;
+  --text-tagline--letter-spacing: 0.36em;
+
+  /* Radios de la marca con nombre propio (rounded-field, rounded-card...) para no
+     cambiar de golpe los rounded-sm/md/lg que ya usan los componentes */
+  --radius-checkbox: 0.375rem;
+  --radius-chip: 0.625rem;
+  --radius-field: 0.75rem;
+  --radius-button: 0.875rem;
+  --radius-card: 1.125rem;
+  --radius-app: 1.75rem;
+  --radius-pill: 62.4375rem;
+}
+
+/* Espaciado y medidas ASPID (escala de 4 px), disponibles como var(--space-4)... */
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --size-input: 3.25rem;
+  --size-btn-lg: 3.5rem;
+  --size-btn-md: 2.875rem;
+  --size-touch: 2.75rem;
+  --size-sidebar: 15.5rem;
+  --size-form: 27.5rem;
+  --size-container: 90rem;
 }
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 267 40% 18%;
 
     /* Popover y Cards (Fondos de dropdowns y modales) */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 267 40% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 267 40% 18%;
 
-    /* Primary (Azul ACME) */
-    --primary: 222 52% 21%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary (Violet Night #2D1C42) */
+    --primary: 267 40% 18%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary (Naranja ACME) */
-    --secondary: 16 82% 57%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary (Dorado #C88B00): el texto sobre dorado va en Violet Night (5.3:1) */
+    --secondary: 42 100% 39%;
+    --secondary-foreground: 267 40% 18%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 267 47% 96%;
+    --muted-foreground: 266 13% 44%;
+    --accent: 267 47% 96%;
+    --accent-foreground: 267 40% 18%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 267 30% 90%;
+    --input: 267 30% 90%;
 
-    /* Variable de anillo para Shadcn */
-    --ring: 16 82% 57%;
+    /* Variable de anillo para Shadcn (Lavanda #7A5498) */
+    --ring: 274 29% 46%;
     --radius: 0.5rem;
 
     /* Cuando el input tiene el atributo data-invalid (lo que pone shadcn en error) */
     input[aria-invalid="true"],
     button[aria-invalid="true"] {
-      /* Cambiamos el borde negro por el azul primary o un rojo corporativo */
-      border-color: #1a2a53 !important; /* Azul ACME */
-      box-shadow: 0 0 0 2px rgba(26, 42, 83, 0.1) !important; /* Glow azul sutil */
+      border-color: var(--color-primary) !important;
+      box-shadow: 0 0 0 2px rgba(45, 28, 66, 0.1) !important;
     }
 
     /* Si prefieres que el error sea rojo pero NO negro grueso: */
@@ -87,14 +167,14 @@ html {
 
   body {
     @apply bg-background text-foreground font-sans;
-    background-color: #f9fafb; /* Fondo sutil de la página */
+    background-color: var(--color-surface); /* Fondo de página ASPID */
   }
 
   * {
     @apply border-border;
   }
 
-  /* Azul ACME para los títulos de todo el sistema */
+  /* Violet Night para los títulos de todo el sistema */
   h1,
   h2,
   h3,
@@ -103,17 +183,17 @@ html {
     @apply text-primary font-bold tracking-tight;
   }
 
-  /* --- Efecto de Enfoque Refinado (Glow Naranja) --- */
+  /* --- Efecto de Enfoque Refinado (Lavanda) --- */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
   button[role="combobox"]:focus-visible {
     outline: none !important;
-    border-color: #ea6839 !important;
+    border-color: var(--color-support-2) !important;
     /* Sombras sutiles en degrade */
     box-shadow:
-      0 0 0 2px rgba(234, 104, 57, 0.1),
-      0 0 0 4px rgba(234, 104, 57, 0.05) !important;
+      0 0 0 2px rgba(122, 84, 152, 0.15),
+      0 0 0 4px rgba(122, 84, 152, 0.06) !important;
     transition: all 0.2s ease-in-out;
   }
 }

@@ -104,7 +104,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
         <div className="flex flex-col min-w-0">
           <Link
             href={`/client/${row.original.id}`}
-            className="font-black text-primary text-[13px] leading-tight hover:text-secondary transition-colors uppercase tracking-tight"
+            className="font-black text-primary text-[13px] leading-tight hover:text-secondary-text transition-colors uppercase tracking-tight"
           >
             {row.original.businessName}
           </Link>
@@ -181,7 +181,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
             className={cn(
               "h-5 w-5 rounded-full flex items-center justify-center transition-colors",
               count > 0
-                ? "bg-secondary text-white shadow-sm"
+                ? "bg-secondary text-primary shadow-sm"
                 : "bg-slate-200 text-slate-400",
             )}
           >
@@ -191,7 +191,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
             className={cn(
               "text-xs font-black tracking-tighter",
               count > 0
-                ? "text-slate-700 group-hover/badge:text-secondary"
+                ? "text-slate-700 group-hover/badge:text-secondary-text"
                 : "text-slate-400",
             )}
           >
@@ -200,7 +200,7 @@ export const columns: ColumnDef<ClientListItem>[] = [
           {count > 0 && (
             <ChevronRight
               size={12}
-              className="text-slate-300 group-hover/badge:text-secondary group-hover/badge:translate-x-0.5 transition-all"
+              className="text-slate-300 group-hover/badge:text-secondary-text group-hover/badge:translate-x-0.5 transition-all"
             />
           )}
         </div>

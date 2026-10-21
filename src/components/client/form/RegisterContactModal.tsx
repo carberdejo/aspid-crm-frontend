@@ -67,7 +67,7 @@ export function RegisterContactModal({
         <DialogTrigger asChild>
           <Button
             variant={triggerVariant}
-            className="gap-2 border-secondary text-secondary hover:bg-secondary hover:text-white transition-all font-bold uppercase text-[10px] tracking-widest h-9"
+            className="gap-2 border-secondary text-secondary-text hover:bg-secondary hover:text-primary transition-all font-bold uppercase text-[10px] tracking-widest h-9"
           >
             <UserPlus size={14} />
             Nuevo Contacto
@@ -77,7 +77,7 @@ export function RegisterContactModal({
 
       <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-xl border-none shadow-2xl bg-white">
         <DialogHeader className="p-8 pb-4">
-          <DialogTitle className="text-2xl font-bold text-secondary flex items-center gap-2 uppercase tracking-tighter">
+          <DialogTitle className="text-2xl font-bold text-secondary-text flex items-center gap-2 uppercase tracking-tighter">
             <div className="w-1 h-6 bg-gray-200 rounded-full" />
             Añadir Contacto
           </DialogTitle>

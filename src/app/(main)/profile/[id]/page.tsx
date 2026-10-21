@@ -80,7 +80,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="h-[80vh] flex items-center justify-center">
-        <Loader2 className="animate-spin text-secondary" size={40} />
+        <Loader2 className="animate-spin text-secondary-text" size={40} />
       </div>
     );
   }
@@ -196,7 +196,7 @@ export default function ProfilePage() {
                   className="flex items-center justify-between p-5 rounded-2xl bg-slate-50/50 border border-slate-100 group hover:border-secondary/30 hover:bg-white transition-all shadow-sm hover:shadow-md"
                 >
                   <div className="flex items-center gap-5">
-                    <div className="p-3 bg-white rounded-xl text-slate-400 group-hover:text-secondary shadow-sm transition-colors border border-slate-100">
+                    <div className="p-3 bg-white rounded-xl text-slate-400 group-hover:text-secondary-text shadow-sm transition-colors border border-slate-100">
                       <Monitor size={22} />
                     </div>
                     <div className="space-y-1">
@@ -275,7 +275,7 @@ function InfoItem({
 }) {
   return (
     <div className="flex items-center gap-4 group">
-      <div className="p-2.5 bg-slate-50 rounded-xl text-secondary group-hover:bg-secondary/10 transition-colors border border-slate-100">
+      <div className="p-2.5 bg-slate-50 rounded-xl text-secondary-text group-hover:bg-secondary/10 transition-colors border border-slate-100">
         {icon}
       </div>
       <div>

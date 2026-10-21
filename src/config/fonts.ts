@@ -1,8 +1,10 @@
-import { Montserrat } from "next/font/google";
+import { Sora } from "next/font/google";
 
-export const montserratAlternates = Montserrat({
+// Tipografía ASPID: 400 texto corrido, 500 menús, 600 etiquetas y botones,
+// 700 títulos y logotipo. next/font la sirve desde el propio servidor
+export const sora = Sora({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-montserrat",
+  variable: "--font-sora",
 });

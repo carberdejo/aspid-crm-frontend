@@ -130,7 +130,7 @@ export function VisitForm({
           {/* <Button 
             type="button" 
             onClick={openClient}
-            className="shrink-0 h-14 px-8 rounded-2xl bg-primary hover:bg-primary-dark text-white font-bold flex gap-2 shadow-lg shadow-blue-900/10 active:scale-95 transition-all"
+            className="shrink-0 h-14 px-8 rounded-2xl bg-primary hover:bg-primary-dark text-white font-bold flex gap-2 shadow-lg shadow-primary/10 active:scale-95 transition-all"
           >
             <UserPlus size={18} />
             <span className="uppercase tracking-widest text-[10px]">Registrar Cliente</span>
@@ -255,7 +255,7 @@ export function VisitForm({
           <Button
             type="submit"
             disabled={isLoading}
-            className="h-14 px-12 rounded-2xl bg-secondary hover:bg-orange-500 text-white font-black uppercase tracking-widest text-xs flex gap-3 shadow-lg shadow-orange-500/20 active:scale-95 transition-all"
+            className="h-14 px-12 rounded-2xl bg-secondary hover:bg-secondary-dark text-primary font-black uppercase tracking-widest text-xs flex gap-3 shadow-lg shadow-secondary/20 active:scale-95 transition-all"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" />

@@ -154,7 +154,7 @@ export function ClientSearchSelector({
                   className="cursor-pointer py-3"
                 >
                   <Check
-                    className={`mr-2 h-4 w-4 ${value === String(client.id) ? "opacity-100 text-secondary" : "opacity-0"}`}
+                    className={`mr-2 h-4 w-4 ${value === String(client.id) ? "opacity-100 text-secondary-text" : "opacity-0"}`}
                   />
                   <div className="flex flex-col">
                     <span className="font-bold text-primary text-xs uppercase">

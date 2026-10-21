@@ -16,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import logoAcmeWhite from "@/assets/logo-acme.png";
 import { useAuth } from "@/hooks";
 
 export default function LoginPage() {
@@ -30,7 +29,6 @@ export default function LoginPage() {
     },
   });
   const onSubmit = (values: LoginFormValues) => {
-    console.log("🚀 Datos capturados con RHF:", values);
     login(values);
   };
 
@@ -39,7 +37,7 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen w-full flex flex-col bg-primary overflow-y-auto">
       <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2a53]/50 via-transparent to-primary" />
+        <div className="absolute inset-0 bg-gradient-to-b from-support-1/60 via-transparent to-primary" />
       </div>
 
       <main className="relative z-10 flex-1 w-full max-w-7xl mx-auto flex items-center justify-center p-8 md:p-12">
@@ -48,26 +46,21 @@ export default function LoginPage() {
           <div className="lg:col-span-5 flex flex-col space-y-8 animate-in slide-in-from-left-8 duration-700">
             <div className="space-y-4">
               <Image
-                src={logoAcmeWhite}
-                alt="ACME & CIA Logo"
-                width={220}
-                height={70}
+                src="/brand/logo-on-dark.png"
+                alt="ASPID CRM"
+                width={320}
+                height={98}
                 className="object-contain"
                 priority
               />
               <div className="h-1 w-20 bg-secondary rounded-full" />
-              <p className="text-slate-300 text-sm font-medium tracking-widest uppercase opacity-70">
-                Innovación y tecnología para la industria
+              <p className="text-on-dark-muted text-sm font-medium tracking-widest uppercase">
+                Gestión comercial de clientes, visitas y ventas
               </p>
-            </div>
-            <div className="space-y-2">
-              <h1 className="text-white text-6xl font-black uppercase tracking-tighter leading-none">
-                CONCAR <span className="text-secondary">ACME & CIA</span>
-              </h1>
             </div>
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 w-fit px-4 py-2 rounded-full">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">
+              <span className="text-[10px] text-on-dark-muted font-bold uppercase tracking-widest">
                 Sistema Operativo v1.0
               </span>
             </div>
@@ -86,7 +79,7 @@ export default function LoginPage() {
 
                 <div className="space-y-8">
                   <div className="space-y-2 border-b border-slate-100 pb-6">
-                    <h3 className="text-2xl font-black text-secondary uppercase tracking-tight">
+                    <h3 className="text-2xl font-black text-primary uppercase tracking-tight">
                       Iniciar Sesión
                     </h3>
                     <p className="text-sm text-slate-500 font-medium italic text-balance">
@@ -106,7 +99,7 @@ export default function LoginPage() {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="example.personal@concar.com"
+                              placeholder="usuario@empresa.com"
                               className={`h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-secondary transition-all ${form.formState.errors.email && "border-red-500"}`}
                               {...field}
                             />
@@ -166,7 +159,7 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-accent hover:bg-accent/90 text-white font-black h-14 rounded-2xl shadow-lg shadow-accent/20 flex items-center justify-between px-8 transition-all group"
+                    className="w-full bg-secondary hover:bg-secondary-dark text-primary font-black h-14 rounded-2xl shadow-lg shadow-secondary/20 flex items-center justify-between px-8 transition-all group"
                   >
                     <span className="uppercase tracking-widest text-xs">
                       {isLoading ? "Procesando..." : "Ingresar al sistema"}
@@ -185,8 +178,8 @@ export default function LoginPage() {
       </main>
 
       <footer className="relative z-10 w-full py-10">
-        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.5em] text-center px-6">
-          Acme & Cia © 2026 - Innovation for industry
+        <div className="text-[9px] text-on-dark-muted/70 font-bold uppercase tracking-[0.5em] text-center px-6">
+          ASPID CRM © {new Date().getFullYear()}
         </div>
       </footer>
     </div>

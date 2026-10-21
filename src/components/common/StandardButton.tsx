@@ -13,7 +13,7 @@ export function StandardButton({
   icon,
   label,
   // Tu color por defecto (ej. para Registrar Empresa)
-  colorClass = "bg-secondary hover:bg-secondary-dark text-white",
+  colorClass = "bg-secondary hover:bg-secondary-dark text-primary",
   className,
   ...props
 }: StandardButtonProps) {

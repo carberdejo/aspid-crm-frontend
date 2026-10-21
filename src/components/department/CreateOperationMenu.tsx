@@ -30,7 +30,7 @@ export function CreateOperationMenu({ onAction }: CreateOperationMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-secondary hover:bg-secondary/95 text-white font-black h-11 px-6 rounded-xl flex gap-2.5 shadow-lg shadow-primary/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+        <Button className="bg-secondary hover:bg-secondary/95 text-primary font-black h-11 px-6 rounded-xl flex gap-2.5 shadow-lg shadow-primary/10 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
           <Plus size={14} strokeWidth={3} />
           Nueva Operación
           <ChevronDown size={12} className="opacity-50" />

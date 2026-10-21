@@ -175,7 +175,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
             name="ruc"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[10px] font-black text-secondary tracking-widest uppercase flex items-center gap-2">
+                <FormLabel className="text-[10px] font-black text-secondary-text tracking-widest uppercase flex items-center gap-2">
                   <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
                   Paso 1: Validación RUC
                 </FormLabel>
@@ -249,7 +249,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="Ej. ACME SAC"
+                    placeholder="Ej. ANDINA SAC"
                     className="h-11 border-gray-200"
                   />
                 </FormControl>
@@ -411,7 +411,7 @@ export function ClientForm({ onSuccess }: ClientFormProps) {
           <Button
             type="submit"
             disabled={isCreating || isSearchingRuc}
-            className="bg-secondary hover:bg-secondary/90 text-white px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
+            className="bg-secondary hover:bg-secondary/90 text-primary px-10 h-12 rounded-lg font-black transition-all shadow-md active:scale-95"
           >
             {isCreating ? "PROCESANDO..." : "REGISTRAR EMPRESA"}
           </Button>

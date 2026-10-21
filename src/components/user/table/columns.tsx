@@ -46,7 +46,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const role = row.getValue("role") as UserRole;
       return (
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#1a2a53]/10 text-[#1a2a53]">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-primary/10 text-primary">
           {getRoleLabel(role)}
         </span>
       );
@@ -67,7 +67,7 @@ export const columns: ColumnDef<User>[] = [
           {departments.map((dept, index) => (
             <span
               key={index}
-              className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20 uppercase"
+              className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-secondary/10 text-secondary-text border border-secondary/20 uppercase"
             >
               {dept}
             </span>
@@ -131,7 +131,7 @@ export const columns: ColumnDef<User>[] = [
               // TODO: Implementar edición
               console.log("Editar usuario:", user.codUser);
             }}
-            className="p-2 hover:bg-[#1a2a53]/10 rounded-md text-[#1a2a53] transition-colors"
+            className="p-2 hover:bg-primary/10 rounded-md text-primary transition-colors"
             title="Editar usuario"
           >
             <Edit className="h-4 w-4" />

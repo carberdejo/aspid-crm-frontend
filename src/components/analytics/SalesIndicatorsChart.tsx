@@ -18,7 +18,7 @@ export function SalesIndicatorsChart({
   const seriesFacturado = data.map((d) => d.total.facturado);
 
   const option = {
-    color: ["#1e293b", "#f97316", "#10b981"], // Slate-800, Orange-500 (OC Pendiente), Emerald-500
+    color: ["#2d1c42", "#c88b00", "#10b981"], // Violet Night, Dorado (OC Pendiente), Emerald-500
     tooltip: {
       trigger: "axis",
       axisPointer: { type: "shadow" },

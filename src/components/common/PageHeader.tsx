@@ -43,11 +43,11 @@ export default function PageHeader({
   // Mantenemos tu paleta corporativa y añadimos las de los módulos operativos
   const themeStyles = {
     corporate: {
-      iconBg: "border-[#1a2a53]/20 text-[#1a2a53]",
-      badge: "bg-[#f8aa19] text-[#1a2a53] shadow-sm border border-[#f8aa19]/50",
-      highlight: "text-[#ea6839]",
-      bgSolid: "bg-[#ea6839]",
-      gradientLine: "from-[#1a2a53] via-[#ea6839] to-transparent",
+      iconBg: "border-primary/20 text-primary",
+      badge: "bg-accent text-primary shadow-sm border border-accent/50",
+      highlight: "text-secondary-text",
+      bgSolid: "bg-secondary",
+      gradientLine: "from-primary via-secondary to-transparent",
     },
     emerald: {
       iconBg: "border-emerald-200 text-emerald-600",

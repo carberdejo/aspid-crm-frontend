@@ -33,7 +33,7 @@ export function PortfolioTeamDetail({ row }: PortfolioTeamDetailProps) {
             <span className="font-bold text-sm text-primary">
               {member.user.firstName} {member.user.lastName}
             </span>
-            <span className="text-xs font-semibold text-secondary mt-1">
+            <span className="text-xs font-semibold text-secondary-text mt-1">
               {member.roleInPortfolio}
             </span>
           </div>

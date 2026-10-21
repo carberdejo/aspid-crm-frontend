@@ -46,7 +46,7 @@ export function ContactList({ clientId }: ContactListProps) {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-10 gap-3 text-muted-foreground italic">
-          <Loader2 className="h-4 w-4 animate-spin text-secondary" />
+          <Loader2 className="h-4 w-4 animate-spin text-secondary-text" />
           <span className="text-[10px] font-bold uppercase tracking-widest">
             Sincronizando...
           </span>
@@ -63,7 +63,7 @@ export function ContactList({ clientId }: ContactListProps) {
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-slate-100 group-hover:bg-secondary transition-colors" />
 
                 <div className="flex items-center gap-4 w-full">
-                  <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-secondary/10 group-hover:text-secondary transition-colors shrink-0">
+                  <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-secondary/10 group-hover:text-secondary-text transition-colors shrink-0">
                     <User size={18} />
                   </div>
 
@@ -79,7 +79,7 @@ export function ContactList({ clientId }: ContactListProps) {
                     </div>
 
                     <div className="flex items-center gap-3 mt-2">
-                      <div className="flex items-center gap-1 text-secondary">
+                      <div className="flex items-center gap-1 text-secondary-text">
                         <Phone size={11} />
                         <span className="text-[11px] font-black">
                           {contact.phone}
@@ -88,7 +88,7 @@ export function ContactList({ clientId }: ContactListProps) {
                       <div className="flex items-center gap-1 text-slate-400">
                         <Mail size={11} />
                         <span className="text-[10px] truncate max-w-[100px]">
-                          email@acme.com
+                          email@empresa.com
                         </span>
                       </div>
                     </div>
@@ -103,7 +103,7 @@ export function ContactList({ clientId }: ContactListProps) {
             <div className="mt-6 flex justify-center">
               <Link
                 href={`/client/${clientId}/contacts`}
-                className="group flex items-center gap-2 px-6 py-2 bg-white border border-slate-200 rounded-full text-[10px] font-black text-primary hover:border-secondary hover:text-secondary transition-all shadow-sm uppercase tracking-[0.2em]"
+                className="group flex items-center gap-2 px-6 py-2 bg-white border border-slate-200 rounded-full text-[10px] font-black text-primary hover:border-secondary hover:text-secondary-text transition-all shadow-sm uppercase tracking-[0.2em]"
               >
                 Ver todos los contactos ({contacts.length})
                 <ChevronRight

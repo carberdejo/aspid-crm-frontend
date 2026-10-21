@@ -20,7 +20,7 @@ export function SegmentActionCell({
         variant="ghost"
         size="icon"
         onClick={() => onEdit(segment)}
-        className="h-8 w-8 text-slate-400 hover:text-secondary hover:bg-orange-50"
+        className="h-8 w-8 text-slate-400 hover:text-secondary-text hover:bg-secondary/10"
         title="Editar"
       >
         <Edit size={16} />

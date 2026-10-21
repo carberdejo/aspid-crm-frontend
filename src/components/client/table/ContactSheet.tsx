@@ -42,7 +42,7 @@ export function ContactSheet({
                 Directorio
               </SheetTitle>
               {/* Subtítulo con scroll horizontal o wrap controlado */}
-              <SheetDescription className="text-[9px] sm:text-[10px] font-bold text-secondary uppercase tracking-[0.15em] leading-relaxed break-words">
+              <SheetDescription className="text-[9px] sm:text-[10px] font-bold text-secondary-text uppercase tracking-[0.15em] leading-relaxed break-words">
                 {clientName}
               </SheetDescription>
             </div>
@@ -62,7 +62,7 @@ export function ContactSheet({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50/30">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+              <Loader2 className="h-8 w-8 animate-spin text-secondary-text" />
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Sincronizando Directorio...
               </p>
@@ -78,7 +78,7 @@ export function ContactSheet({
                 >
                   {/* Fila Superior: Avatar + Info Básica */}
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="h-10 w-10 shrink-0 rounded-xl bg-slate-900 flex items-center justify-center text-white text-sm font-black italic group-hover:bg-secondary transition-colors">
+                    <div className="h-10 w-10 shrink-0 rounded-xl bg-slate-900 flex items-center justify-center text-white text-sm font-black italic group-hover:bg-secondary group-hover:text-primary transition-colors">
                       {c.firstName[0]}
                       {c.lastName[0]}
                     </div>

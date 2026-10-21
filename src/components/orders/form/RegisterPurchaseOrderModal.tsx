@@ -61,7 +61,7 @@ export function RegisterPurchaseOrderModal({
             <StandardButton
               icon={ShoppingCart}
               label="Orden de Compra"
-              colorClass="bg-accent hover:bg-accent-dark text-white"
+              colorClass="bg-accent hover:bg-secondary text-primary"
             />
           )}
         </DialogTrigger>

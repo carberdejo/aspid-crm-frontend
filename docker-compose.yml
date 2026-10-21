@@ -1,23 +1,23 @@
 version: "3.8"
 
 services:
-  concar-frontend:
-    image: concar-frontend:v1.0
+  aspid-frontend:
+    image: aspid-frontend:v1.0
     build:
       context: .
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-    container_name: concar-frontend-app
+    container_name: aspid-frontend-app
     restart: always
     ports:
       - "${FRONTEND_PORT:-3001}:3000"
     env_file:
       - .env
     networks:
-      - concar_network
+      - aspid_network
 
 networks:
-  concar_network:
+  aspid_network:
     external: true
-    name: red_global_concar
+    name: red_global_aspid

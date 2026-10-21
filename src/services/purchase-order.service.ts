@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   AnnulDocumentDto,
   ApiResponse,
@@ -14,7 +14,7 @@ export const PurchaseOrderService = {
   findAll: async (
     filters: PurchaseOrderFilters,
   ): Promise<PaginatedResponse<PurchaseOrder>> => {
-    const { data } = await concarApi.get<
+    const { data } = await aspidApi.get<
       ApiResponse<PaginatedResponse<PurchaseOrder>>
     >("/orders", {
       params: filters,
@@ -23,14 +23,14 @@ export const PurchaseOrderService = {
   },
 
   findOne: async (id: number): Promise<PurchaseOrder> => {
-    const { data } = await concarApi.get<ApiResponse<PurchaseOrder>>(
+    const { data } = await aspidApi.get<ApiResponse<PurchaseOrder>>(
       `/orders/${id}`,
     );
     return data.data;
   },
 
   create: async (payload: CreatePurchaseOrderDto): Promise<string> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.post<ApiResponse<ResponseOperation>>(
       "/orders",
       payload,
     );
@@ -41,7 +41,7 @@ export const PurchaseOrderService = {
     id: number,
     payload: UpdatePurchaseOrderDto,
   ): Promise<ResponseOperation> => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/orders/${id}`,
       payload,
     );
@@ -53,7 +53,7 @@ export const PurchaseOrderService = {
     id: number,
     payload: AnnulDocumentDto,
   ): Promise<ResponseOperation> => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/orders/${id}/annul`,
       payload,
     );

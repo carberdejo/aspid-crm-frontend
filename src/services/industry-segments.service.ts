@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   ApiResponse,
   PaginatedResponse,
@@ -19,34 +19,34 @@ export const industrySegmentsService = {
   ): Promise<PaginatedResponse<IndustrySegment>> => {
     const params = cleanParams(query as Record<string, unknown>);
 
-    const { data } = await concarApi.get<
+    const { data } = await aspidApi.get<
       ApiResponse<PaginatedResponse<IndustrySegment>>
     >(`/catalogs/segments`, { params });
     return data.data;
   },
 
   create: async (data: IndustrySegmentCreateDto) => {
-    const { data: responseData } = await concarApi.post<
+    const { data: responseData } = await aspidApi.post<
       ApiResponse<ResponseOperation>
     >(`/catalogs/segments`, data);
     return responseData.data;
   },
 
   update: async (id: number, data: IndustrySegmentUpdateDto) => {
-    const { data: responseData } = await concarApi.patch<
+    const { data: responseData } = await aspidApi.patch<
       ApiResponse<ResponseOperation>
     >(`/catalogs/segments/${id}`, data);
     return responseData.data;
   },
 
   deactivate: async (id: number) => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/catalogs/segments/${id}/deactivate`,
     );
     return data.data;
   },
   reactivate: async (id: number) => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/catalogs/segments/${id}/reactivate`,
     );
     return data.data;

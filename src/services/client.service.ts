@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import { ImportResults } from "@/hooks/client/useImportClients";
 import {
   ApiResponse,
@@ -23,7 +23,7 @@ export const clientService = {
     // cleanParams lo manejará automáticamente.
     const params = cleanParams(filters as Record<string, unknown>);
     // console.log("datos en service", params);
-    const { data } = await concarApi.get<
+    const { data } = await aspidApi.get<
       ApiResponse<PaginatedResponse<ClientListItem>>
     >("/clients", {
       params,
@@ -32,14 +32,14 @@ export const clientService = {
   },
 
   getClientDetail: async (id: number): Promise<ClientDetail> => {
-    const { data } = await concarApi.get<ApiResponse<ClientDetail>>(
+    const { data } = await aspidApi.get<ApiResponse<ClientDetail>>(
       `/clients/${id}`,
     );
     return data.data;
   },
 
   getContactsByClient: async (codClient: number): Promise<Contact[]> => {
-    const { data } = await concarApi.get<ApiResponse<Contact[]>>(
+    const { data } = await aspidApi.get<ApiResponse<Contact[]>>(
       `/clients/${codClient}/contacts`,
     );
     return data.data;
@@ -48,14 +48,14 @@ export const clientService = {
   createClient: async (
     clientData: ClientCreateDto,
   ): Promise<ClientAndContactResponseCreate<ClientItem>> => {
-    const { data } = await concarApi.post<
+    const { data } = await aspidApi.post<
       ApiResponse<ClientAndContactResponseCreate<ClientItem>>
     >("/clients", clientData);
     return data.data;
   },
 
   findByRuc: async (ruc: string) => {
-    const { data } = await concarApi.get<ApiResponse<ResponseRuc>>(
+    const { data } = await aspidApi.get<ApiResponse<ResponseRuc>>(
       `/clients/sunat/${ruc}`,
     );
     return data.data;
@@ -64,7 +64,7 @@ export const clientService = {
   createContact: async (
     contactData: ContactCreateDto,
   ): Promise<ClientAndContactResponseCreate<Contact>> => {
-    const { data } = await concarApi.post<
+    const { data } = await aspidApi.post<
       ApiResponse<ClientAndContactResponseCreate<Contact>>
     >("/clients/contacts", contactData);
     console.log({ dataservice: data.data });
@@ -74,7 +74,7 @@ export const clientService = {
   importClientsFromExcel: async (file: File) => {
     const formData = new FormData(); // Creamos un FormData para enviar el archivo como multipart/form-data
     formData.append("file", file); // 'file' es el nombre que espera el FileInterceptor en NestJS
-    const { data } = await concarApi.post<ApiResponse<ImportResults>>(
+    const { data } = await aspidApi.post<ApiResponse<ImportResults>>(
       "/clients/import-excel",
       formData, // Enviamos el archivo al backend
       {
@@ -90,7 +90,7 @@ export const clientService = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { limit, offset, ...exportFilters } = filter; // Desestructuramos para limpiar el objeto de filtros
     console.log({ exportFilters });
-    const { data } = await concarApi.post<Blob>(
+    const { data } = await aspidApi.post<Blob>(
       "/clients/export-excel",
       exportFilters, // Enviamos solo los filtros relevantes para la exportación
       {

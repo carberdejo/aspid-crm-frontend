@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import { cleanParams, DateFilterType, getDateRange } from "@/lib/utils";
 import { ApiResponse } from "../interfaces";
 import {
@@ -10,7 +10,7 @@ import {
 export const analyticsService = {
   getQuotesSummary: async (filters: MetricsFilters, filter: DateFilterType) => {
     const { startDate, endDate } = getDateRange(filter);
-    const { data } = await concarApi.get<ApiResponse<QuotesSummary>>(
+    const { data } = await aspidApi.get<ApiResponse<QuotesSummary>>(
       `/analytics/quotes-summary`,
       {
         params: cleanParams({ ...filters, startDate, endDate }),
@@ -20,7 +20,7 @@ export const analyticsService = {
   },
   getVisitStats: async (filters: MetricsFilters, filter: DateFilterType) => {
     const { startDate, endDate } = getDateRange(filter);
-    const { data } = await concarApi.get<ApiResponse<VisitStatsResponse>>(
+    const { data } = await aspidApi.get<ApiResponse<VisitStatsResponse>>(
       `/analytics/visits-summary`,
       {
         params: cleanParams({ ...filters, startDate, endDate }),

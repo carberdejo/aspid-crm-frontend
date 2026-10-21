@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   UserProfile,
   ApiResponse,
@@ -15,9 +15,9 @@ export const authService = {
 
     console.log(
       "[authService] POST ->",
-      `${concarApi.defaults.baseURL || ""}/auth/login`,
+      `${aspidApi.defaults.baseURL || ""}/auth/login`,
     );
-    const { data } = await concarApi.post<ApiResponse<LoginResponse>>(
+    const { data } = await aspidApi.post<ApiResponse<LoginResponse>>(
       "/auth/login",
       credentials,
     );
@@ -28,13 +28,13 @@ export const authService = {
 
   // Ejemplo de logout si necesitas avisar al backend
   logout: async () => {
-    await concarApi.post("/auth/logout");
+    await aspidApi.post("/auth/logout");
   },
   /**
    * Obtener perfil de usuario
    */
   getProfile: async (codUser: string): Promise<UserProfile> => {
-    const { data } = await concarApi.get<ApiResponse<UserProfile>>(
+    const { data } = await aspidApi.get<ApiResponse<UserProfile>>(
       `/auth/profile/${codUser}`,
     );
     return data.data;
@@ -43,7 +43,7 @@ export const authService = {
   // Cierra una sesión específica por ID
   terminateSession: async (logout: Logout): Promise<ResponseOperation> => {
     console.log("🚀 Payload enviado al servidor:", logout);
-    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.post<ApiResponse<ResponseOperation>>(
       `/auth/logout`,
       logout,
     );
@@ -53,7 +53,7 @@ export const authService = {
   // Cierra todas las sesiones excepto la actual (o todas)
   terminateAllSessions: async (logout: Logout) => {
     console.log("🚀 Payload enviado al servidor ALL:", logout);
-    const { data } = await concarApi.post("/auth/logout", logout);
+    const { data } = await aspidApi.post("/auth/logout", logout);
     return data;
   },
 };

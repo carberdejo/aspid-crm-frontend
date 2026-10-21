@@ -35,7 +35,7 @@ Compact instruction file for AI agents working on this Next.js 16 + React 19 fro
   - Blocks unauthorized access to protected routes (all except `/auth/*`)
   - Redirects authenticated users away from login pages
   - Does NOT validate token expiration (Axios interceptor handles 401 refresh)
-- **Axios interceptor** (`src/api/concarApi.ts`):
+- **Axios interceptor** (`src/api/aspidApi.ts`):
   - Injects Bearer token in Authorization header
   - Handles 401 → refresh token flow automatically
   - Validates API response format: `{ code: 1, data: {...} }`
@@ -78,7 +78,7 @@ npx tsc --noEmit     # Type check only (no emit)
 - `src/services/` — API call functions (auth.service, department.service)
 - `src/hooks/` — Custom hooks (useAuth, useLogout, useDepartments)
 - `src/interfaces/` — TypeScript type definitions
-- `src/api/concarApi.ts` — Axios instance with interceptors
+- `src/api/aspidApi.ts` — Axios instance with interceptors
 - `middleware.ts` — Request-level auth protection
 
 ### Important Files

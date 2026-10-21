@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   ApiResponse,
   Delivery,
@@ -15,7 +15,7 @@ export const deliveryService = {
     filters: Partial<PurchaseOrderFilters> = {},
   ): Promise<PaginatedResponse<Delivery>> => {
     const params = cleanParams(filters as Record<string, unknown>);
-    const { data } = await concarApi.get<
+    const { data } = await aspidApi.get<
       ApiResponse<PaginatedResponse<Delivery>>
     >("/deliverys", { params });
     return data.data;
@@ -24,7 +24,7 @@ export const deliveryService = {
   createDelivery: async (
     clientData: DeliveryCreateDto,
   ): Promise<ResponseOperation> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.post<ApiResponse<ResponseOperation>>(
       "/deliverys",
       clientData,
     );
@@ -35,7 +35,7 @@ export const deliveryService = {
     id: number,
     update: Partial<DeliveryCreateDto>,
   ): Promise<ResponseOperation> => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/deliverys/${id}`,
       update,
     );
@@ -44,7 +44,7 @@ export const deliveryService = {
 
   // Eliminado lógico en el backend: la entrega deja de aparecer en los listados
   removeDelivery: async (id: number): Promise<ResponseOperation> => {
-    const { data } = await concarApi.delete<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.delete<ApiResponse<ResponseOperation>>(
       `/deliverys/${id}`,
     );
     return data.data;

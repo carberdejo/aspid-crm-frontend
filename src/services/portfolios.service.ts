@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   ApiResponse,
   PaginatedResponse,
@@ -16,7 +16,7 @@ export const portfoliosService = {
   getPortfolios: async (
     query: PortfolioQuery,
   ): Promise<PaginatedResponse<Portfolio>> => {
-    const { data } = await concarApi.get<
+    const { data } = await aspidApi.get<
       ApiResponse<PaginatedResponse<Portfolio>>
     >(`/portfolios`, { params: query });
     return data.data;
@@ -24,7 +24,7 @@ export const portfoliosService = {
 
   // Los que usarás después para el CRUD del Admin
   create: async (data: PortfolioCreateDto): Promise<ResponseOperation> => {
-    const { data: response } = await concarApi.post<
+    const { data: response } = await aspidApi.post<
       ApiResponse<ResponseOperation>
     >(`/portfolios`, data);
     return response.data;
@@ -34,14 +34,14 @@ export const portfoliosService = {
     id: string,
     data: PortfolioUpdateDto,
   ): Promise<ResponseOperation> => {
-    const { data: response } = await concarApi.patch<
+    const { data: response } = await aspidApi.patch<
       ApiResponse<ResponseOperation>
     >(`/portfolios/${id}`, data);
     return response.data;
   },
 
   deactivate: async (id: string): Promise<ResponseOperation> => {
-    const { data: response } = await concarApi.patch<
+    const { data: response } = await aspidApi.patch<
       ApiResponse<ResponseOperation>
     >(`/portfolios/${id}/deactivate`, {});
     return response.data;

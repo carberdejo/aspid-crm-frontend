@@ -103,7 +103,7 @@ src/
 │   ├── page.tsx           # Root redirect page (handles role-based routing)
 │   └── globals.css        # Global styles
 ├── api/                   # API configuration
-│   └── concarApi.ts       # Axios instance with interceptors
+│   └── aspidApi.ts       # Axios instance with interceptors
 ├── components/            # React components
 │   ├── auth/             # Authentication components
 │   │   ├── AuthGuard.tsx # Client-side auth protection + dept loading
@@ -262,7 +262,7 @@ export const cookieUtils = {
 
 ### API Integration
 
-#### Axios Configuration (`src/api/concarApi.ts`)
+#### Axios Configuration (`src/api/aspidApi.ts`)
 - **Request interceptor**: Automatically adds Bearer token to all requests
 - **Response interceptor**: Handles API response format `{code: 1, data: {...}}`
 - **Error handling**: Extracts error messages from API responses

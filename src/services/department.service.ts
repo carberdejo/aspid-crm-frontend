@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   ApiResponse,
   Department,
@@ -11,7 +11,7 @@ export const DepartmentService = {
     // Limpiar parámetros antes de enviar
 
     const { data } =
-      await concarApi.get<ApiResponse<PaginatedResponse<Department>>>(
+      await aspidApi.get<ApiResponse<PaginatedResponse<Department>>>(
         "/departments",
       );
 
@@ -20,7 +20,7 @@ export const DepartmentService = {
 
   // Usuarios activos del área. El admin consulta cualquiera; un empleado solo las suyas
   getMembers: async (departmentId: number) => {
-    const { data } = await concarApi.get<ApiResponse<DepartmentMember[]>>(
+    const { data } = await aspidApi.get<ApiResponse<DepartmentMember[]>>(
       `/departments/${departmentId}/members`,
     );
 

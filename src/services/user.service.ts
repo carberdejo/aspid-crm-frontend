@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import { UserCreateDto, UserDetail, UserFilters } from "@/interfaces";
 import {
   ApiResponse,
@@ -38,7 +38,7 @@ export const userService = {
       filters as Record<string, string | number | undefined>,
     );
 
-    const { data } = await concarApi.get<ApiResponse<PaginatedResponse<User>>>(
+    const { data } = await aspidApi.get<ApiResponse<PaginatedResponse<User>>>(
       "/users",
       {
         params,
@@ -52,7 +52,7 @@ export const userService = {
    * Obtener un usuario por su código
    */
   getById: async (codUser: number): Promise<UserDetail> => {
-    const { data } = await concarApi.get<ApiResponse<UserDetail>>(
+    const { data } = await aspidApi.get<ApiResponse<UserDetail>>(
       `/users/${codUser}`,
     );
     return data.data;
@@ -63,7 +63,7 @@ export const userService = {
    */
   create: async (userData: UserCreateDto): Promise<string> => {
     // console.log({userData})
-    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.post<ApiResponse<ResponseOperation>>(
       "/users",
       userData,
     );
@@ -74,7 +74,7 @@ export const userService = {
    * Actualizar usuario existente
    */
   update: async (codUser: number, userData: Partial<User>): Promise<User> => {
-    const { data } = await concarApi.patch<ApiResponse<User>>(
+    const { data } = await aspidApi.patch<ApiResponse<User>>(
       `/users/${codUser}`,
       userData,
     );
@@ -85,6 +85,6 @@ export const userService = {
    * Eliminar usuario
    */
   delete: async (codUser: number): Promise<void> => {
-    await concarApi.delete(`/users/${codUser}`);
+    await aspidApi.delete(`/users/${codUser}`);
   },
 };

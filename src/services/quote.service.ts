@@ -1,4 +1,4 @@
-import { concarApi } from "@/api/concarApi";
+import { aspidApi } from "@/api/aspidApi";
 import {
   ApiResponse,
   PaginatedResponse,
@@ -38,7 +38,7 @@ export const quoteService = {
   ): Promise<QuotePaginatedResponse> => {
     const params = cleanParams(filters);
 
-    const { data } = await concarApi.get<ApiResponse<QuotePaginatedResponse>>(
+    const { data } = await aspidApi.get<ApiResponse<QuotePaginatedResponse>>(
       "/quotes",
       { params },
     );
@@ -50,7 +50,7 @@ export const quoteService = {
    * Obtener detalle completo de una cotización
    */
   getById: async (id: number): Promise<QuoteDetail> => {
-    const { data } = await concarApi.get<ApiResponse<QuoteDetail>>(
+    const { data } = await aspidApi.get<ApiResponse<QuoteDetail>>(
       `/quotes/${id}`,
     );
     return data.data;
@@ -61,7 +61,7 @@ export const quoteService = {
    * El backend solo responde { message: "..." }
    */
   create: async (quoteData: QuoteCreateDto): Promise<string> => {
-    const { data } = await concarApi.post<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.post<ApiResponse<ResponseOperation>>(
       "/quotes",
       quoteData,
     );
@@ -75,7 +75,7 @@ export const quoteService = {
     id: number,
     quoteData: Partial<QuoteCreateDto>,
   ): Promise<QuoteDetail> => {
-    const { data } = await concarApi.patch<ApiResponse<QuoteDetail>>(
+    const { data } = await aspidApi.patch<ApiResponse<QuoteDetail>>(
       `/quotes/${id}`,
       quoteData,
     );
@@ -89,7 +89,7 @@ export const quoteService = {
     id: number,
     { statusReason }: QuoteDelete,
   ): Promise<string> => {
-    const { data } = await concarApi.patch<ApiResponse<ResponseOperation>>(
+    const { data } = await aspidApi.patch<ApiResponse<ResponseOperation>>(
       `/quotes/delete/${id}`,
       {
         statusReason,

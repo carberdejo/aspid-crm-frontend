@@ -6,11 +6,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_BASE) {
   console.error(
-    "[concarApi] WARNING: NEXT_PUBLIC_API_URL is not set. Requests will be sent to the frontend origin.",
+    "[aspidApi] WARNING: NEXT_PUBLIC_API_URL is not set. Requests will be sent to the frontend origin.",
   );
 }
 
-export const concarApi = axios.create({
+export const aspidApi = axios.create({
   baseURL: API_BASE,
 });
 
@@ -22,7 +22,7 @@ const redirectToLogin = () => {
 };
 
 // 1. Interceptor de Petición: Inyectar el Access Token
-concarApi.interceptors.request.use((config) => {
+aspidApi.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
 
   // ✅ CASO 1: Soporta que no envíen token (Lo bloquea si es privada)
@@ -49,7 +49,7 @@ concarApi.interceptors.request.use((config) => {
 });
 
 // 2. Interceptor de Respuesta: Manejar Refresh Token y Contrato de Negocio
-concarApi.interceptors.response.use(
+aspidApi.interceptors.response.use(
   (response) => {
     if (response.config.responseType === "blob") {
       return response;
@@ -95,9 +95,9 @@ concarApi.interceptors.response.use(
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
-        // Usamos concarApi en lugar de axios para que la nueva respuesta
+        // Usamos aspidApi en lugar de axios para que la nueva respuesta
         // también pase por la validación de negocio (code !== 1)
-        return concarApi(originalRequest);
+        return aspidApi(originalRequest);
       } catch (_refreshError) {
         // ✅ CASO 3: Si el refresh da error, lo bota al login
         redirectToLogin(); // <-- Ahora sí lo expulsamos de la vista

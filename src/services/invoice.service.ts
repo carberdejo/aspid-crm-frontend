@@ -1,11 +1,13 @@
 import { concarApi } from "@/api/concarApi";
 import {
+  AnnulDocumentDto,
   ApiResponse,
   CreateInvoiceDto,
   InvoiceQuery,
   PaginatedResponse,
   ResponseOperation,
   Invoice,
+  UpdateInvoiceDto,
 } from "@/interfaces";
 
 import { cleanParams } from "@/lib";
@@ -29,10 +31,18 @@ export const invoiceService = {
     return responseData.data;
   },
 
-  //   update: async (id: number, data: IndustrySegmentUpdateDto) => {
-  //     const { data: responseData } = await concarApi.patch<
-  //       ApiResponse<ResponseOperation>
-  //     >(`/catalogs/segments/${id}`, data);
-  //     return responseData.data;
-  //   },
+  update: async (id: number, data: UpdateInvoiceDto) => {
+    const { data: responseData } = await concarApi.patch<
+      ApiResponse<ResponseOperation>
+    >(`/invoices/${id}`, data);
+    return responseData.data;
+  },
+
+  // La factura deja de contar en lo facturado; su número queda reservado
+  annul: async (id: number, data: AnnulDocumentDto) => {
+    const { data: responseData } = await concarApi.patch<
+      ApiResponse<ResponseOperation>
+    >(`/invoices/${id}/annul`, data);
+    return responseData.data;
+  },
 };

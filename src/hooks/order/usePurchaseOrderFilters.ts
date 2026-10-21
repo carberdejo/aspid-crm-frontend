@@ -32,6 +32,7 @@ export function usePurchaseOrderFilters(departmentId: number, userId?: number) {
       limit: 10,
       startDate: undefined,
       endDate: undefined,
+      status: undefined,
     });
     setPage(1);
   };
@@ -64,6 +65,7 @@ export function usePurchaseOrderFilters(departmentId: number, userId?: number) {
       searchTerm.length > 0 ||
       queryFilters.order !== "DESC" ||
       !!queryFilters.startDate ||
-      !!queryFilters.endDate,
+      !!queryFilters.endDate ||
+      !!queryFilters.status,
   };
 }

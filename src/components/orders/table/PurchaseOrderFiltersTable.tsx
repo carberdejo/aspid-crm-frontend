@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/select";
 
 import { Search, FilterX, SortAsc, SortDesc } from "lucide-react";
-import { PurchaseOrderFilters, SortOrder } from "@/interfaces";
+import { DocumentStatus, PurchaseOrderFilters, SortOrder } from "@/interfaces";
+
+// Radix Select no admite "" como valor: centinela para "vigentes y anuladas"
+const ALL_STATUS = "ALL";
 import { DateRangeFilter } from "@/components";
 
 interface Props {
@@ -76,7 +79,41 @@ export function PurchaseOrderFiltersTable({
           </SelectContent>
         </Select>
 
-        {/* 3. POPOVER DE FECHAS (FILTROS AVANZADOS) */}
+        {/* 3. VIGENCIA: vigentes, anuladas o todas */}
+        <Select
+          value={filters.status ?? ALL_STATUS}
+          onValueChange={(v) =>
+            onFilterChange({
+              status: v === ALL_STATUS ? undefined : (v as DocumentStatus),
+            })
+          }
+        >
+          <SelectTrigger className="w-[150px] h-12 rounded-xl border-slate-200 font-black text-[10px] uppercase bg-white shadow-sm">
+            <SelectValue placeholder="ESTADO" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl border-slate-100">
+            <SelectItem
+              value={ALL_STATUS}
+              className="text-[10px] font-bold uppercase"
+            >
+              TODAS
+            </SelectItem>
+            <SelectItem
+              value={DocumentStatus.VIGENTE}
+              className="text-[10px] font-bold uppercase"
+            >
+              VIGENTES
+            </SelectItem>
+            <SelectItem
+              value={DocumentStatus.ANULADA}
+              className="text-[10px] font-bold uppercase"
+            >
+              ANULADAS
+            </SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* 4. POPOVER DE FECHAS (FILTROS AVANZADOS) */}
         <DateRangeFilter
           startDate={filters.startDate}
           endDate={filters.endDate}
@@ -87,7 +124,7 @@ export function PurchaseOrderFiltersTable({
           btnColor="bg-emerald-600 hover:bg-emerald-700"
         />
 
-        {/* 4. BOTÓN LIMPIAR TODO */}
+        {/* 5. BOTÓN LIMPIAR TODO */}
         <Button
           variant="ghost"
           onClick={onClear}

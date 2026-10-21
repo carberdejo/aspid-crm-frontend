@@ -2,17 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Eye, Edit3, Download, Receipt } from "lucide-react";
-import { PurchaseOrder } from "@/interfaces";
+import { Eye, Edit3, Download, Receipt, Ban } from "lucide-react";
+import { DocumentStatus, PurchaseOrder } from "@/interfaces";
 import { useParams, useRouter } from "next/navigation";
 import { RegisterInvoiceModal } from "@/components/invoices/form/RegisterInvoiceModal";
+import { AnnulDialog } from "@/components/shared/AnnulDialog";
+import { useAnnulPurchaseOrder, useCanModify } from "@/hooks";
+import { EditPurchaseOrderModal } from "../form/EditPurchaseOrderModal";
 
 interface ActionsCellProps {
   po: PurchaseOrder;
@@ -23,8 +19,17 @@ export const ActionsCellOrder = ({ po }: ActionsCellProps) => {
   const params = useParams();
   const departmentId = params.id;
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAnnulOpen, setIsAnnulOpen] = useState(false);
 
-  const canInvoice = (po.remainingAmount || 0) > 0;
+  // Editar, anular y facturar: solo el dueño de la cotización o un admin, y solo si está vigente
+  const isActive = po.status !== DocumentStatus.ANULADA;
+  const canModify = useCanModify(po.userId) && isActive;
+  const canInvoice = canModify && (po.remainingAmount || 0) > 0;
+  // Con facturas vigentes no se puede anular: primero se anulan las facturas
+  const hasInvoices = Number(po.invoicedAmount || 0) > 0;
+
+  const { mutate: annulOrder, isPending: isAnnulling } =
+    useAnnulPurchaseOrder();
 
   const handleGoToDetail = () => {
     router.push(`/department/${departmentId}/order/${po.id}`);
@@ -32,6 +37,13 @@ export const ActionsCellOrder = ({ po }: ActionsCellProps) => {
 
   const handleDownloadPDF = () => {
     console.log("Descargando PDF de la PO:", po.poNumber);
+  };
+
+  const handleAnnul = (annulReason: string) => {
+    annulOrder(
+      { id: po.id, data: { annulReason } },
+      { onSuccess: () => setIsAnnulOpen(false) },
+    );
   };
 
   return (
@@ -77,32 +89,54 @@ export const ActionsCellOrder = ({ po }: ActionsCellProps) => {
         <Download size={16} />
       </Button>
 
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogTrigger asChild>
+      {canModify && (
+        <>
           <Button
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-slate-400 hover:text-amber-600 rounded-full shrink-0"
             title="Editar Orden"
+            onClick={() => setIsEditOpen(true)}
           >
             <Edit3 size={16} />
           </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px] rounded-[2.5rem] p-8">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-primary uppercase">
-              Editar <span className="text-emerald-600">Orden de Compra</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4 space-y-4">
-            <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">
-                Formulario en construcción
-              </span>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+
+          {/* span: un botón deshabilitado no muestra su title */}
+          <span
+            title={
+              hasInvoices
+                ? "Anule primero las facturas de esta orden"
+                : "Anular Orden"
+            }
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full shrink-0"
+              onClick={() => setIsAnnulOpen(true)}
+              disabled={hasInvoices}
+            >
+              <Ban size={16} />
+            </Button>
+          </span>
+
+          <EditPurchaseOrderModal
+            po={po}
+            open={isEditOpen}
+            onOpenChange={setIsEditOpen}
+          />
+
+          <AnnulDialog
+            isOpen={isAnnulOpen}
+            onOpenChange={setIsAnnulOpen}
+            documentLabel="la OC"
+            documentNumber={po.poNumber}
+            description={`La orden quedará registrada como anulada y la cotización ${po.quoteNumber} volverá a PENDIENTE para registrar una nueva OC o rechazarla.`}
+            onConfirm={handleAnnul}
+            isLoading={isAnnulling}
+          />
+        </>
+      )}
     </div>
   );
 };

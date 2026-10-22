@@ -34,6 +34,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Ignorar archivos estáticos, imágenes y llamadas directas a APIs de Next
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // Ignorar archivos estáticos, imágenes y llamadas directas a APIs de Next.
+  // /brand (logos y favicons de public/brand) debe verse sin sesión, p. ej. en el login
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|brand/).*)"],
 };
